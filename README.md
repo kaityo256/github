@@ -11,6 +11,37 @@
 * なぜバージョン管理が必要か
 * バージョン管理をすると何ができるのか
 
+## [Gitの使い方(基礎編)](basics/README.md)
+
+* config
+* init, add, commit
+* checkout, merge, branch
+* status
+* clone, remote, push, fetch, pull
+* .gitignore
+
+## [Gitの使い方(応用編)](advanced/README.md)
+
+* rebase
+* reset
+* log
+* stash
+* blame
+* bisect
+* cherry-pick
+* tag
+
+## [Gitの仕組み](internals/README.md)
+
+* SHA-1 (コミットID)
+* Gitオブジェクト(objects)
+  * blob
+  * tree
+  * commit
+  * tag
+* Gitの参照(refs)
+* 操作の裏側で起きていること
+
 ## 何を説明するかメモ
 
 * 座学
