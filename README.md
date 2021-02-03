@@ -33,6 +33,7 @@
 
 ## [Gitの仕組み](internals/README.md)
 
+* ファイルシステムの仕組み
 * SHA-1 (コミットID)
 * Gitオブジェクト(objects)
   * blob
