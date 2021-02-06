@@ -22,8 +22,13 @@
   * GitHubの使い方
 * 演習
   * Git演習
+    * 実戦的な使い方
+      * (途中でバグが入った歴史を持つコードを使って、git logやbisectを使う)
+      * git-bisect-exampleというリポジトリを作る
   * GitHub演習
     * issue
+      * issue drivenな開発例
+      * issue を切って、ブランチを作り、コミットログで自動でissueを閉じる
     * Project
     * CI
   * 複数人による開発
