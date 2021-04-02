@@ -55,9 +55,19 @@
   * GitHubの使い方
 * 演習
   * Git演習
+    * 基本的な操作の確認
+      * git init
+      * git add, commit
+      * git branch
+      * git merge
+      * コマンドでの動作確認とVS Codeでの確認
+      * マージの確認(fast-forward, non fast-forward, conflictの対処)
     * 実戦的な使い方
       * (途中でバグが入った歴史を持つコードを使って、git logやbisectを使う)
       * git-bisect-exampleというリポジトリを作る
+      * rebase の仕方
+    * トラブル対応
+      * detached HEADの対応 (rebaseで失敗したもの)
   * GitHub演習
     * issue
       * issue drivenな開発例
@@ -67,6 +77,12 @@
   * 複数人による開発
     * issue
     * プルリク
+
+* 説明メモ
+  * git addには三種類の意味がある
+    * リポジトリの管理下にないファイルを管理下に置く
+    * リポジトリの管理下にあるファイルをステージングする
+    * Gitにconflictの解消について教える
 
 ## [参考文献](references/README.md)
 
