@@ -1,10 +1,14 @@
 # 参考文献
 
-## Git公式ドキュメント
+## 公式ドキュメント
 
 * [Pro Git book](https://git-scm.com/book/ja/v2)
 
 ソフトウェアやツールは、まずは公式ドキュメントにあたるのが何より大事。広く使われているツールの公式ドキュメントはよくできていることが多い。
+
+* [GitHub Getting started](https://docs.github.com/en/github/getting-started-with-github)
+
+GitHubの公式ドキュメント。これもわかりやすい。
 
 ## 東京工業大学システム開発プロジェクトの公開資料
 
