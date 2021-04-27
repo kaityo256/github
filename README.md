@@ -12,14 +12,26 @@
 * プログラミングができる人、できない人
 * バージョン管理システムとは
 
-## [Gitの使い方(基礎編)](basics/README.md)
+## [Gitの使い方(ローカル)](basics/README.md)
 
 * config
 * init, add, commit
 * checkout, merge, branch
 * status
-* clone, remote, push, fetch, pull
 * .gitignore
+* VSCodeの設定
+
+## Gitの使い方(リモート)
+
+* ベアリポジトリ
+* clone, remote, push, fetch, pull
+* 上流ブランチの説明
+  * 特に、以下のコマンドで引数を省略した時の対象となるブランチとなることを説明
+    * `git fetch`
+    * `git merge`
+    * `git rebase`
+    * `git pull`
+    * `git pull --rebase`
 
 ## [Gitの使い方(応用編)](advanced/README.md)
 
@@ -67,6 +79,8 @@
       * git-bisect-exampleというリポジトリを作る
       * rebase の仕方
     * トラブル対応
+      * mergeしたらconflictした！
+        * とりあえず元に戻そう git merge --revert
       * detached HEADの対応 (rebaseで失敗したもの)
   * GitHub演習
     * issue
@@ -77,12 +91,6 @@
   * 複数人による開発
     * issue
     * プルリク
-
-* 説明メモ
-  * git addには三種類の意味がある
-    * リポジトリの管理下にないファイルを管理下に置く
-    * リポジトリの管理下にあるファイルをステージングする
-    * Gitにconflictの解消について教える
 
 ## [参考文献](references/README.md)
 
