@@ -12,6 +12,8 @@
 * バージョン管理システムの歴史
 * プログラミングができる人、できない人
 
+## [Gitの仕組みと用語](term/README.md)
+
 ## [Gitの使い方(ローカル)](basics/README.md)
 
 * config
