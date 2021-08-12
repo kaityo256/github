@@ -10,6 +10,14 @@
 
 GitHubの公式ドキュメント。これもわかりやすい。
 
+## 参考にしたスライドやサイト
+
+本ノートを執筆するのに参考にしたサイト。
+
+* [サル先生のGit入門](https://backlog.com/ja/git-tutorial/)
+* [いつやるの？Git入門](https://www.slideshare.net/matsukaz/git-28304397)
+* [こわくないGit](https://www.slideshare.net/kotas/git-15276118)
+
 ## 東京工業大学システム開発プロジェクトの公開資料
 
 [東京工業大学 システム開発プロジェクト](https://www.youtube.com/channel/UCJx-rgFp80y-x7_JeBJ35yA)の動画のうち、特に以下の動画。
