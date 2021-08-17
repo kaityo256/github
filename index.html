@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="github演習">GitHub演習</h1>
+<h2 id="この講義ノートについて">この講義ノートについて</h2>
+<p>これは、大学の学部生向けのGit/GitHubを用いたソフトウェア開発演習のための講義ノートになる予定である。</p>
+<h2 id="はじめに"><a href="preface/index.html">はじめに</a></h2>
+<h2 id="バージョン管理とは"><a href="vcs/index.html">バージョン管理とは</a></h2>
+<ul>
+<li>バージョン管理システムとは</li>
+<li>バージョン管理システムの歴史</li>
+<li>プログラミングができる人、できない人</li>
+</ul>
+<h2 id="gitの仕組みと用語"><a href="term/index.html">Gitの仕組みと用語</a></h2>
+<ul>
+<li>プロジェクト</li>
+<li>リポジトリとワーキングツリー</li>
+<li>コミット</li>
+<li>インデックスとステージング</li>
+<li>HEADとブランチ</li>
+<li>マージ</li>
+</ul>
+<h2 id="gitの使い方ローカル"><a href="basics/index.html">Gitの使い方(ローカル)</a></h2>
+<ul>
+<li>config</li>
+<li>init, add, commit</li>
+<li>checkout, merge, branch</li>
+<li>status</li>
+<li>.gitignore</li>
+<li>VSCodeの設定</li>
+</ul>
+<h2 id="gitの使い方リモート">Gitの使い方(リモート)</h2>
+<ul>
+<li>ベアリポジトリ</li>
+<li>clone, remote, push, fetch, pull</li>
+<li>上流ブランチの説明</li>
+<li>特に、以下のコマンドで引数を省略した時の対象となるブランチとなることを説明
+<ul>
+<li><code>git fetch</code></li>
+<li><code>git merge</code></li>
+<li><code>git rebase</code></li>
+<li><code>git pull</code></li>
+<li><code>git pull --rebase</code></li>
+</ul></li>
+</ul>
+<h2 id="gitの使い方応用編"><a href="advanced/index.html">Gitの使い方(応用編)</a></h2>
+<ul>
+<li>rebase</li>
+<li>reset</li>
+<li>log</li>
+<li>stash</li>
+<li>blame</li>
+<li>bisect</li>
+<li>cherry-pick</li>
+<li>tag</li>
+</ul>
+<h2 id="gitの仕組み"><a href="internals/index.html">Gitの仕組み</a></h2>
+<ul>
+<li>ファイルシステムの仕組み</li>
+<li>SHA-1 (コミットID)</li>
+<li>Gitオブジェクト(objects)</li>
+<li>blob</li>
+<li>tree</li>
+<li>commit</li>
+<li>tag</li>
+<li>Gitの参照(refs)</li>
+<li>操作の裏側で起きていること</li>
+</ul>
+<h2 id="何を説明するかメモ">何を説明するかメモ</h2>
+<ul>
+<li>座学</li>
+<li>バージョン管理とは</li>
+<li>ソフトウェア開発で気を付けるべきこと</li>
+<li>ライセンス</li>
+<li>BTS/ITS</li>
+<li>Gitの仕組みと使い方</li>
+<li>Gitで管理するもの、しないもの</li>
+<li>GitHubの使い方</li>
+<li>演習</li>
+<li>Git演習
+<ul>
+<li>基本的な操作の確認</li>
+<li>git init</li>
+<li>git add, commit</li>
+<li>git branch</li>
+<li>git merge</li>
+<li>コマンドでの動作確認とVS Codeでの確認</li>
+<li>マージの確認(fast-forward, non fast-forward, conflictの対処)</li>
+<li>実戦的な使い方</li>
+<li>(途中でバグが入った歴史を持つコードを使って、git logやbisectを使う)</li>
+<li>git-bisect-exampleというリポジトリを作る</li>
+<li>rebase の仕方</li>
+<li>トラブル対応</li>
+<li>mergeしたらconflictした！
+<ul>
+<li>とりあえず元に戻そう git merge --revert</li>
+</ul></li>
+<li>detached HEADの対応 (rebaseで失敗したもの)</li>
+</ul></li>
+<li>GitHub演習
+<ul>
+<li>issue</li>
+<li>issue drivenな開発例</li>
+<li>issue を切って、ブランチを作り、コミットログで自動でissueを閉じる</li>
+<li>Project</li>
+<li>CI</li>
+</ul></li>
+<li>複数人による開発
+<ul>
+<li>issue</li>
+<li>プルリク</li>
+</ul></li>
+</ul>
+<h2 id="参考文献"><a href="references/index.html">参考文献</a></h2>
+<h2 id="ライセンス">ライセンス</h2>
+<p>Copyright (C) 2021-present Hiroshi Watanabe</p>
+<p>この文章と絵(pptxファイルを含む)はクリエイティブ・コモンズ 4.0 表示 (CC-BY 4.0)で提供する。</p>
+          </article>
+  </body>
+
+  </html>

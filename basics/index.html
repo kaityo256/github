@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="gitの使い方基礎編">Gitの使い方(基礎編)</h1>
+<h2 id="はじめに">はじめに</h2>
+<p>通常、パソコンを操作する際はファイルをマウスでクリックして選択、ダブルクリックで対応するアプリケーションで開いて修正して保存、などとしていることだろう。また、スマホやタブレットは指でタッチして様々な操作を行うであろう。この際、アイコンやボタンなど、操作対象がグラフィカルに表現されたものを、マウスやタッチで操作するインタフェースを <strong>グラフィカルユーザインタフェース(Graphical User Interface, GUI)</strong> と呼ぶ。</p>
+<p>一方、主にキーボードからコマンドを入力してコンピュータを操作する方法もある。こちらは命令(コマンド)を一行(ライン)ずつ受け付け、解釈して実行することから <strong>コマンドラインインタフェース(Command-line Interface, CLI)</strong>　と呼ばれる。最初からGUIツールとして作られているWordやPowerPoint等と異なり、Gitはコマンドラインツールとして作られている。GitにはGit Guiや、SourceTreeなどのGUIツールも用意されているが、これはCLIにGUIの「皮」をかぶせたものだ。Gitを「ただ使う」だけであればGUIツールを使えばよいが、本講義の目的はGitを使うことではなく、Gitというバージョン管理ツールを理解することだ。また、GUIツールを使っていて何かトラブルが起きた場合、それがコマンドに起因するものなのか、GUIの「皮」に起因するものなのかを切り分けなければならず、そのためにはコマンドライン操作を理解していなければならない。そこで、まずはコマンドライン操作について学ぶ。なお、コマンドライン操作において最も注目して欲しいのはエラーメッセージだ。GUIではそもそも「許されない操作」ができないように設計されていることが多いが、コマンドラインでは頻繫に「許されない操作」をしてしまい、「それはできないよ」というメッセージが表示されることだろう。これをエラーメッセージと呼ぶ。エラーの多くは平易な英語で書いてあるので、ちゃんと読めば何が起きたか、そして次に何をすれば良いかがわかるはずだ。</p>
+<h2 id="unixコマンド">Unixコマンド</h2>
+<p>映画などでハッカーが何やら黒い画面を見ながらキーボードをものすごい勢いで叩いているのを見たことがあるだろう。この「黒い画面」はターミナル<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>と呼ばれ、ユーザからの指示をコンピュータに入力するためのものだ。Gitはコマンドラインツールであるから、まずはコマンドラインの使い方に慣れなければならない。コマンドラインを入力するのはこのターミナルという黒い画面であるから、Gitを使うためにはこの「黒い画面」と友達にならなければならない。ターミナルへの命令はコマンドを通じて行われるが、このコマンドはオペレーティング・システムの種類によって異なる。GitはLinuxの開発のために作られた経緯があるため、Linux上で動作することを前提に作られた。LinuxはUnixというオペレーティング・システム(Operating System, OS)を参考にして作られたため、Unixの直系の子孫ではないが、操作やコマンドが似ている。Unixは極めて古いOSであり、macOSもUnixの子孫である。Unixの子孫や、Unixと操作が似ているOSをまとめてUnix系システムと呼ぶ。Unix系システムでは、Unixコマンドと呼ばれるコマンド群を用いて操作する。以下では、Gitの操作に最低限必要なUnixコマンドについて説明する。ターミナルはWindowsのGit Bashを想定するが、WSL2のUbuntuやMacのターミナルでも同様である。</p>
+<h3 id="コマンドプロンプト">コマンドプロンプト</h3>
+<p>多くのシェルでは、ユーザからの入力を待っている時に<code>$</code>が表示され、その隣でカーソルが点滅した状態となる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="kw">|</span></code></pre></div>
+<p>これをコマンドプロンプト、あるいは単にプロンプトと呼び、コマンドが入力可能であることを表している。このプロンプトにコマンドを入力し、エンターキーを押すとその命令が処理される。コマンドに何か値を渡したいことがある。例えばファイルを削除するコマンドは<code>rm</code>だが、どのファイルを削除するか教えてやる必要がある。このように、コマンドに渡す値を <strong>引数(ひきすう)</strong> と呼ぶ。一方、コマンドの動作を変えるような引数を <strong>オプション(option)</strong> と呼び、<code>-</code>や<code>--</code>で始まることが多い。</p>
+<p>WindowsやMacでは、複数のファイルをまとめるものをフォルダと呼ぶが、Unix系システムでは　<strong>ディレクトリ(directory)</strong> と呼ぶ。</p>
+<p>この命令が実行されるディレクトリ、すなわち「いま自分がいるディレクトリ」をカレントディレクトリ、もしくはワーキングディレクトリと呼ぶ。特に、ターミナルを開いた直後のカレントディレクトリを <strong>ホームディレクトリ(Home directory)</strong> と呼ぶ。</p>
+<h3 id="ls"><code>ls</code></h3>
+<p>カレントディレクトリに存在するディレクトリやファイルを表示するコマンドが<code>ls</code>だ<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span></code></pre></div>
+<p>上記は、<code>$</code>というコマンドプロンプトに、<code>ls</code>という文字を入力し、エンターキーを押す、という意味だ。ユーザが入力するのは<code>ls</code>(+エンターキー)だけであり、<code>$</code>は入力しないことに注意。</p>
+<p>すると、例えば以下のような表示がされる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span>
+<span class="ex">dir1/</span>  dir2/  file1.txt  file2.txt</code></pre></div>
+<p>これは、カレントディレクトリに、<code>dir1</code>、<code>dir2</code>というディレクトリと、<code>file1.txt</code>、<code>file2.txt</code>というファイルがあるよ、という意味だ。ディレクトリは名前の右側に<code>/</code>がついていることが多いが、それはシェルの設定によるため、ついていない場合もある。</p>
+<p>TODO: 上記を図解</p>
+<p><code>ls</code>に<code>-l</code>というオプションを渡すと、結果をリスト表示する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span> -l
+<span class="ex">total</span> 0
+<span class="ex">drwxr-xr-x</span> 1 watanabe 197121 0  8月 17 21:03 dir1/
+<span class="ex">drwxr-xr-x</span> 1 watanabe 197121 0  8月 17 20:32 dir2/
+<span class="ex">-rw-r--r--</span> 1 watanabe 197121 0  8月 17 20:33 file1.txt
+<span class="ex">-rw-r--r--</span> 1 watanabe 197121 0  8月 17 20:33 file2.txt</code></pre></div>
+<p>リスト表示では、ファイル名の他に、そのファイルの読み書きの許可、所有者、日付などが表示される。このように、「コマンドの直接の目的語」が引数、「コマンドの振る舞いを変える」のがオプションである。</p>
+<p><code>cd</code>の引数としてカレントディレクトリの下にあるディレクトリ(サブディレクトリと言う)を指定することで、そのディレクトリの中身を表示することもできる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span> dir1
+<span class="ex">file3.txt</span></code></pre></div>
+<p>存在しないファイルやディレクトリを指定すると、そんなファイルは知らないよ、というエラーが出る。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span> non-existing-dir
+<span class="ex">ls</span>: cannot access <span class="st">&#39;non-existing-dir&#39;</span>: No such file or directory</code></pre></div>
+<h3 id="cd"><code>cd</code></h3>
+<p>カレントディレクトリを変更するコマンドが<code>cd</code>だ<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>。<code>cd</code>の後にディレクトリ名を指定すると、カレントディレクトリがそこに移動する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span>
+<span class="ex">dir1/</span>  dir2/  file1.txt  file2.txt
+$ <span class="bu">cd</span> dir1</code></pre></div>
+<p>ダブルクリックでフォルダを開いた時には、そのフォルダの中身が自動的に表示された。しかし、コマンドラインインタフェースではそんな親切なことはしてくれない。カレントディレクトリをそのディレクトリに変更しておしまいである。存在しないディレクトリに移動しようとしたら、エラーが出る。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="bu">cd</span> non-exisiting-dir
+<span class="ex">bash</span>: cd: non-exisiting-dir: No such file or directory</code></pre></div>
+<p>これは「<code>non-exisiting-dir</code>というディレクトリに<code>cd</code>しようとしたけど、そんなファイルもディレクトリも無いよ」というエラーだ。ファイルに対して<code>cd</code>しようとしてもエラーとなる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="bu">cd</span> file1.txt
+<span class="ex">bash</span>: cd: file1.txt: Not a directory</code></pre></div>
+<p>これは「<code>file1.txt</code>はディレクトリではないので<code>cd</code>できないよ」というエラーだ。</p>
+<p><code>cd</code>コマンドを引数無しで実行すると、ホームディレクトリに戻る。重要なコマンドなので覚えておこう。</p>
+<h2 id="gitコマンド">Gitコマンド</h2>
+<ul>
+<li>config</li>
+<li>init, add, commit</li>
+<li>checkout, merge, branch</li>
+<li>status</li>
+<li>.gitignore</li>
+<li><p>VSCodeの設定</p></li>
+<li>説明メモ</li>
+<li>git addには三種類の意味がある
+<ul>
+<li>リポジトリの管理下にないファイルを管理下に置く</li>
+<li>リポジトリの管理下にあるファイルをステージングする</li>
+<li>Gitにconflictの解消について教える</li>
+</ul></li>
+</ul>
+<h2 id="余談データベースふっとばしスペシャリスト">余談：データベース「ふっとばし」スペシャリスト</h2>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>より正確に言えばターミナル(端末)エミュレータのこと。もともと大きなホストコンピュータに、たくさんの端末がぶら下がっており、複数の人が一つのマシンに命令を入力していた。この「端末」をエミュレートしたものが端末エミュレータである。<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><code>list</code>の略だと思われる。<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p><code>change directory</code>の略だと思われる。<a href="#fnref3">↩</a></p></li>
+</ol>
+</div>
+          </article>
+  </body>
+
+  </html>
