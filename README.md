@@ -24,6 +24,8 @@
 * HEADとブランチ
 * マージ
 
+## [コマンドラインの使い方](command/README.md)
+
 ## [Gitの使い方(ローカル)](basics/README.md)
 
 * config
