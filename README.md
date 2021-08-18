@@ -4,6 +4,9 @@
 
 これは、大学の学部生向けのGit/GitHubを用いたソフトウェア開発演習のための講義ノートになる予定である。
 
+* [GitHubレポジトリ](https://github.com/kaityo256/github)
+* [HTML版](https://kaityo256.github.io/github/)
+
 ## [はじめに](preface/README.md)
 
 ## [バージョン管理とは](vcs/README.md)
