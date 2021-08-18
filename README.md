@@ -26,6 +26,10 @@
 
 ## [コマンドラインの使い方](command/README.md)
 
+* シェルとコマンドライン
+* Unixコマンド
+* Vimの使い方
+
 ## [Gitの使い方(ローカル)](basics/README.md)
 
 * config
