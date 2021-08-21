@@ -64,6 +64,13 @@
 <p>WindowsやMacでは、複数のファイルをまとめるものをフォルダと呼ぶが、Unix系システムでは　<strong>ディレクトリ(directory)</strong> と呼ぶ。</p>
 <p>この命令が実行されるディレクトリ、すなわち「いま自分がいるディレクトリ」をカレントディレクトリ、もしくはワーキングディレクトリと呼ぶ。特に、ターミナルを開いた直後のカレントディレクトリを <strong>ホームディレクトリ(Home directory)</strong> と呼ぶ。</p>
 <p>TODO: 相対パスと絶対パスの説明</p>
+<h3 id="ややこしいファイル操作をしたい時">ややこしいファイル操作をしたい時</h3>
+<p>これからコマンドラインでのファイル操作について説明をするが、慣れないと操作ミスによる事故が起きやすい。自信がないい場合は使い慣れたグラフィカルなシェルで操作すると良いだろう。例えばWindowsのGit Bashであれば、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">explorer</span> .</code></pre></div>
+<p>を実行すると、カレントディレクトリをエクスプローラーで開くことができる(一つ空白をかえてピリオドを入力するのを忘れないこと)。</p>
+<p>Macであれば</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">open</span> .</code></pre></div>
+<p>によりカレントディレクトリをファインダーで開くことができる。あとはマウスでコピーや移動、削除などを実行すれば良い。</p>
 <h3 id="コマンドプロンプト">コマンドプロンプト</h3>
 <p>多くのシェルでは、ユーザからの入力を待っている時に<code>$</code>が表示され、その隣でカーソルが点滅した状態となる。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ </code></pre></div>
@@ -165,17 +172,53 @@ $ <span class="fu">ls</span>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">cp</span> dir1 dir2  # コピー元がディレクトリである場合はエラーとなる
 <span class="ex">cp</span>: -r not specified<span class="kw">;</span> <span class="ex">omitting</span> directory <span class="st">&#39;dir1&#39;</span>
 $ <span class="fu">cp</span> -r dir1 dir2 <span class="co"># dir2が無い場合はその場所にコピー、ある場合はdir2の下にコピー</span></code></pre></div>
-<h3 id="rm"><code>rm</code></h3>
-<p>ファイルを削除するには<code>rm</code>を使う。なお、中身が空ではないいディレクトリを削除する場合は<code>rm -r dir</code>と<code>-r</code>オプションを付ける必要があるが、再帰的に全てのファイル、サブディレクトリが削除されてしまうので、慣れないうちは実行しない方がよい。</p>
-<h3 id="ややこしいファイル操作をしたい時">ややこしいファイル操作をしたい時</h3>
-<p>コマンドラインでのファイル操作に慣れていない場合、操作ミスによる事故が起きやすい。その場合はグラフィカルなシェルで操作すると良いだろう。例えばGit Bashであれば、</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">explorer</span> .</code></pre></div>
-<p>を実行すると、カレントディレクトリをエクスプローラーで開くことができる(一つ空白をかえてピリオドを入力するのを忘れないこと)。</p>
-<p>Macであれば</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">open</span> .</code></pre></div>
-<p>でカレントディレクトリをファインダーで開くことができる。あとはマウスでコピーや移動、削除などを実行すれば良い。</p>
+<h3 id="rmrmdir"><code>rm</code>,<code>rmdir</code></h3>
+<p>ファイルを削除するには<code>rm</code>を使う。なお、中身が空ではないいディレクトリを削除する場合は<code>rm -r dir</code>と<code>-r</code>オプションを付ける必要があるが、再帰的に全てのファイル、サブディレクトリが削除されてしまうので、慣れないうちは実行しない方がよい。また、空のディレクトリを削除するために<code>rmdir</code>というコマンドがあるが、普段使うことは少ないので「<code>mkdir</code>の対になるコマンドが<code>rmdir</code>」とだけ覚えておけばよいだろう。</p>
 <h2 id="vim">Vim</h2>
-<p>Vimの使い方。</p>
+<p>Gitを使っていると、コミットやマージのメッセージ入力や、<code>rebase</code>の処理などで、コマンドライン上でエディタを使う必要が出てくる場合がある。多くの環境でGitのデフォルトエディタはVimだ。Vimは非常に強力なエディタであり、愛好者も多い(筆者もその一人である)のだが、普段使うエディタと使い勝手が異なるので戸惑うことも多いだろう。</p>
+<p>ここでは、Vimの最低限の使い方だけ説明をする。</p>
+<p>まずはコマンドラインで<code>vim</code>を実行すると、例えばこんな画面が出てくる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="ex">vim</span></code></pre></div>
+<div class="figure">
+<img src="fig/vim.png" alt="vim" />
+<p class="caption">vim</p>
+</div>
+<p>Vimは「普通」のエディタと異なり、「モード」がある。起動直後は <strong>ノーマルモード(Normal Mode)</strong> となっている。ノーマルモードでは、Vimの終了や、カーソルの移動、行の削除や貼り付けなどの操作ができる。</p>
+<p>ここで、キーボードの<code>i</code>を押すと、 <strong>入力モード(Insert Mode)</strong> になる。すると、画面の一番下に「-- 挿入 --」と表示される。なお、ターミナルの言語が英語だと<code>-- INSERT --</code>と表示されるなど、メッセージが英語になるが、ここでは日本語を前提に説明をする。この状態でキーを入力すると、入力したキーがそのまま挿入される。カーソルキー、エンターキーによる改行、バックスペースキーやデリートキーによる削除も可能なので、この状態で文章を編集する。</p>
+<p>ファイルを保存したり、エディタを終了するためには「入力モード」から「ノーマルモード」に戻らなくてはならない。ノーマルモードに戻るにはエスケープキーを押す。すると画面下の「-- 挿入 --」が消える。</p>
+<p>Vimを終了するには二つの方法がある。一つは「ノーマルモード」で<code>ZZ</code>(シフトを押しながら<code>Z</code>を二回入力)する方法だ。これは「保存して終了」という動作をする。しかし、何か編集をしており、ファイル名が未指定の場合には「E32: ファイル名がありません」と言われて終了ができない。</p>
+<div class="figure">
+<img src="fig/vim_ZZ.png" alt="vim_ZZ" />
+<p class="caption">vim_ZZ</p>
+</div>
+<p>ファイル名を指定するには、<strong>コマンドモード (Command Mode)</strong> に入る必要がある。コマンドモードに入るためには、<code>:</code>(コロン)を入力する。すると、画面下に<code>:</code>が現れ、そこにカーソルが移る。</p>
+<div class="figure">
+<img src="fig/vim_command.png" alt="vim_command" />
+<p class="caption">vim_command</p>
+</div>
+<p>ここで<code>w</code>の後に空白をあけてファイル名を指定し、エンターキーを押すと、現在編集中の内容をそのファイル名で名前をつけて保存できる。</p>
+<pre class="vim"><code>:w test.txt</code></pre>
+<p>上記を実行すると、「無名」とあったところにファイル名が表示される。</p>
+<div class="figure">
+<img src="fig/vim_filename.png" alt="vim_filename" />
+<p class="caption">vim_filename</p>
+</div>
+<p>この状態になったら、<code>ZZ</code>の入力で終了できる。</p>
+<p>また、コマンドモードで、<code>w!</code>と入力すると、現在編集中の内容を破棄してそのまま終了できる。</p>
+<p>慣れない人は、Vimの終了方法に戸惑いがちだ。もう一度終了方法をまとめておこう。</p>
+<ul>
+<li>もし入力モードであったら、エスケープキーを押してノーマルモードに移る。どのモードからでもエスケープキーを押せばノーマルモードになるので、現在のモードがわからなくてもとりあえずエスケープキーを押せばよい。</li>
+<li>現在編集中の内容がファイル名を持っていて、編集内容を保存して終了したければそのまま<code>ZZ</code>(シフトキーを押しながら<code>Z</code>を二回)を入力する。</li>
+<li>現在編集中の内容を破棄して終了したければ、<code>:</code>を押してコマンドモードとなり、<code>w!</code>を入力してエンターキーを押す(ノーマルモードで<code>:w!</code>と順番に入力してエンターキーを押せば良い)。</li>
+</ul>
+<p>GitからVimが呼び出される場合は必ず名前があるファイルを渡されるはずなので、</p>
+<ul>
+<li><code>i</code>を押してインサートモードにする</li>
+<li>内容を編集する</li>
+<li>エスケープキーを押してノーマルモードに戻る</li>
+<li><code>ZZ</code>でエディタを抜ける</li>
+</ul>
+<p>という一連の操作を行えばよく、とりあえずコマンドモードを覚える必要ない。また、Vimにはもう一つ <strong>ビジュアルモード(Visual Mode)</strong> というモードがあり、こちらも使えると便利なのだが、ここでは触れない。</p>
 <h2 id="余談osの系譜とドラマ">余談：OSの系譜とドラマ</h2>
 <p>WordやPowerPointなど、普段使うアプリケーションは、オペレーティング・システムの上で動作している。オペレーティング・システム(OS)は、基本ソフトとも呼ばれ、ハードウェアとアプリケーションの間で動作する。その存在を意識することは少ないが、PCやスマホ、タブレットなどのデバイスの使い勝手を大きく左右する重要なソフトウェアである。普段よく目にするOSは、PCならWindowsかmacOS、スマホならAndroidかiOSであろう。WindowsはMicrosoft、macOSやiOSはApple、AndroidはGoogleが開発している。OSは日々進化しており、どんどん新しい機能が追加されていく。その進化に乗り遅れたOSは市場から淘汰されてしまうため、その裏には様々なドラマがある。そのうちWindows 95とmacOSの話を紹介したい。</p>
 <p>1980年代、MS-DOS、そしてWindows 3.1というOSにより大きなシェアを獲得したMicrosoftは、二つのOSの開発を進めていた。一つはコンシューマ向けの「使いやすい」OS、もう一つはサーバ向けの「信頼性の高い」OSだ。後者はWindows NTとして完成するが、その時の筆舌に尽くしがたい「デスマーチ」の様子が「闘うプログラマー」に記述があるので興味のある人は読んで見ると良いであろう。さて、もう一つの「家庭用」のOS開発プロジェクトは「カイロ」という名前で進められていたが、進捗が悪かった。そこで、「シカゴ」という別プロジェクトが走り出す。情報科学で博士号を取ったような人ばかりで構成された「カイロ」と、職人プログラマを寄せ集めたような「シカゴ」、どちらがMicrosoftの次世代OSを担うか、ビル・ゲイツの前で「裁判」が行われる。「カイロ」は400ページに渡る資料を用意し、いかに「シカゴ」がダメかを論じたのに対して、「シカゴ」チームはただ一枚のCD-ROMを取り出し、開発中のOSを実演してみせた。両方の言い分を聞いたビル・ゲイツは即座にカイロのキャンセルを決断。その時にCD-ROMに入っていたOSは、後に大ブームを巻き起こすことになるWindows 95のベータ版であった。負けた「カイロ」を率いていたリーダー、ジム・オールチンは、後にWindows Vistaの開発を率いることになり、そこにも面白いストーリーがあるのだが、ここでは割愛しよう。</p>
