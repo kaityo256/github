@@ -31,14 +31,14 @@
 * Vimの使い方
 * 余談：OSの系譜とドラマ
 
-## [Gitの使い方(ローカル)](basics/README.md)
+## [Gitの基本的な使い方](basics/README.md)
 
-* config
-* init, add, commit
-* checkout, merge, branch
-* status
-* .gitignore
-* VSCodeの設定
+* 初期設定(`config`)
+* 初期化とコミット(`init, add, commit`)
+* 状態表示(`status, diff`)
+* ブランチ操作(`switch, checkout, merge, branch`)
+* VSCodeの設定と操作
+* その他(`.gitignore`)
 * 余談：データベース"ふっとばし"スペシャリスト
 
 ## Gitの使い方(リモート)

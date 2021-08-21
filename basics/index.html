@@ -45,14 +45,46 @@
 
   <body>
     <article class="markdown-body">
-                        <h1 id="gitコマンド">Gitコマンド</h1>
+                        <h1 id="gitの基本的な使い方">Gitの基本的な使い方</h1>
+<h2 id="はじめに">はじめに</h2>
+<p>それではいよいよGitの操作を見ていこう。Gitは「git コマンド オプション 対象」といった形で操作する。Gitには大量のコマンドがあり、さらにそれぞれに多くのオプションがある。それらを全て覚えるのは現実的ではない。まずはよく使うコマンドとオプションだけ覚えよう。また、Gitはヘルプが充実している。「あのコマンドなんだっけ？」と思ったら、<code>git help</code>を実行しよう。また、コマンドの詳細を知りたければ<code>git help command</code>で詳細なヘルプが表示されるので、合わせて覚えておくこと。たとえば<code>git help help</code>で、<code>help</code>コマンドのヘルプを見ることができる。</p>
+<p>Gitに限らず、使い方がわからないコマンドがあった時に、まずは公式ドキュメントやヘルプを参照する癖をつけておきたい。広く使われているツールは、公式のドキュメントやチュートリアルが充実していることが多い。例えばGitであれば<a href="https://git-scm.com/book/ja/v2">Pro Git</a>というGitの本がウェブで公開されている。また、<code>git help</code>で表示されるヘルプも非常に充実している。公式ドキュメント及びヘルプを読めるか読めないか(読むか読まないか)で学習効率が大きく異なる。「困ったらまずは公式」という習慣をつけておこう。</p>
+<h2 id="初期設定config">初期設定(<code>config</code>)</h2>
+<p>まず、最初にやるべきことは、Gitに名前とメールアドレスを教えてやることだ。この二つを設定しておかないと、Gitのコミットができない。名前やメールアドレスが未設定のままコミットをしようとすると、こんなメッセージが表示される。</p>
+<pre class="txt"><code>*** Please tell me who you are.
+
+Run
+
+  git config --global user.email &quot;you@example.com&quot;
+  git config --global user.name &quot;Your Name&quot;
+
+to set your account&#39;s default identity.
+Omit --global to set the identity only in this repository.</code></pre>
+<p>Gitはエラーが親切で、何か問題が起きた時に「こうすればいいよ」と教えてくれることが多い。今回も、このメッセージに表示されている通り、<code>git config --global</code>命令を使って、メールアドレスと名前を登録しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config --global user.name <span class="st">&quot;H. Watanabe&quot;</span>
+$ <span class="fu">git</span> config --global user.email kaityo256@example.com</code></pre></div>
+<p>また、念のためにデフォルトエディタを<code>vim</code>にしておこう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config --global core.editor vim</code></pre></div>
+<p>以上で設定は完了だ。ここで、<code>--global</code>オプションは、そのコンピュータ全体で有効な情報を登録するよ、という意味だ。具体的に、今回登録した内容はホームディレクトリの<code>.gitconfig</code>の中に表示されている。見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">cat</span> .gitconfig
+[<span class="ex">user</span>]
+        <span class="ex">name</span> = H. Watanabe
+        <span class="ex">email</span> = kaityo256@example.com
+[<span class="ex">core</span>]
+        <span class="ex">editor</span> = vim</code></pre></div>
+<p><code>git config</code>で <code>user.name</code>で指定した項目が、<code>user</code>セクションの<code>name</code>の値として登録されている。基本的にはGitの設定は<code>git config</code>でコマンドラインから指定するが、直接このファイルを編集して設定することも可能だ。</p>
+<p>また、プロジェクト固有の設定を登録したい場合は、そのプロジェクトの中で</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config user.name <span class="st">&quot;John Git&quot;</span></code></pre></div>
+<p>などと、<code>--global</code>をつけずに設定すると、そちらの設定が優先される。複数のプロジェクトで名前やメールアドレスを使い分けたいことがあるかもしれないので、覚えておくと良い。</p>
+<p>なお、現在の設定は<code>git config -l</code>で表示できるが、そのオプション<code>-l</code>を忘れたとしよう。その場合は</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> help config</code></pre></div>
+<p>を実行し、ヘルプを見よう。</p>
+<pre class="txt"><code>       -l, --list
+           List all variables set in config file, along with their values.</code></pre>
+<p>という項目を見つけて<code>-l</code>が目的のオプションであることがわかる。</p>
+<h2 id="初期化とコミットinit-add-commit">初期化とコミット(<code>init, add, commit</code>)</h2>
+<p>覚えるコマンド: * init, add, commit</p>
 <ul>
-<li>config</li>
-<li>init, add, commit</li>
-<li>switch, checkout, merge, branch</li>
-<li>status</li>
-<li>.gitignore</li>
-<li><p>VSCodeの設定</p></li>
 <li>説明メモ
 <ul>
 <li>git addには三種類の意味がある
@@ -62,6 +94,16 @@
 <li>Gitにconflictの解消について教える</li>
 </ul></li>
 </ul></li>
+</ul>
+<h2 id="状態表示status-diff">状態表示(<code>status, diff</code>)</h2>
+<p>覚えるコマンド: * status * diff</p>
+<p>インデックスとの差が表示されていることを見る</p>
+<h2 id="ブランチ操作switch-checkout-merge-branch">ブランチ操作(<code>switch, checkout, merge, branch</code>)</h2>
+<p>覚えるコマンド * switch * checkout * merge * branch</p>
+<h2 id="vscodeの設定と操作">VSCodeの設定と操作</h2>
+<h2 id="その他の設定.gitignore">その他の設定(<code>.gitignore</code>)</h2>
+<ul>
+<li>.gitignore</li>
 </ul>
 <h2 id="余談データベースふっとばしスペシャリスト">余談：データベース&quot;ふっとばし&quot;スペシャリスト</h2>
 <p>誰かが会社に甚大な被害をもたらす大きなミスをしたとしよう。そのリカバリ作業のため、多くの人が残業を余儀なくされた状況で、ミスをした本人が「先に帰ります」と家に帰ったらどう思うだろうか？「非常識だ」と思う人が多いのではないだろうか？しかし、実際大きなミスをした人がリカバリ作業からすぐに離脱し、それを誰も咎めなかったケースがある。GitLabのデータベース障害対応だ。</p>
