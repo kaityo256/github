@@ -60,12 +60,14 @@
 </div>
 <p>さて、いまファイルを作りたいとしよう。OSがストレージを抽象化しているため、ユーザはOSに「ファイルを作ってください」と依頼する必要がある。この、ユーザとOSの仲立ちをするのが <strong>シェル(shell)</strong> と呼ばれるシステムだ。ユーザは、ターミナル(黒い画面)から、シェルに命令を入力する。するとシェルはそれをOSに届け、OSが実際に処理を行う、という階層構造になっている<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>。OSはハードウェアを抽象化し、さらにその周りを殻のように覆っていることからシェルという名前がついたようだ。</p>
 <p>シェルには、グラフィカルなシェルと、コマンドラインシェルがある。Windowsなどではグラフィカルなシェルが用意されており、マウスでファイルの移動をすることができる。一方、ターミナル上でコマンドを入力することで命令を実行するのがコマンドラインシェルである。以下では、コマンドラインシェルのことを単に「シェル」と呼ぶことにする。</p>
+<h3 id="ディレクトリとパス">ディレクトリとパス</h3>
+<p>WindowsやMacでは、複数のファイルをまとめるものをフォルダと呼ぶが、Unix系システムでは　<strong>ディレクトリ(directory)</strong> と呼ぶ。</p>
+<p>この命令が実行されるディレクトリ、すなわち「いま自分がいるディレクトリ」をカレントディレクトリ、もしくはワーキングディレクトリと呼ぶ。特に、ターミナルを開いた直後のカレントディレクトリを <strong>ホームディレクトリ(Home directory)</strong> と呼ぶ。</p>
+<p>TODO: 相対パスと絶対パスの説明</p>
 <h3 id="コマンドプロンプト">コマンドプロンプト</h3>
 <p>多くのシェルでは、ユーザからの入力を待っている時に<code>$</code>が表示され、その隣でカーソルが点滅した状態となる。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ </code></pre></div>
 <p>これをコマンドプロンプト、あるいは単にプロンプトと呼び、コマンドが入力可能であることを表している。このプロンプトにコマンドを入力し、エンターキーを押すとその命令が処理される。コマンドに何か値を渡したいことがある。例えばファイルを削除するコマンドは<code>rm</code>だが、どのファイルを削除するか教えてやる必要がある。このように、コマンドに渡す値を <strong>引数(ひきすう)</strong> と呼ぶ。一方、コマンドの動作を変えるような引数を <strong>オプション(option)</strong> と呼び、<code>-</code>や<code>--</code>で始まることが多い。</p>
-<p>WindowsやMacでは、複数のファイルをまとめるものをフォルダと呼ぶが、Unix系システムでは　<strong>ディレクトリ(directory)</strong> と呼ぶ。</p>
-<p>この命令が実行されるディレクトリ、すなわち「いま自分がいるディレクトリ」をカレントディレクトリ、もしくはワーキングディレクトリと呼ぶ。特に、ターミナルを開いた直後のカレントディレクトリを <strong>ホームディレクトリ(Home directory)</strong> と呼ぶ。</p>
 <h3 id="ls"><code>ls</code></h3>
 <p>カレントディレクトリに存在するディレクトリやファイルを表示するコマンドが<code>ls</code>だ<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span></code></pre></div>
@@ -123,7 +125,7 @@ $ <span class="bu">cd</span> ..   #一つ上に戻る
 $ <span class="fu">ls</span>
 <span class="ex">dir1/</span>  dir2/  file1.txt  file2.txt</code></pre></div>
 <h3 id="mkdir"><code>mkdir</code></h3>
-<p>ディレクトリを作るには<code>mkdir</code>を使う<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>。</p>
+<p>ディレクトリを作るには<code>mkdir</code>を使う<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>。引数にディレクトリ名を指定すると、カレントディレクトリにその名前のディレクトリを作る。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ls</span>
 <span class="ex">dir1/</span>  dir2/  file1.txt  file2.txt
 
@@ -131,7 +133,47 @@ $ <span class="fu">mkdir</span> dir3 <span class="co"># dir3を作成</span>
 $ <span class="fu">ls</span>
 <span class="ex">dir1/</span>  dir2/  dir3/  file1.txt  file2.txt <span class="co"># dir3/が増えた</span></code></pre></div>
 <h3 id="mv"><code>mv</code></h3>
+<p>ファイルの移動や、ファイル名の変更には<code>mv</code>を使う<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>。グラフィカルなシェルではファイルの移動はマウスでドラッグするだけだが、コマンドラインでは「移動させたいファイル」「移動先」の二つの情報が必要だ。<code>mv</code>コマンドは、移動先がファイルかディレクトリか、移動先のファイルやディレクトリが存在するかしないかによって動作が異なるので注意したい。</p>
+<p>TODO: 図解</p>
+<h4 id="mv-ファイルディレクトリ"><code>mv ファイル　ディレクトリ</code></h4>
+<p>まず、一番使う頻度が高いと思われるのが、移動元がファイル、移動先がディレクトリの場合だ。ファイルがそのディレクトリに移動する。カレントディレクトリを表す<code>.</code>や、一つ上のディレクトリを表す<code>..</code>をよく使うので覚えておきたい。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mv</span> test.txt dir1 <span class="co"># test.txtが、サブディレクトリのdir1に移動する</span>
+<span class="fu">mv</span> ../test.txt . <span class="co"># 一つ上にディレクトリにあるtest.txtを、カレントディレクトリに移動する</span>
+<span class="fu">mv</span> test.txt ..   # カレントディレクトリにあるtest.txtを、一つ上のディレクトリに移動する</code></pre></div>
+<p>ここでは全て相対パスで指定していることに注意。絶対パスでも指定できるが、少なくとも本講義では必要ないはず。</p>
+<h4 id="mv-ファイルファイル"><code>mv ファイル　ファイル</code></h4>
+<p>引数がどちらもファイル名、より正確には「移動先」として指定した名前のファイルやディレクトリが存在しない場合、「移動元」のファイル名をその「移動先」のファイル名にリネームする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mv</span> test1.txt test2.txt    # カレントディレクトリにあるtest1.txtをtest2.txtに変更
+<span class="fu">mv</span> ../test1.txt test2.txt <span class="co"># 一つ上のディレクトリにあるtest1.txtを、test2.txtという名前に変更してカレントディレクトリに移動</span>
+<span class="fu">mv</span> dir1/test1.txt dir2/test2.txt <span class="co"># サブディレクトリdir1にあるtest1.txtを、dir2に移動し、しかも名前をtest2.txtに変更する</span></code></pre></div>
+<h4 id="mv-ディレクトリディレクトリ-移動先がある場合"><code>mv ディレクトリ　ディレクトリ (移動先がある場合)</code></h4>
+<p>移動元がディレクトリであり、移動先がディレクトリである場合、移動元のディレクトリを移動先のディレクトリの下に移動する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mv</span> dir1 dir2 <span class="co"># カレントディレクトリにあるdir1を、やはりカレントディレクトリにあるdir2に移動する</span>
+<span class="fu">mv</span> ../dir1 . <span class="co"># 上のディレクトリにあるdir1を、カレントディレクトリに移動する</span>
+<span class="fu">mv</span> dir1 ..   # カレントディレクトリにあるdir1を、一つ上のディレクトリに移動する</code></pre></div>
+<h4 id="mv-ディレクトリディレクトリ-移動先が無い場合"><code>mv ディレクトリ　ディレクトリ (移動先が無い場合)</code></h4>
+<p>移動元がディレクトリであり、移動先に存在しない名前を指定した場合、ディレクトリをその場所に移動した上で、その名前にリネームする。なお、移動元のディレクトリの下にファイルやディレクトリがあった場合は、まとめて移動する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mv</span> dir1 dir2  # dir2が存在しない場合、dir1をdir2にリネームする
+<span class="fu">mv</span> dir1 dir2/dir3 <span class="co"># dir2は存在するがdir2/dir3は存在しない場合、dir1をdir2の下に移動した上でdir3にリネームする</span></code></pre></div>
+<p>以上、まとめると<code>mv</code>は移動先が存在するディレクトリであればそこに移動、移動先が存在しないファイルやディレクトリであれば、移動元のファイルやディレクトリを移動した上でリネームする。</p>
+<h3 id="cp"><code>cp</code></h3>
+<p><code>mv</code>ではファイルを移動したが、元のファイルを残したまま複製したい場合は<code>cp</code>を使う<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>。移動元のファイルが消えない以外はほとんど<code>mv</code>と同じだ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cp</span> test1.txt test2.txt <span class="co"># test1.txtをtest2.txtという名前で複製する</span>
+<span class="fu">cp</span> test1.txt dir      # test1.txtをdir1/test1.txtという名前で複製する
+<span class="fu">cp</span> test1.txt test2.txt dir <span class="co"># 複数のファイルを一度にdirにコピーする</span></code></pre></div>
+<p>しかし、ディレクトリをコピーする場合は<code>-r</code>オプションが必要だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">cp</span> dir1 dir2  # コピー元がディレクトリである場合はエラーとなる
+<span class="ex">cp</span>: -r not specified<span class="kw">;</span> <span class="ex">omitting</span> directory <span class="st">&#39;dir1&#39;</span>
+$ <span class="fu">cp</span> -r dir1 dir2 <span class="co"># dir2が無い場合はその場所にコピー、ある場合はdir2の下にコピー</span></code></pre></div>
 <h3 id="rm"><code>rm</code></h3>
+<p>ファイルを削除するには<code>rm</code>を使う。なお、中身が空ではないいディレクトリを削除する場合は<code>rm -r dir</code>と<code>-r</code>オプションを付ける必要があるが、再帰的に全てのファイル、サブディレクトリが削除されてしまうので、慣れないうちは実行しない方がよい。</p>
+<h3 id="ややこしいファイル操作をしたい時">ややこしいファイル操作をしたい時</h3>
+<p>コマンドラインでのファイル操作に慣れていない場合、操作ミスによる事故が起きやすい。その場合はグラフィカルなシェルで操作すると良いだろう。例えばGit Bashであれば、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">explorer</span> .</code></pre></div>
+<p>を実行すると、カレントディレクトリをエクスプローラーで開くことができる(一つ空白をかえてピリオドを入力するのを忘れないこと)。</p>
+<p>Macであれば</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">open</span> .</code></pre></div>
+<p>でカレントディレクトリをファインダーで開くことができる。あとはマウスでコピーや移動、削除などを実行すれば良い。</p>
 <h2 id="vim">Vim</h2>
 <p>Vimの使い方。</p>
 <h2 id="余談osの系譜とドラマ">余談：OSの系譜とドラマ</h2>
@@ -155,6 +197,8 @@ $ <span class="fu">ls</span>
 <li id="fn3"><p><code>list</code>の略だと思われる。<a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p><code>change directory</code>の略だと思われる。<a href="#fnref4">↩</a></p></li>
 <li id="fn5"><p><code>make directory</code>の略であろう。<a href="#fnref5">↩</a></p></li>
+<li id="fn6"><p><code>move</code>の略であろう。<a href="#fnref6">↩</a></p></li>
+<li id="fn7"><p><code>copy</code>の略であろう。<a href="#fnref7">↩</a></p></li>
 </ol>
 </div>
           </article>
