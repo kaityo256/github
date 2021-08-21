@@ -1,6 +1,75 @@
 # Gitコマンド
 
-* config
+## はじめに
+
+それではいよいよGitの操作を見ていこう。Gitは「git コマンド オプション 対象」といった形で操作する。Gitには大量のコマンドがあり、さらにそれぞれに多くのオプションがある。それらを全て覚えるのは現実的ではない。まずはよく使うコマンドとオプションだけ覚えよう。また、Gitはヘルプが充実している。「あのコマンドなんだっけ？」と思ったら、`git help`を実行しよう。また、コマンドの詳細を知りたければ`git help command`で詳細なヘルプが表示されるので、合わせて覚えておくこと。
+
+使い方がわからないコマンドがあった時に、ウェブで検索するのも良いが、まずは公式ドキュメントやヘルプを参照する癖をつけておきたい。公式ドキュメントを読めるか読めないか(読むか読まないか)で学習効率が大きく異なる。「困ったらまずは公式にあたる」習慣をつけておこう。
+
+## 初期設定
+
+まず、最初にやるべきことは、Gitに名前とメールアドレスを教えてやることだ。この二つを設定しておかないと、Gitのコミットができない。未設定のままコミットをしようとすると、こんなメッセージが表示される。
+
+```txt
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+```
+
+このメッセージに表示されている通り、`git config --global`命令を使って、メールアドレスと名前を登録する。
+
+```sh
+$ git config --global user.name "H. Watanabe"
+$ git config --global user.email kaityo256@example.com
+```
+
+また、念のためにデフォルトエディタを`vim`にしておこう。
+
+```sh
+$ git config --global core.editor vim
+```
+
+以上で設定は完了だ。ここで、`--global`オプションは、そのコンピュータ全体で有効な情報を登録するよ、という意味だ。具体的に、今回登録した内容はホームディレクトリの`.gitconfig`の中に表示されている。見てみよう。
+
+```sh
+$ cat .gitconfig
+[user]
+        name = H. Watanabe
+        email = kaityo256@example.com
+[core]
+        editor = vim
+```
+
+`git config`で `user.name`で指定した項目が、`user`セクションの`name`の値として登録されている。基本的にはGitの設定は`git config`でコマンドラインから指定するが、直接このファイルを編集して設定することも可能だ。
+
+また、プロジェクト固有の設定を登録したい場合は、そのプロジェクトの中で
+
+```sh
+$ git config user.name "John Git"
+```
+
+などと、`--global`をつけずに設定すると、そちらの設定が優先される。複数のプロジェクトで名前やメールアドレスを使い分けたいことがあるかもしれないので、覚えておくと良い。
+
+なお、現在の設定は`git config -l`で表示できるが、そのオプション`-l`を忘れたとしよう。しかし、ヘルプオプション`-h`さえ覚えておけば、
+
+```sh
+$ git config -h
+```
+
+を実行して表示されるヘルプの中の、`Action`セクションに
+
+```txt
+    -l, --list            list all
+```
+
+があるので、`-l`もしくは`--list`を指定すれば良いことがわかる。このコマンドに限らず、コマンドの使い方を忘れたら
+
 * init, add, commit
 * switch, checkout, merge, branch
 * status
