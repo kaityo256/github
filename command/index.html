@@ -163,8 +163,8 @@ $ <span class="fu">ls</span>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mv</span> dir1 dir2  # dir2が存在しない場合、dir1をdir2にリネームする
 <span class="fu">mv</span> dir1 dir2/dir3 <span class="co"># dir2は存在するがdir2/dir3は存在しない場合、dir1をdir2の下に移動した上でdir3にリネームする</span></code></pre></div>
 <p>以上、まとめると<code>mv</code>は移動先が存在するディレクトリであればそこに移動、移動先が存在しないファイルやディレクトリであれば、移動元のファイルやディレクトリを移動した上でリネームする。</p>
-<h3 id="cp"><code>cp</code></h3>
-<p><code>mv</code>ではファイルを移動したが、元のファイルを残したまま複製したい場合は<code>cp</code>を使う<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>。移動元のファイルが消えない以外はほとんど<code>mv</code>と同じだ。</p>
+<h4 id="cp"><code>cp</code></h4>
+<p><code>mv</code>ではファイルを移動したが、元のファイルを残したまま複製したい場合は<code>cp</code>を使う。移動元のファイルが消えない以外はほとんど<code>mv</code>と同じだ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cp</span> test1.txt test2.txt <span class="co"># test1.txtをtest2.txtという名前で複製する</span>
 <span class="fu">cp</span> test1.txt dir      # test1.txtをdir1/test1.txtという名前で複製する
 <span class="fu">cp</span> test1.txt test2.txt dir <span class="co"># 複数のファイルを一度にdirにコピーする</span></code></pre></div>
@@ -172,8 +172,12 @@ $ <span class="fu">ls</span>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">cp</span> dir1 dir2  # コピー元がディレクトリである場合はエラーとなる
 <span class="ex">cp</span>: -r not specified<span class="kw">;</span> <span class="ex">omitting</span> directory <span class="st">&#39;dir1&#39;</span>
 $ <span class="fu">cp</span> -r dir1 dir2 <span class="co"># dir2が無い場合はその場所にコピー、ある場合はdir2の下にコピー</span></code></pre></div>
-<h3 id="rmrmdir"><code>rm</code>,<code>rmdir</code></h3>
+<h4 id="rmrmdir"><code>rm</code>,<code>rmdir</code></h4>
 <p>ファイルを削除するには<code>rm</code>を使う。なお、中身が空ではないいディレクトリを削除する場合は<code>rm -r dir</code>と<code>-r</code>オプションを付ける必要があるが、再帰的に全てのファイル、サブディレクトリが削除されてしまうので、慣れないうちは実行しない方がよい。また、空のディレクトリを削除するために<code>rmdir</code>というコマンドがあるが、普段使うことは少ないので「<code>mkdir</code>の対になるコマンドが<code>rmdir</code>」とだけ覚えておけばよいだろう。</p>
+<h4 id="cat"><code>cat</code></h4>
+<p>ファイルの中身を表示するには<code>cat</code>を使う。これは<code>concatenate</code>(連結する)の略で、複数のファイルを指定することで結合ができるが、ここではファイル内容の表示にしか使わない。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> filename</code></pre></div>
+<p>で<code>filename</code>で指定されたファイルの中身をターミナルに表示する。</p>
 <h2 id="vim">Vim</h2>
 <p>Gitを使っていると、コミットやマージのメッセージ入力や、<code>rebase</code>の処理などで、コマンドライン上でエディタを使う必要が出てくる場合がある。多くの環境でGitのデフォルトエディタはVimだ。Vimは非常に強力なエディタであり、愛好者も多い(筆者もその一人である)のだが、普段使うエディタと使い勝手が異なるので戸惑うことも多いだろう。</p>
 <p>ここでは、Vimの最低限の使い方だけ説明をする。</p>
@@ -241,7 +245,6 @@ $ <span class="fu">cp</span> -r dir1 dir2 <span class="co"># dir2が無い場合
 <li id="fn4"><p><code>change directory</code>の略だと思われる。<a href="#fnref4">↩</a></p></li>
 <li id="fn5"><p><code>make directory</code>の略であろう。<a href="#fnref5">↩</a></p></li>
 <li id="fn6"><p><code>move</code>の略であろう。<a href="#fnref6">↩</a></p></li>
-<li id="fn7"><p><code>copy</code>の略であろう。<a href="#fnref7">↩</a></p></li>
 </ol>
 </div>
           </article>
