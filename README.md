@@ -80,12 +80,15 @@
 
 ## 演習
 
-### [Gitの操作](practice_basic/README.md)
+### [Gitの操作(基本編)](practice_basic/README.md)
 
 * 初期設定
 * リポジトリの作成(`git init`)
 * インデックスへの追加(`git add`)
 * ファイルの修正
+* 自動ステージング(`git add -a`)
+* 歴史の確認(`git log`)
+* VSCodeからの操作
 
 ## 何を説明するかメモ
 
