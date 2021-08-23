@@ -24,10 +24,11 @@ git config --global user.email "メールアドレス"
 
 以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると`git config --global user.name `まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。
 
-また、念のためにデフォルトエディタをVimにしておこう。
+また、デフォルトエディタをVimにして、さらに改行コードの扱いについても設定しておこう。
 
 ```sh
 git config --global core.editor vim
+git config --global core.autocrlf true
 ```
 
 次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。
@@ -50,6 +51,7 @@ cat .gitconfig
         email = 先ほど設定したメールアドレス
 [core]
         editor = vim
+        autocrlf = true
 [alias]
         st = status -s
 ```
@@ -71,6 +73,18 @@ cd test
 
 最初に`cd`を入力しているのは、ホームディレクトリに戻るためだ。これで`git`ディレクトリの下の`test`ディレクトリがカレントディレクトリとなった。
 
+なお、以下の操作でどうにもならなくなったら、`test`ディレクトリを全て消して最初からやりなおすこと。ターミナルからやり直すには
+
+```sh
+cd
+cd git
+rm -rf test
+mkdir test
+cd test
+```
+
+とすれば良い。
+
 この`test`ディレクトリの中に`README.md`というファイルを作成しよう。このディレクトリでVSCodeを起動する。
 
 ```sh
@@ -87,9 +101,10 @@ VSCodeが開いたら、左のエクスローラーの「TEST」の右にある�
 
 ```md
 # Test
+
 ```
 
-とだけ入力し、保存しよう。これで、以下のようなディレクトリ構成になったはずだ。
+とだけ入力し、保存しよう。改行を入れるのを忘れないこと。これで、以下のようなディレクトリ構成になったはずだ。
 
 ```txt
 git
@@ -163,7 +178,7 @@ git st
 
 正しくエイリアスが設定されていれば、`git status -s`と入力したのと同じことになる。以後こちらを使うことにしよう。
 
-## インデックスへの追加
+## インデックスへの追加(`git add`)
 
 さて、`Untracked`な状態のファイルをGitの管理下に置こう。そのために`git add`を実行する。
 
@@ -210,3 +225,202 @@ nothing to commit, working tree clean
 自分がいまmasterブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。
 
 ## ファイルの修正
+
+次に、ファイルを修正してみよう。VSCodeで開いている`README.md`に、行を付け加えて保存しよう。
+
+```md
+# Test
+
+Hello Git!
+```
+
+「Hello Git!」の最後の改行を忘れないように。状態を見てみよう。
+
+```sh
+$ git st
+ M README.md
+```
+
+ファイル名の前に`M`という文字がついた。これは`Modified`の頭文字であり、かつ右側に表示されていることから「ワーキングツリーとインデックスに差があるよ」という意味だ。
+
+また、この状態で`git diff`を実行してみよう。
+
+```sh
+$ git diff
+diff --git a/README.md b/README.md
+index 8ae0569..6f768d9 100644
+--- a/README.md
++++ b/README.md
+@@ -1 +1,3 @@
+ # Test
++
++Hello Git!
+```
+
+行頭に`+`がついた箇所が追加された行である。
+
+この修正をリポジトリに登録するためにステージングしよう。
+
+```sh
+git add README.md
+```
+
+また状態を見てみよう。
+
+```sh
+$ git st
+M  README.md
+```
+
+先ほどは赤字で二桁目に`M`が表示されていたのが、今回は緑字で一桁目に`M`が表示されているはずである。これは、インデックスとワーキングツリーは一致しており(二桁目に表示がない)、インデックスとリポジトリに差がある(一桁目に`M`が表示される)ということを意味している。
+
+この状態でコミットしよう。
+
+```sh
+git commit -m "adds new line"
+```
+
+修正がリポジトリに登録され、ワーキングツリーがきれい(clean)な状態となった。
+
+## 自動ステージング(`git add -a`)
+
+Gitでは原則として
+
+* ファイルを修正する
+* `git add`でコミットするファイルをインデックスに登録する(ステージングする)
+* `git commit`でリポジトリに反映する
+
+という作業を繰り返す。実際、多人数で開発する場合はこうして「きれいな歴史」を作る方が良いのだが、一人で開発している場合は`git add`によるステージングを省略しても良い。
+
+`git add`を省略するには、コミットする時に`git commit -a`と、`-a`オプションをつける。すると、Git管理下にあり、かつ修正されたファイル全てを、ステージングを飛ばしてコミットする。その動作を確認しよう。
+
+まず、VSCodeでさらにファイルを修正しよう。README.mdに以下の行を付け加えよう。やはり最後の改行を忘れないように。
+
+```md
+# Test
+
+Hello Git!
+Bye Git!
+```
+
+この状態で、`git add`せずに`git commit`しようとすると、「何をコミットするか指定が無いよ(インデックスに何も無いよ)」と怒られる。
+
+```sh
+$ git commit -m "modifies README.md"
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+上記メッセージには、まず`git add`するか、`git commit -a`しろとあるので、ここでは後者を実行しよう。オプションは`-m`とまとめて`-am`とする。
+
+```sh
+git commit -am "modifies README.md"
+```
+
+以後、慣れるまでは場合は`git commit -am`を使うことでステージングを省略しても良い。
+
+## 歴史の確認
+
+これまでの歴史を確認して見よう。上記の通りに作業して来たなら、3つのコミットが作成されたはずだ。`git log`で歴史を振り返ってみよう。
+
+```sh
+$ git log
+commit be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -> master)
+Author: H. Watanabe <kaityo256@example.com>
+Date:   Mon Aug 23 23:32:48 2021 +0900
+
+    modifies README.md
+
+commit dd14099193d5ca080e37674ae474f558457d0cb7
+Author: H. Watanabe <kaityo256@example.com>
+Date:   Mon Aug 23 23:31:01 2021 +0900
+
+    adds new line
+
+commit 02b8501966eb17df1e2d79c7a33e61feadd678cf
+Author: H. Watanabe <kaityo256@example.com>
+Date:   Mon Aug 23 23:29:45 2021 +0900
+
+    initial commit
+```
+
+いつ、誰が、どのコミットを作ったかが表示される。それぞれのコミットハッシュは異なるものになっているはずだ。
+
+デフォルトの表示では見づらいので、一つのコミットを一行で表示しても良い。
+
+```sh
+$ git log --oneline
+be7533f (HEAD -> master) modifies README.md
+dd14099 adds new line
+02b8501 initial commit
+```
+
+個人的にはこちらの方が見やすいので、`l`を`log --oneline`のエイリアスにしてしまっても良いと思う。もしそうしたい場合は、
+
+```sh
+git config --global alias.l "log --oneline"
+```
+
+を実行せよ。以後、
+
+```sh
+git l
+```
+
+で、コンパクトなログを見ることができる。
+
+## VSCodeからの操作
+
+Gitは、VSCodeからも操作することができる。今、`README.md`を開いているVSCodeで何か修正して、保存してみよう。例えば以下のように行を追加する。
+
+```md
+# Test
+
+Hello git
+Bye git
+Git from VSCode
+
+```
+
+修正を保存した状態で左を見ると、「ソース管理」アイコンに「1」という数字が表示されているはずだ。これは「Gitで管理されているファイルのうち、一つのファイルが修正されているよ」という意味だ。
+
+![vscode_giticon](fig/vscode_giticon.png)
+
+この「ソース管理アイコン」をクリックしよう。
+
+![vscode_add](fig/vscode_add.png)
+
+すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。
+
+これは
+
+```sh
+git add README.md
+```
+
+この状態で「メッセージ」のところにコミットメッセージを書いて、上の「チェックマーク」をクリックすると、コミットできる。例えばメッセージとして「commit from VSCode」と書いてコミットしてみよう。
+
+![vscode_add](fig/vscode_commit.png)
+
+これでコミットができた。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。
+
+```sh
+$ git log --oneline
+0c18b48 (HEAD -> master) commit from VSCode
+be7533f modifies README.md
+dd14099 adds new line
+02b8501 initial commit
+```
+
+VSCodeから作ったコミットが反映されていることがわかる。
+
+基本的にVSCodeからGitの全ての操作を行うことができるが、当面の間はコマンドラインから実行した方が良い。慣れてきたらVSCodeその他のGUIツールを使うと良いだろう。
+
+## レポート課題
+
+上記全ての操作を行い、最後に`git log`を実行した結果を報告せよ。なお、一画面に入りきらない場合は、Git Bashのウィンドウを縦に長くしてから再度`git log`を実行すると良い。
