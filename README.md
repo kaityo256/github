@@ -9,13 +9,15 @@
 
 ## [はじめに](preface/README.md)
 
-## [バージョン管理とは](vcs/README.md)
+## 座学
+
+### [バージョン管理とは](vcs/README.md)
 
 * バージョン管理システムとは
 * バージョン管理システムの歴史
 * プログラミングができる人、できない人
 
-## [Gitの仕組みと用語](term/README.md)
+### [Gitの仕組みと用語](term/README.md)
 
 * プロジェクト
 * リポジトリとワーキングツリー
@@ -24,14 +26,14 @@
 * HEADとブランチ
 * マージ
 
-## [コマンドラインの使い方](command/README.md)
+### [コマンドラインの使い方](command/README.md)
 
 * シェルとコマンドライン
 * Unixコマンド
 * Vimの使い方
 * 余談：OSの系譜とドラマ
 
-## [Gitの基本的な使い方](basics/README.md)
+### [Gitの基本的な使い方](basics/README.md)
 
 * 初期設定(`config`)
 * 初期化とコミット(`init, add, commit`)
@@ -41,7 +43,7 @@
 * その他(`.gitignore`)
 * 余談：データベース"ふっとばし"スペシャリスト
 
-## Gitの使い方(リモート)
+### Gitの使い方(リモート)
 
 * ベアリポジトリ
 * clone, remote, push, fetch, pull
@@ -53,7 +55,7 @@
     * `git pull`
     * `git pull --rebase`
 
-## [Gitの使い方(応用編)](advanced/README.md)
+### [Gitの使い方(応用編)](advanced/README.md)
 
 * rebase
 * reset
@@ -64,7 +66,7 @@
 * cherry-pick
 * tag
 
-## [Gitの仕組み](internals/README.md)
+### [Gitの仕組み](internals/README.md)
 
 * ファイルシステムの仕組み
 * SHA-1 (コミットID)
@@ -75,6 +77,10 @@
     * tag
 * Gitの参照(refs)
 * 操作の裏側で起きていること
+
+## 演習
+
+### [Gitの操作](practice_basic/README.md)
 
 ## 何を説明するかメモ
 
