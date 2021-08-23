@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="gitの操作">Gitの操作</h1>
+<h2 id="目標">目標</h2>
+<ul>
+<li>Gitの初期設定を行う</li>
+<li>コマンドラインでのGitの操作を一通り確認する</li>
+<li>VSCodeの設定と操作を覚える</li>
+</ul>
+<h2 id="初期設定">初期設定</h2>
+<p>Git Bash (以下、ターミナルと呼ぶ)を開き、以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global user.name <span class="st">&quot;ユーザー名&quot;</span>
+<span class="fu">git</span> config --global user.email <span class="st">&quot;メールアドレス&quot;</span></code></pre></div>
+<p>この名前とメールアドレスは後に公開されるため、イニシャルやニックネームなどでも良い。また、ここで「タブ補完」が効くことも確認しておこう。</p>
+<ul>
+<li><code>git con</code>まで入力してタブを押すと<code>git config</code>まで入力される</li>
+<li><code>--gl</code>まで入力してタブを押すと<code>--global</code>まで入力される</li>
+<li><code>us</code>まで入力してタブを押すと<code>user.</code>まで入力される</li>
+<li><code>n</code>まで入力してタブを押すと、<code>name</code>まで入力される</li>
+</ul>
+<p>以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
+<p>また、念のためにデフォルトエディタをVimにしておこう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global core.editor vim</code></pre></div>
+<p>次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></code></pre></div>
+<p>以上を実行後、ターミナルで<code>.gitconfig</code>を表示し、先ほど設定した内容が書き込まれていることを確認せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> .gitconfig</code></pre></div>
+<p>以下のような表示になっていれば成功である。</p>
+<pre class="txt"><code>[user]
+        name = 先ほど設定したユーザー名
+        email = 先ほど設定したメールアドレス
+[core]
+        editor = vim
+[alias]
+        st = status -s</code></pre>
+<h2 id="リポジトリの作成git-init">リポジトリの作成(<code>git init</code>)</h2>
+<p>それではいよいよGitの操作を一通り確認する。</p>
+<p>まずは適当なテスト用のディレクトリを作成し、その中で作業しよう。この講義用に<code>git</code>というディレクトリを作成し、さらにその中に<code>test</code>というディレクトリを作ろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="fu">mkdir</span> git
+<span class="bu">cd</span> git
+<span class="fu">mkdir</span> test
+<span class="bu">cd</span> test</code></pre></div>
+<p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。</p>
+<p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。このディレクトリでVSCodeを起動する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">code</span> .</code></pre></div>
+<p><code>code</code>の後、空白を一つあけてピリオドを入力するのを忘れないこと。</p>
+<p>VSCodeが開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
+<div class="figure">
+<img src="fig/vscode_newfile.png" alt="fig" />
+<p class="caption">fig</p>
+</div>
+<p><code>README.md</code>ファイルが開かれたら、</p>
+<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span></code></pre></div>
+<p>とだけ入力し、保存しよう。これで、以下のようなディレクトリ構成になったはずだ。</p>
+<pre class="txt"><code>git
+└── test
+    └── README.md</code></pre>
+<p>この状態でターミナルに戻り、リポジトリとして初期化しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init</code></pre></div>
+<p>すると、<code>.git</code>というディレクトリが作成され、<code>test</code>ディレクトリがリポジトリとして初期化される。以下を実行せよ。</p>
+<pre><code>ls -la</code></pre>
+<p><code>README.md</code>に加え、<code>.git</code>というディレクトリが作成されたことがわかるはずだ。</p>
+<p><code>git init</code>した直後は、「現在のディレクトリ<code>test</code>をGitで管理することは決まったが、まだGitはどのファイルも管理していない」、すなわち歴史が全く無い状態になる。</p>
+<p>この状態を確認してみよう。以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status</code></pre></div>
+<p>以下のような表示が得られるはずだ。</p>
+<pre class="txt"><code>On branch master
+
+No commits yet
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        README.md
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<p>ここには、</p>
+<ul>
+<li>まだ何もコミットがなく(No commits yet)</li>
+<li><code>README.md</code>という管理されていないファイルがあるので(Untracked files)</li>
+<li>もし管理したければ<code>git add</code>してね(use &quot;git add&quot; to track)</li>
+</ul>
+<p>と書いてある。</p>
+<p>状態を見るのにいちいちこんな長いメッセージを見せられても困るので、<code>-s</code>オプションをつけて見よう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status -s</code></pre></div>
+<p>こんな表示がされたはずだ。</p>
+<pre class="txt"><code>?? README.md</code></pre>
+<p><code>??</code>と、<code>?</code>が二つ表示された。<code>git status -s</code>は、ファイルの状態を二つの文字であらわす。それぞれ右がワーキングツリー、左がインデックスの状態を表している。今回のケースはどちらも<code>?</code>なので、ワーキングツリーにもインデックスにも無い、すなわちGitの管理下に無い(Untracked)という意味だ。</p>
+<p>さて、いちいち<code>git status -s</code>と入力するのは面倒なので、最初に<code>git status -s</code>に<code>git st</code>という別名をつけておいた。以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
+<p>正しくエイリアスが設定されていれば、<code>git status -s</code>と入力したのと同じことになる。以後こちらを使うことにしよう。</p>
+<h2 id="インデックスへの追加">インデックスへの追加</h2>
+<p>さて、<code>Untracked</code>な状態のファイルをGitの管理下に置こう。そのために<code>git add</code>を実行する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md</code></pre></div>
+<p>現在の状態を見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
+<p>こんな表示になるはずだ。</p>
+<pre class="txt"><code>A  README.md</code></pre>
+<p>これは「<code>README.md</code>が追加されることが予約されたよ」という意味で、インデックスに<code>README.md</code>が追加された状態になっている。</p>
+<p>は、記念すべき最初のコミットをしよう。Gitはコミットをする時に、コミットメッセージが必要となる。最初のメッセージは慣例により<code>initial commit</code>とすることが多い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></code></pre></div>
+<p>これによりコミットが作成され、<code>README.md</code>はGitの管理下に入った。</p>
+<p>状態を見てみよう。</p>
+<pre><code>git st</code></pre>
+<p>何も表示されないはずである。ロングバージョンのステータスも見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
+<span class="ex">On</span> branch master
+<span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
+<p>自分がいまmasterブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。</p>
+<h2 id="ファイルの修正">ファイルの修正</h2>
+          </article>
+  </body>
+
+  </html>
