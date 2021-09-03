@@ -74,6 +74,7 @@ $ git help config
 ## 初期化とコミット(`init, add, commit`)
 
 覚えるコマンド:
+
 * init, add, commit
 
 * 説明メモ
@@ -85,18 +86,11 @@ $ git help config
 ## 状態表示(`status, diff`)
 
 覚えるコマンド:
+
 * status
 * diff
 
 インデックスとの差が表示されていることを見る
-
-## ブランチ操作(`switch, checkout, merge, branch`)
-
-覚えるコマンド
-* switch
-* checkout
-* merge
-* branch
 
 ## VSCodeの設定と操作
 
