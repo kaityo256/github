@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="ブランチ操作">ブランチ操作</h1>
+<h2 id="はじめに">はじめに</h2>
+<p>Gitは「玉(コミット)」と「線(コミット間の関係)」で構成された「歴史」を管理するツールだ。コミットは、その時点でのプロジェクトのスナップショットであり、いつでも任意のスナップショットを呼び出したり、差分を調べたりすることができる。</p>
+<p>さて、この「歴史」を操作する手段として用意されているのがブランチである。ブランチは単に特定のコミットを指すラベルのようなものであることは既に説明した。Gitでは、このブランチを使って積極的に歴史を分岐、改変させることで開発を進める。</p>
+<p>以下では、なぜブランチが必要か、ブランチを使ってどのように開発を進めるのか、「歴史を分岐、改変する」とはどういうことかについて説明する。</p>
+<h2 id="コミットと差分">コミットと差分</h2>
+<div class="figure">
+<img src="fig/commit.png" alt="commit.png" />
+<p class="caption">commit.png</p>
+</div>
+<p>Gitのコミットは、自分の親コミットを覚えており、それをたどることで歴史をたどることができる。いま、コミット1からコミット2が作られたとする。コミット2にとってコミット1は親コミットになる。この時、それぞれのコミットはその時点でのスナップショットを表しているが、玉と玉をつなぐ線は差分(パッチ)を表している。玉と線からなる歴史は、一つ前の玉が表すコミットに、線が表すパッチを適用することで、次のコミットが得られる、と解釈することができる。この、<strong>コミットの間の線は差分(パッチ)を表す</strong> という事実は今後の説明に重要な役割を果たす。</p>
+<h2 id="なぜブランチをわけるか">なぜブランチをわけるか</h2>
+<p>Gitでは、原則としてデフォルトブランチ(<code>master</code>や<code>main</code>)では作業せず、作業開始時にブランチを作成し、歴史を分岐させてから開発を進め、</p>
+<h2 id="ブランチ操作switch-checkout-merge-branch">ブランチ操作(<code>switch, checkout, merge, branch</code>)</h2>
+<p>覚えるコマンド</p>
+<ul>
+<li>switch</li>
+<li>checkout</li>
+<li>merge</li>
+<li>branch</li>
+</ul>
+          </article>
+  </body>
+
+  </html>

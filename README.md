@@ -90,6 +90,22 @@
 * 歴史の確認(`git log`)
 * VSCodeからの操作
 
+### Gitの操作(ブランチ操作編)
+
+* merge
+    * conflict対応
+* rebase
+    * rebase時のconflict対応
+    * `rebase -i`によるコミットの整理
+
+### [GitHubの操作](practice_github/README.md)
+
+* アカウント作成
+* リポジトリの作成
+* issueのオープンとクローズ
+* Projectの使い方(Automated Kanban)
+* forkとclone、GitHub Pagesの公開
+
 ## 何を説明するかメモ
 
 * 座学
