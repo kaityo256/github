@@ -45,12 +45,12 @@
 
   <body>
     <article class="markdown-body">
-                        <h1 id="gitの操作">Gitの操作</h1>
+                        <h1 id="gitの操作基本編">Gitの操作(基本編)</h1>
 <h2 id="目標">目標</h2>
 <ul>
 <li>Gitの初期設定を行う</li>
 <li>コマンドラインでのGitの操作を一通り確認する</li>
-<li>VSCodeの設定と操作を覚える</li>
+<li>VSCodeからのGitを操作できることを確認する</li>
 </ul>
 <h2 id="初期設定">初期設定</h2>
 <p>Git Bash (以下、ターミナルと呼ぶ)を開き、以下を実行せよ。</p>
@@ -113,7 +113,7 @@
 <p>この状態でターミナルに戻り、リポジトリとして初期化しよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init</code></pre></div>
 <p>すると、<code>.git</code>というディレクトリが作成され、<code>test</code>ディレクトリがリポジトリとして初期化される。以下を実行せよ。</p>
-<pre><code>ls -la</code></pre>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">ls</span> -la</code></pre></div>
 <p><code>README.md</code>に加え、<code>.git</code>というディレクトリが作成されたことがわかるはずだ。</p>
 <p><code>git init</code>した直後は、「現在のディレクトリ<code>test</code>をGitで管理することは決まったが、まだGitはどのファイルも管理していない」、すなわち歴史が全く無い状態になる。</p>
 <p>この状態を確認してみよう。以下を実行せよ。</p>
@@ -155,7 +155,7 @@ nothing added to commit but untracked files present (use &quot;git add&quot; to 
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></code></pre></div>
 <p>これによりコミットが作成され、<code>README.md</code>はGitの管理下に入った。</p>
 <p>状態を見てみよう。</p>
-<pre><code>git st</code></pre>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
 <p>何も表示されないはずである。ロングバージョンのステータスも見てみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
 <span class="ex">On</span> branch master
@@ -216,7 +216,7 @@ Bye Git!</code></pre></div>
 <p>上記メッセージには、まず<code>git add</code>するか、<code>git commit -a</code>しろとあるので、ここでは後者を実行しよう。オプションは<code>-m</code>とまとめて<code>-am</code>とする。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -am <span class="st">&quot;modifies README.md&quot;</span></code></pre></div>
 <p>以後、慣れるまでは場合は<code>git commit -am</code>を使うことでステージングを省略しても良い。</p>
-<h2 id="歴史の確認">歴史の確認</h2>
+<h2 id="歴史の確認git-log">歴史の確認(<code>git log</code>)</h2>
 <p>これまでの歴史を確認して見よう。上記の通りに作業して来たなら、3つのコミットが作成されたはずだ。<code>git log</code>で歴史を振り返ってみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log
 <span class="ex">commit</span> be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -<span class="op">&gt;</span> master)

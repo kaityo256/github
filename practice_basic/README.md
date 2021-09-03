@@ -17,12 +17,12 @@ git config --global user.email "メールアドレス"
 
 この名前とメールアドレスは後に公開されるため、イニシャルやニックネームなどでも良い。また、ここで「タブ補完」が効くことも確認しておこう。
 
-* `git con`まで入力してタブを押すと`git config `まで入力される
+* `git con`まで入力してタブを押すと`git config`まで入力される
 * `--gl`まで入力してタブを押すと`--global`まで入力される
 * `us`まで入力してタブを押すと`user.`まで入力される
 * `n`まで入力してタブを押すと、`name`まで入力される
 
-以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると`git config --global user.name `まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。
+以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると`git config --global user.name`まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。
 
 また、デフォルトエディタをVimにして、さらに改行コードの扱いについても設定しておこう。
 
@@ -55,7 +55,6 @@ cat .gitconfig
 [alias]
         st = status -s
 ```
-
 
 ## リポジトリの作成(`git init`)
 
@@ -120,7 +119,7 @@ git init
 
 すると、`.git`というディレクトリが作成され、`test`ディレクトリがリポジトリとして初期化される。以下を実行せよ。
 
-```
+```sh
 ls -la
 ```
 
@@ -210,7 +209,7 @@ git commit -m "initial commit"
 
 状態を見てみよう。
 
-```
+```sh
 git st
 ```
 
