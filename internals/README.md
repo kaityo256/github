@@ -30,10 +30,10 @@ FETCH_HEAD      ORIG_HEAD  config     hooks/       info/  objects/  refs/
 
 * SHA-1 (コミットID)
 * Gitオブジェクト(objects)
-  * blob
-  * tree
-  * commit
-  * tag
+    * blob
+    * tree
+    * commit
+    * tag
 * Gitの参照(refs)
 * 操作の裏側で起きていること
 

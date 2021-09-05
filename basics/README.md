@@ -25,14 +25,14 @@ Omit --global to set the identity only in this repository.
 Gitはエラーが親切で、何か問題が起きた時に「こうすればいいよ」と教えてくれることが多い。今回も、このメッセージに表示されている通り、`git config --global`命令を使って、メールアドレスと名前を登録しよう。
 
 ```sh
-$ git config --global user.name "H. Watanabe"
-$ git config --global user.email kaityo256@example.com
+git config --global user.name "H. Watanabe"
+git config --global user.email kaityo256@example.com
 ```
 
 また、念のためにデフォルトエディタを`vim`にしておこう。
 
 ```sh
-$ git config --global core.editor vim
+git config --global core.editor vim
 ```
 
 以上で設定は完了だ。ここで、`--global`オプションは、そのコンピュータ全体で有効な情報を登録するよ、という意味だ。具体的に、今回登録した内容はホームディレクトリの`.gitconfig`の中に表示されている。見てみよう。
@@ -51,7 +51,7 @@ $ cat .gitconfig
 また、プロジェクト固有の設定を登録したい場合は、そのプロジェクトの中で
 
 ```sh
-$ git config user.name "John Git"
+git config user.name "John Git"
 ```
 
 などと、`--global`をつけずに設定すると、そちらの設定が優先される。複数のプロジェクトで名前やメールアドレスを使い分けたいことがあるかもしれないので、覚えておくと良い。
@@ -59,7 +59,7 @@ $ git config user.name "John Git"
 なお、現在の設定は`git config -l`で表示できるが、そのオプション`-l`を忘れたとしよう。その場合は
 
 ```sh
-$ git help config
+git help config
 ```
 
 を実行し、ヘルプを見よう。
