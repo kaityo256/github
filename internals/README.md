@@ -28,9 +28,6 @@ FETCH_HEAD      ORIG_HEAD  config     hooks/       info/  objects/  refs/
 * `refs` - ブランチの情報を保存するディレクトリ
 * `objects` - コミットなどのオブジェクトを保存するディレクトリ
 
-
-
-
 * SHA-1 (コミットID)
 * Gitオブジェクト(objects)
   * blob
