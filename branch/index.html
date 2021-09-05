@@ -50,14 +50,32 @@
 <p>Gitは「玉(コミット)」と「線(コミット間の関係)」で構成された「歴史」を管理するツールだ。コミットは、その時点でのプロジェクトのスナップショットであり、いつでも任意のスナップショットを呼び出したり、差分を調べたりすることができる。</p>
 <p>さて、この「歴史」を操作する手段として用意されているのがブランチである。ブランチは単に特定のコミットを指すラベルのようなものであることは既に説明した。Gitでは、このブランチを使って積極的に歴史を分岐、改変させることで開発を進める。</p>
 <p>以下では、なぜブランチが必要か、ブランチを使ってどのように開発を進めるのか、「歴史を分岐、改変する」とはどういうことかについて説明する。</p>
+<h2 id="なぜブランチをわけるか">なぜブランチをわけるか</h2>
+<p>Gitでは原則としてデフォルトブランチ(<code>master</code>や<code>main</code>)では作業せず、作業開始時にブランチを作成し、歴史を分岐させてから開発を進め、やろうと思った作業がまとまったところでデフォルトブランチにマージする、という開発体制をとる。</p>
 <h2 id="コミットと差分">コミットと差分</h2>
 <div class="figure">
 <img src="fig/commit.png" alt="commit.png" />
 <p class="caption">commit.png</p>
 </div>
 <p>Gitのコミットは、自分の親コミットを覚えており、それをたどることで歴史をたどることができる。いま、コミット1からコミット2が作られたとする。コミット2にとってコミット1は親コミットになる。この時、それぞれのコミットはその時点でのスナップショットを表しているが、玉と玉をつなぐ線は差分(パッチ)を表している。玉と線からなる歴史は、一つ前の玉が表すコミットに、線が表すパッチを適用することで、次のコミットが得られる、と解釈することができる。この、<strong>コミットの間の線は差分(パッチ)を表す</strong> という事実は今後の説明に重要な役割を果たす。</p>
-<h2 id="なぜブランチをわけるか">なぜブランチをわけるか</h2>
-<p>Gitでは、原則としてデフォルトブランチ(<code>master</code>や<code>main</code>)では作業せず、作業開始時にブランチを作成し、歴史を分岐させてから開発を進め、</p>
+<h2 id="ブランチの作成と切り替え">ブランチの作成と切り替え</h2>
+<p>まず、ブランチとコミットについておさらいしておこう。Gitが管理する歴史はコミットがつながったものであり、そのコミットにつけた「ラベル」がブランチだ。特に「いま自分が見ている」場所を指すブランチをカレントブランチと呼ぶ。どのブランチがカレントブランチかを示すのが「HEAD」である。また、コミットとは、新たにコミットを作り、今見ていたコミットにつなげる操作だが、「今見ていたコミット」とは、「HEADが指しているブランチが指しているコミット」のことだ。</p>
+<p>コミットをすると、新たにコミットが作られて歴史が伸びる。そして、HEADが指しているブランチ(カレントブランチ)が、新たに作られたコミットを指す。こうして、コミットをする度に、カレントブランチがその先頭に移動していく。</p>
+<p>さて、ブランチを作ろう。ブランチはコミットにつけるラベルであるから、任意のコミットを指定して作ることができる。ブランチは<code>git branch</code>で作ることができる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch ブランチ名 ブランチをつけたいコミット</code></pre></div>
+<p>ブランチをつけたいコミットは、コミットハッシュの他、別のブランチでも指定できる。</p>
+<p>しかし、一番よく使われるのは、カレントブランチに別名を与えることだ。その場合は、<code>git branch</code>に与える第二引数は不要で、ブランチ名だけで良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch newbranch</code></pre></div>
+<p>これにより、<code>newbranch</code>というブランチが作られ、カレントブランチが指しているコミットを指す。</p>
+<p>この状態では、同じコミットに二つのブランチがついただけだ。この状態で、「今見ているブランチ」を<code>newbranch</code>に切り替えよう。ブランチの切り替えは<code>git switch</code>を使う。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch newbranch</code></pre></div>
+<p>これで、HEADが<code>master</code>から<code>newbranch</code>を指すようになった。この状態で何か修正してコミットをすると、HEADと<code>newbranch</code>は新しいコミットに移動するが、<code>master</code>は取り残される。つまり、新しいブランチを作成して切り替える作業は、作業前の状態がどのコミットであったかを保存しておく、という意味を持つ。</p>
+<p>なお、<code>git switch</code>に<code>-c</code>オプションをつけると、ブランチの作成と切り替えを同時に行ってくれる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c newbranch</code></pre></div>
+<p>これは以下のコマンドと等価だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch newbranch
+<span class="fu">git</span> switch newbranch</code></pre></div>
+<p>通常の作業では<code>git switch -c</code>を使うことが多いだろう。</p>
 <h2 id="ブランチ操作switch-checkout-merge-branch">ブランチ操作(<code>switch, checkout, merge, branch</code>)</h2>
 <p>覚えるコマンド</p>
 <ul>

@@ -61,10 +61,10 @@ Run
 to set your account&#39;s default identity.
 Omit --global to set the identity only in this repository.</code></pre>
 <p>Gitはエラーが親切で、何か問題が起きた時に「こうすればいいよ」と教えてくれることが多い。今回も、このメッセージに表示されている通り、<code>git config --global</code>命令を使って、メールアドレスと名前を登録しよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config --global user.name <span class="st">&quot;H. Watanabe&quot;</span>
-$ <span class="fu">git</span> config --global user.email kaityo256@example.com</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global user.name <span class="st">&quot;H. Watanabe&quot;</span>
+<span class="fu">git</span> config --global user.email kaityo256@example.com</code></pre></div>
 <p>また、念のためにデフォルトエディタを<code>vim</code>にしておこう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config --global core.editor vim</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global core.editor vim</code></pre></div>
 <p>以上で設定は完了だ。ここで、<code>--global</code>オプションは、そのコンピュータ全体で有効な情報を登録するよ、という意味だ。具体的に、今回登録した内容はホームディレクトリの<code>.gitconfig</code>の中に表示されている。見てみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">cat</span> .gitconfig
 [<span class="ex">user</span>]
@@ -74,10 +74,10 @@ $ <span class="fu">git</span> config --global user.email kaityo256@example.com</
         <span class="ex">editor</span> = vim</code></pre></div>
 <p><code>git config</code>で <code>user.name</code>で指定した項目が、<code>user</code>セクションの<code>name</code>の値として登録されている。基本的にはGitの設定は<code>git config</code>でコマンドラインから指定するが、直接このファイルを編集して設定することも可能だ。</p>
 <p>また、プロジェクト固有の設定を登録したい場合は、そのプロジェクトの中で</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> config user.name <span class="st">&quot;John Git&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config user.name <span class="st">&quot;John Git&quot;</span></code></pre></div>
 <p>などと、<code>--global</code>をつけずに設定すると、そちらの設定が優先される。複数のプロジェクトで名前やメールアドレスを使い分けたいことがあるかもしれないので、覚えておくと良い。</p>
 <p>なお、現在の設定は<code>git config -l</code>で表示できるが、そのオプション<code>-l</code>を忘れたとしよう。その場合は</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> help config</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> help config</code></pre></div>
 <p>を実行し、ヘルプを見よう。</p>
 <pre class="txt"><code>       -l, --list
            List all variables set in config file, along with their values.</code></pre>
