@@ -119,13 +119,85 @@
 <li>「git switch ブランチ名」で、カレントブランチを変更できる(HEADを付け替えることができる)</li>
 <li>「git switch -c ブランチ名」で、ブランチの作成とカレントブランチの変更を同時に行うことができる。</li>
 </ul>
-<h2 id="マージとコンフリクト">マージとコンフリクト</h2>
-<p>Gitでの開発は原則として機能単位でブランチを作成し、その機能の実装が終わったら<code>master</code>ブランチにマージする。そのためのコマンドが<code>git merge</code>だ。</p>
+<h2 id="マージ">マージ</h2>
+<p>Gitでの開発は原則として機能単位でブランチを作成し、その機能の実装が終わったらそれを<code>master</code>ブランチに取り込む。そのためのコマンドが<code>git merge</code>だ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge ブランチ名</code></pre></div>
-<p>この時、「カレントブランチ」に、「ブランチ名」の修正を取り込むことに注意。マージ実行後、カレントブランチは最新のコミットを指すが、マージ元のブランチはそのままになる。</p>
+<p>この時、「カレントブランチ」に、「ブランチ名」の修正を取り込むことに注意。多くの場合、<code>master</code>ブランチに修正を取り込むことになるだろう。マージ実行後、カレントブランチは最新のコミットを指すが、マージ元のブランチはそのままになる。</p>
 <p>また、<code>git merge</code>でブランチ名を省略すると「上流ブランチ」をマージ元に指定したことになる(後述)。</p>
 <p>マージとは、マージ対象となる二つのブランチの共通祖先を見つけ、そこからの修正を全て取り込んだ新たなコミットを作る作業だ。</p>
+<p>今、<code>feature</code>ブランチで作業が終わったとしよう。個人開発の場合、ブランチで作業している間に<code>master</code>ブランチが修正されることは少ないであろう。その場合、<code>master</code>ブランチが<code>feature</code>ブランチの直接の祖先を指す。この時、共通祖先は<code>master</code>コミットが指すコミットそのものであり、そこからの修正を全て取り込んだスナップショットとは、いま<code>feature</code>ブランチが指しているコミットとなるから、この状態で<code>master</code>から<code>feature</code>に対して<code>merge</code>をすると、<code>master</code>ブランチが<code>feature</code>ブランチの指すコミットに移動するだけとなる。これがfast-forwardマージであった。</p>
+<div class="figure">
+<img src="fig/ff_merge.png" alt="ff_merge.png" />
+<p class="caption">ff_merge.png</p>
+</div>
+<p>ここで、玉はスナップショットを、線はスナップショット間の差分(パッチ)を表現していることを思い出そう。マージとは、あくまで「差分を次々と適用していく」という作業だ。したがって、<code>master</code>から<code>feature</code>に対してマージをかけると、<code>master</code>ブランチが指すコミットに対して、<code>feature</code>ブランチが指すコミットに至るまで、差分を次々と適用する。その結果得られるスナップショットは、現在<code>feature</code>ブランチが指しているコミットと全く同じものになる。だから<code>master</code>ブランチの指す先を<code>feature</code>ブランチの指す先に移動するだけで良いよね、というのがfast-forwardマージのやっていることだ。</p>
+<p><code>git merge</code>に<code>--no-ff</code>オプションを付けると、fast-forwardマージが可能な場合でもマージコミットを作る。</p>
+<div class="figure">
+<img src="fig/no_ff.png" alt="no_ff.png" />
+<p class="caption">no_ff.png</p>
+</div>
+<p>この場合、新たにコミットが作られ、<code>master</code>はそこに移動する。この時、新たに作られたコミットには二つの親コミットができる。一つはもともと<code>master</code>が指していたコミットで、そのコミットとの差分は<code>feature</code>ブランチに至るまでの差分を全てまとめたものとなっている。もう一つの親は<code>feature</code>が指しているコミットだが、スナップショットは同じなので差分はない。</p>
+<h2 id="ブランチの削除">ブランチの削除</h2>
+<p>マージが終わり、不要となったブランチは<code>git branch -d ブランチ名</code>で削除できる。あくまでもラベルが削除されるだけであり、それが指していたコミットはそのまま残る。例えば、既にマージ済みの<code>feature</code>ブランチを削除した場合、そのブランチがどのコミットを指していたかが表示される。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch -d feature
+<span class="ex">Deleted</span> branch feature (was 1c168e1)<span class="ex">.</span></code></pre></div>
+<div class="figure">
+<img src="fig/delete_branch.png" alt="delete_branch.png" />
+<p class="caption">delete_branch.png</p>
+</div>
+<p>上記の例では、<code>feature</code>は<code>1c168e1</code>というコミットを指していた。ブランチを削除してもコミットが消えるわけではないので、このコミットハッシュを指定してまたブランチを付けたり、差分を表示するなどの作業ができる。</p>
+<p>一方、ブランチがマージされていないコミットを指していた場合、そのブランチを削除してしまうと(コミットハッシュを覚えていない限り)そのコミットにアクセスする手段がなくなる。そのような場合にブランチを削除しようとすると、以下のようなエラーメッセージが表示される。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch -d branch
+<span class="ex">error</span>: The branch <span class="st">&#39;branch&#39;</span> is not fully merged.
+<span class="ex">If</span> you are sure you want to delete it, run <span class="st">&#39;git branch -D branch&#39;</span>.</code></pre></div>
+<div class="figure">
+<img src="fig/not_merged.png" alt="not_merged.png" />
+<p class="caption">not_merged.png</p>
+</div>
+<p>エラーメッセージにあるように、<code>git branch</code>に<code>-D</code>オプションを付けると無理やり消すことができる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch -D branch
+<span class="ex">Deleted</span> branch branch (was f59b8e4)<span class="ex">.</span></code></pre></div>
+<p>なお、このエラーが出る条件は、「カレントブランチからたどることができる歴史のコミットを指しているかどうか」である。したがって、以下のような歴史がある場合、カレントブランチが<code>master</code>の時には<code>old_branch</code>は<code>git branch -d</code>では消せないが、カレントブランチが<code>latest_branch</code>の場合は<code>old_branch</code>を消すことができる。</p>
+<div class="figure">
+<img src="fig/tadoreru.png" alt="tadoreru.png" />
+<p class="caption">tadoreru.png</p>
+</div>
+<h2 id="衝突コンフリクト">衝突(コンフリクト)</h2>
+<p>歴史が分岐している状態でマージすると、Gitは可能な限り、両方の修正を取り込んでマージしようとする。この時、異なる歴史で同じファイルを修正していた場合でも、それが異なる場所であると判断された場合は、両方の修正を取り込んだコミット(マージコミット)を作る。</p>
+<div class="figure">
+<img src="fig/merge2.png" alt="merge2.png" />
+<p class="caption">merge2.png</p>
+</div>
+<p>しかし、同じファイルの同じ場所が修正されていた場合、Gitはどのようにマージすれば良いかわからず、マージコミットを作ることができない。この状態を衝突、もしくは <strong>コンフリクト(conflict)</strong> と呼ぶ。</p>
+<p>例えば、<code>master</code>と<code>feature</code>ブランチの両方で、同じファイル<code>test.txt</code>を修正していたとしよう。この状態で<code>master</code>から<code>feature</code>をマージしようとすると、Gitは衝突を検出し、ユーザに対応を求める。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> merge feature
+<span class="ex">Auto-merging</span> test.txt
+<span class="ex">CONFLICT</span> (content)<span class="bu">:</span> Merge conflict in test.txt
+<span class="ex">Automatic</span> merge failed<span class="kw">;</span> <span class="ex">fix</span> conflicts and then commit the result.</code></pre></div>
+<p>例えば<code>test.txt</code>は、以下のような状態になっている。</p>
+<pre class="tt"><code>Hello Merge!
+
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+This line is modified on master.
+=======
+This line is modified on feature.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code></pre>
+<p>これは、カレントブランチ(HEAD)で、</p>
+<pre class="txt"><code>This line is modified on master.</code></pre>
+<p>と修正した部分が、<code>feature</code>ブランチで</p>
+<pre class="txt"><code>This line is modified on feature.</code></pre>
+<p>となっているよ、という意味だ。ユーザはこれを見て、両方の修正を取り込んだ状態にして<code>test.txt</code>を保存し、<code>git add</code>してから<code>git commit</code>する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add test.txt
+<span class="fu">git</span> commit -m <span class="st">&quot;merged feature&quot;</span></code></pre></div>
+<p>複数のファイルが衝突していた場合も同様だ。衝突が起きた場合、自動でマージコミットを作れなかったのだから、手動でマージコミットを作る必要がある。<code>git add</code>を使ってインデックスにマージコミットのあるべき姿を作ったら、最後に<code>git commit</code>によりコミットする。すると、その時にインデックスにあった状態がマージコミットとなり、マージが完了する。</p>
 <h2 id="リベース">リベース</h2>
+<ul>
+<li>rebase
+<ul>
+<li>rebase時のconflict対応</li>
+<li><code>rebase -i</code>によるコミットの整理</li>
+</ul></li>
+</ul>
 <div class="footnotes">
 <hr />
 <ol>

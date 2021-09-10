@@ -94,11 +94,11 @@
 
 ### Gitの操作(ブランチ操作編)
 
-* merge
-    * conflict対応
-* rebase
-    * rebase時のconflict対応
-    * `rebase -i`によるコミットの整理
+* なぜブランチを分けるか
+* ブランチの基本
+* マージ
+* 衝突(コンフリクト)
+* リベース
 
 ### [GitHubの操作](practice_github/README.md)
 
