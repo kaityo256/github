@@ -120,6 +120,7 @@
 <li>「git switch -c ブランチ名」で、ブランチの作成とカレントブランチの変更を同時に行うことができる。</li>
 </ul>
 <h2 id="マージ">マージ</h2>
+<h3 id="マージの使い方">マージの使い方</h3>
 <p>Gitでの開発は原則として機能単位でブランチを作成し、その機能の実装が終わったらそれを<code>master</code>ブランチに取り込む。そのためのコマンドが<code>git merge</code>だ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge ブランチ名</code></pre></div>
 <p>この時、「カレントブランチ」に、「ブランチ名」の修正を取り込むことに注意。多くの場合、<code>master</code>ブランチに修正を取り込むことになるだろう。マージ実行後、カレントブランチは最新のコミットを指すが、マージ元のブランチはそのままになる。</p>
@@ -131,13 +132,23 @@
 <p class="caption">ff_merge.png</p>
 </div>
 <p>ここで、玉はスナップショットを、線はスナップショット間の差分(パッチ)を表現していることを思い出そう。マージとは、あくまで「差分を次々と適用していく」という作業だ。したがって、<code>master</code>から<code>feature</code>に対してマージをかけると、<code>master</code>ブランチが指すコミットに対して、<code>feature</code>ブランチが指すコミットに至るまで、差分を次々と適用する。その結果得られるスナップショットは、現在<code>feature</code>ブランチが指しているコミットと全く同じものになる。だから<code>master</code>ブランチの指す先を<code>feature</code>ブランチの指す先に移動するだけで良いよね、というのがfast-forwardマージのやっていることだ。</p>
-<p><code>git merge</code>に<code>--no-ff</code>オプションを付けると、fast-forwardマージが可能な場合でもマージコミットを作る。</p>
+<p>次に、歴史が分岐している場合のマージを考えよう。いま、<code>master</code>と<code>feature</code>で、それぞれ歴史が進んでいる。この状態で<code>master</code>から<code>feature</code>に対してマージをかけると、二つの歴史を一つにするような新たなコミット(マージコミット)を作る。</p>
+<div class="figure">
+<img src="fig/merge_commit.png" alt="merge_commit.png" />
+<p class="caption">merge_commit.png</p>
+</div>
+<p>この時作られたマージコミットには親コミットが二つある。この時、それぞれの線は、それぞれの親からの差分を表している。</p>
+<div class="figure">
+<img src="fig/parents.png" alt="parents.png" />
+<p class="caption">parents.png</p>
+</div>
+<p>なお、<code>git merge</code>に<code>--no-ff</code>オプションを付けると、fast-forwardマージが可能な場合でもマージコミットを作る。</p>
 <div class="figure">
 <img src="fig/no_ff.png" alt="no_ff.png" />
 <p class="caption">no_ff.png</p>
 </div>
 <p>この場合、新たにコミットが作られ、<code>master</code>はそこに移動する。この時、新たに作られたコミットには二つの親コミットができる。一つはもともと<code>master</code>が指していたコミットで、そのコミットとの差分は<code>feature</code>ブランチに至るまでの差分を全てまとめたものとなっている。もう一つの親は<code>feature</code>が指しているコミットだが、スナップショットは同じなので差分はない。</p>
-<h2 id="ブランチの削除">ブランチの削除</h2>
+<h3 id="ブランチの削除">ブランチの削除</h3>
 <p>マージが終わり、不要となったブランチは<code>git branch -d ブランチ名</code>で削除できる。あくまでもラベルが削除されるだけであり、それが指していたコミットはそのまま残る。例えば、既にマージ済みの<code>feature</code>ブランチを削除した場合、そのブランチがどのコミットを指していたかが表示される。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch -d feature
 <span class="ex">Deleted</span> branch feature (was 1c168e1)<span class="ex">.</span></code></pre></div>
@@ -162,7 +173,7 @@
 <img src="fig/tadoreru.png" alt="tadoreru.png" />
 <p class="caption">tadoreru.png</p>
 </div>
-<h2 id="衝突コンフリクト">衝突(コンフリクト)</h2>
+<h3 id="衝突コンフリクト">衝突(コンフリクト)</h3>
 <p>歴史が分岐している状態でマージすると、Gitは可能な限り、両方の修正を取り込んでマージしようとする。この時、異なる歴史で同じファイルを修正していた場合でも、それが異なる場所であると判断された場合は、両方の修正を取り込んだコミット(マージコミット)を作る。</p>
 <div class="figure">
 <img src="fig/merge2.png" alt="merge2.png" />
@@ -191,13 +202,60 @@ This line is modified on feature.
 <span class="fu">git</span> commit -m <span class="st">&quot;merged feature&quot;</span></code></pre></div>
 <p>複数のファイルが衝突していた場合も同様だ。衝突が起きた場合、自動でマージコミットを作れなかったのだから、手動でマージコミットを作る必要がある。<code>git add</code>を使ってインデックスにマージコミットのあるべき姿を作ったら、最後に<code>git commit</code>によりコミットする。すると、その時にインデックスにあった状態がマージコミットとなり、マージが完了する。</p>
 <h2 id="リベース">リベース</h2>
+<h3 id="コミットをまとめるということ">コミットをまとめるということ</h3>
+<p>機能を追加する際、とりあえずブランチを派生させ、そこで作業をする。この時、デバッグのために途中経過のようなコミットも作るであろう。それをそのままメインブランチにマージしてしまうと、中途半端な状態のコミットが歴史に残ることになる。</p>
+<div class="figure">
+<img src="fig/squash.png" alt="squash.png" />
+<p class="caption">squash.png</p>
+</div>
+<p>例えば、いま機能Aを追加するために、<code>feature_A</code>というブランチを作って作業をしたとしよう。機能Aの実装は「クライアント側のモジュール(A1)を作る」「サーバ側のモジュール(A2)を作る」「ドキュメント(Doc)を更新する」の三つのサブタスクからなる。担当者は、サブタスクが完了する度にコミットを作ったので、三つコミットができた。いま、<code>master</code>には歴史が追加されておらず、このままfast-forwardマージができる状況だ。</p>
+<p>しかし、これらのサブタスクは、全体から見える必要はない。例えば「機能Aのクライアント側のモジュールA1だけができた状態」を後から参照する必要はない。むしろ、中途半端な状態が歴史に含まれていると、後でテストが失敗するなどして害悪だ(例えば、<code>git bisect</code>が問題を起こす)。そこで、これらのコミットをまとめて「機能Aを実装した」という情報だけをメインの歴史に追加したい、というニーズが出てくる。</p>
+<p>Gitにおいて歴史は単なる記録ではなく、後で参照するためのものだ。記録を雑多な形で残しておくと後で苦労するので、なるべくきれいな形で整理しておきたい。Gitにはsそのためにコミットをまとめて綺麗な形にしてマージする方法がいくつか提供されている。一つは<code>merge --squash</code>だ。これは、マージしようとするブランチの修正を一つにまとめるものだが、ここでは詳細は触れない。</p>
+<p>もう一つの方法がリベースである。ソフトウェアを開発する会社に入社した場合、おそらく「メインブランチにマージする前にリベースでコミットをきれいにしてからプルリクを作れ」などと言われるであろう。以下では、このリベースについて説明する。</p>
+<h3 id="リベースで変わるもの変わらないもの">リベースで変わるもの、変わらないもの</h3>
+<p>先ほどマージで見た状況を考えよう。<code>master</code>と<code>branch</code>ブランチがあり、歴史が分岐している。この状態で<code>branch</code>ブランチから<code>master</code>にリベースをするには、カレントブランチが<code>branch</code>の状態で</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase master</code></pre></div>
+<p>を実行する。すると、二つのブランチの共通祖先のコミットから<code>branch</code>ブランチにつながるコミットが<code>master</code>の先に移動する。</p>
+<div class="figure">
+<img src="fig/rebase2.png" alt="rebase2.png" />
+<p class="caption">rebase2.png</p>
+</div>
+<p>この図だけを見ると、まるでコミットが移動したように見えるが、実際には<code>branch</code>につながるコミットの間から「パッチ」を取り出し、それを順番に適用することで新たにコミットを作っている。</p>
+<div class="figure">
+<img src="fig/rebase.png" alt="rebase.png" />
+<p class="caption">rebase.png</p>
+</div>
+<p>図を見れば、もともと<code>branch</code>にぶら下がっていたコミット<code>c1</code>,<code>c2</code>と、リベース後に<code>branch</code>にぶら下がる<code>c1'</code>、<code>c2'</code>は異なるスナップショットを表していることがわかるであろう。むしろ変わっていないのは<code>c1</code>や<code>c1'</code>から親コミットに向かって伸びる線が表すパッチであり、「リベースとは、玉(コミット)ではなく、線(パッチ)を移動する操作である」と理解できる。</p>
+<h3 id="コミットのsquash">コミットのsquash</h3>
+<p>実際の運用では、<code>git rebase</code>をそのまま使うことより、<code>git rebase -i</code>で対話的に使うことが多いであろう。<code>git rebase</code>に<code>-i</code>オプションを付けると、移動する予定のそれぞれのコミットについてどうするかを聞かれる。</p>
+<p>例えば、カレントブランチが<code>branch</code>である時に、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase -i master</code></pre></div>
+<p>と<code>master</code>ブランチに対して対話的なリベースを実行すると、エディタが開き、以下のような画面が表示される。</p>
+<pre class="txt"><code>pick d6f185f c1
+pick b2b0b0b c2
+
+# Rebase e9c8c91..b2b0b0b onto e9c8c91 (2 commands)</code></pre>
+<p>今回は、<code>master</code>と<code>branch</code>の共通祖先であるコミットから、<code>branch</code>が指すコミットまで、二つのコミットがあり、それらに対する対応を選ぶ。対応には様々なものがあるが、よく使うのは</p>
 <ul>
-<li>rebase
-<ul>
-<li>rebase時のconflict対応</li>
-<li><code>rebase -i</code>によるコミットの整理</li>
-</ul></li>
+<li>pick: そのままコミットを使う</li>
+<li>squash: コミットを使うが一つ前のコミットと融合する</li>
 </ul>
+<p>であろう。デフォルトは<code>pick</code>であり、<code>-i</code>をつけずにリベースをした場合は、リベース対象となっている玉が全てリベース先にくっつくことになる。</p>
+<div class="figure">
+<img src="fig/rebase_i.png" alt="rebase_i" />
+<p class="caption">rebase_i</p>
+</div>
+<p>一方、<code>squash</code>を選ぶと、そのコミット(が表すパッチ)は採用するが、コミットとしては前のコミットにまとめられる。この場合も、「玉(コミット)をまとめる」というよりは、「線(パッチ)をまとめる」操作であることがわかる。また、コミットを使わずに消したり、コミットの順序を入れ替えることもできる。</p>
+<h3 id="リベース中の衝突">リベース中の衝突</h3>
+<p>マージが二つのブランチの修正を一度に取り込む作業であったのに対して、リベースはリベース先(多くは<code>master</code>であろう)に次々とパッチをあてていく作業だ。したがって、衝突が起きた時、マージなら衝突の解決を一度だけ行えば良かったのに対して、リベースは何度も衝突し、その度に解決する必要が出てくる。リベース中に何度も衝突が起きると慌てがちだが、頭の中で「リベース先に修正を適用することで新たなコミットを作っている」というイメージがあれば、どのような状態をインデックスに作れば良いかがわかるであろう。自分で「いまこの部分のコミットを作っている」とイメージし、インデックスにそのコミットがあるべき姿になるように修正、<code>git add</code>して、<code>git commit</code>した後、<code>git rebase --continue</code>によりリベース作業を再開すれば良い。</p>
+<h3 id="リベースの使い道">リベースの使い道</h3>
+<p>マージが「<code>master</code>に<code>feature</code>ブランチの修正を取り込む」行為であるのに対して、リベースは「<code>feature</code>ブランチに、<code>master</code>ブランチに加えられた修正を取り込む」行為であることに注意したい。つまり、リベースは<code>master</code>ブランチに影響を与えず、<code>master</code>に修正を取り込むには、その後でマージする必要がある。したがって、リベースはマージの前に行う前処理である。</p>
+<p>もともと<code>branch</code>は<code>master</code>ブランチから派生したものだが、開発中に<code>master</code>ブランチの歴史が進んでしまった。ここで<code>branch</code>から<code>master</code>にリベースすると、あたかも最新の<code>master</code>ブランチから<code>branch</code>の開発を進めていたかのような歴史を作ることができる。Gitが積極的に歴史を改変していることがわかるかと思う。これにより、<code>master</code>に修正を取り込む前に、自分が追加した修正が、<code>master</code>に加えられた変更により動作がおかしくなっていないかを確認することができる。最新の<code>master</code>の修正を取り込んだ上で、追加された機能が正しく動作すると確認したら、カレントブランチを<code>master</code>に変更してマージすれば良い。</p>
+<p>リベースしても、<code>master</code>ブランチには影響を与えない。また、リベースすると<code>master</code>が直接の祖先になるが、その場合でも再度リベースできる。一般的には、何度もリベースして、望む歴史にしてからマージを行う。</p>
+<p>ブランチの修正を取り込むのに、マージ派とリベース派があり、マージも<code>--squash</code>するかしないか、<code>--no-ff</code>するかしないかなどいろいろ流儀がある。それぞれメリット、デメリットがあるため一概にどれが良いとか悪いとかは言えないが、それらがどういう作業になっているのかは理解しておきたい。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>Gitはブランチを利用して、積極的に歴史を改変する。個人開発の場合、ずっと<code>master</code>ブランチで作業しがちだが、個人的には機能ごとにブランチを切って作業し、マージする癖をつけた方が良いと思う。なぜならブランチを切ると「今自分がどんな作業をしようとしているのか」が明確になるからだ。作業が明確になれば、ゴールも明確になる。作業中に別の作業がやりたくなった場合は、別のブランチで作業をすべきだ。一度に複数の作業を同時に行うと、後で混乱し、後で大きく時間をロスしてしまう。「<code>master</code>ブランチに直接コミットしない」というルールを守るだけで、開発がスムーズになることであろう。</p>
+<p>フィーチャーブランチを作って作業し、作業が一段落ついた時に、それを<code>master</code>にマージする時にリベースすべきかどうかは個人、もしくは所属チームのルールによる。ただし、慣れないうちはリベース中の衝突は混乱しがちなので、個人開発の場合はとりあえずリベースはせずマージだけで運用し、慣れてきたあたりでリベースを使ってみると良い。</p>
 <div class="footnotes">
 <hr />
 <ol>

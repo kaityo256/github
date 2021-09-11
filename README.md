@@ -45,7 +45,12 @@
 
 ### [ブランチ操作](branch/README.md)
 
-### Gitの使い方(リモート)
+* なぜブランチを分けるか
+* ブランチの基本
+* マージ
+* リベース
+
+### リモートリポジトリの操作
 
 * ベアリポジトリ
 * clone, remote, push, fetch, pull
@@ -59,7 +64,7 @@
 
 ### [Gitの使い方(応用編)](advanced/README.md)
 
-* rebase
+* トラブルシューティング
 * reset
 * log
 * stash
@@ -91,14 +96,6 @@
 * 自動ステージング(`git add -a`)
 * 歴史の確認(`git log`)
 * VSCodeからの操作
-
-### Gitの操作(ブランチ操作編)
-
-* なぜブランチを分けるか
-* ブランチの基本
-* マージ
-* 衝突(コンフリクト)
-* リベース
 
 ### [GitHubの操作](practice_github/README.md)
 
