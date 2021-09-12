@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="リモートリポジトリの操作">リモートリポジトリの操作</h1>
+<h2 id="はじめに">はじめに</h2>
+<p>Gitをローカルだけで使うことはほとんど無く、リモートリポジトリを設定してそこと連携して使うことになるだろう。リモートリポジトリとしては、GitHubやGitLabといったホスティングサービスを使うのが一般的だ。以下では、主にリモートリポジトリのサーバとしてGitHubを想定し、リモートリポジトリとの操作について説明する。</p>
+<h2 id="リモートリポジトリとは">リモートリポジトリとは</h2>
+<p>複数の人が同じプロジェクトに所属して開発を進めている時、もしくは個人開発で家のマシンと大学のマシンの両方で開発を進めている時、複数の場所からプロジェクトの最新情報にアクセスできる必要がある。そのような時に使うのがリモートリポジトリだ。リモートリポジトリは、単にリモートと呼ぶことが多い。対して、いま自分が使っているPCをローカルと呼ぼう。作業としては、まずリモートにアクセスしてローカルを最新情報に更新して作業開始、作業が一段落したら自分が行った更新をリモートに反映、という作業を繰り返す。この時、リモートリポジトリに負わせる役目には二通りの考え方がある。一つは中央集権型で、履歴など情報を全てリモートリポジトリにのみ保存し、ローカルにはワーキングツリーのみ展開する、というものだ。Subversionなどがこの中央集権型だ。もう一つは分散型で、リモートにもローカルにも全ての情報を保存しておき、適宜同期させるという方針で、Gitは分散型である。全てのリポジトリが完全な情報を保持しているということから、全てのリポジトリは互いに対等なのだが、一般的には中央リポジトリという特別なリポジトリを作り、全ての情報を中央リポジトリ経由でアクセスする。この中央リポジトリを置く場所がGitHubである。</p>
+<h2 id="ベアリポジトリ">ベアリポジトリ</h2>
+<p>Git管理下にあるプロジェクトには、三つの要素がある。</p>
+          </article>
+  </body>
+
+  </html>
