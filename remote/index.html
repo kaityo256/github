@@ -71,7 +71,7 @@
 </div>
 <p>次にローカルで作業をする際、リモートの情報が更新されているかもしれないので、その情報をローカルに反映する。この作業を <strong>フェッチ (fetch)</strong> という。フェッチによりリモートの情報がローカルに落ちてくるが、ローカルの歴史は修正されない。ローカルの歴史にリモートの修正を反映するにはマージする。リモートの修正をローカルに取り込んだらローカルを修正し、作業が終了したらプッシュによりローカルの修正をリモートに取り込む。以上のサイクルを繰り返すことで開発が進んでいく。以下、それぞれのプロセスを詳しく見てみよう。</p>
 <h2 id="クローン">クローン</h2>
-<p>リモートリポジトリの情報をローカルに初めて持ってくる時(クローンする時)には<code>git clone</code>を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの<code>appi-github</code>というアカウント(正確にはOrganization)の、<code>clone-sample</code>というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。</p>
+<p>リモートリポジトリの情報をクローンする時、すなわち、ローカルに初めて持ってくる時には<code>git clone</code>を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの<code>appi-github</code>というアカウント(正確にはOrganization)の、<code>clone-sample</code>というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。</p>
 <ul>
 <li>HTTPSの場合：<code>https://github.com/appi-github/clone-sample.git</code></li>
 <li>SSHの場合:<code>git@github.com:appi-github/clone-sample.git</code></li>
@@ -88,6 +88,53 @@
 <li>自分が作ったリポジトリ(もしくはforkしたリポジトリ)を使うためにクローンする場合はSSH</li>
 </ul>
 <p>と覚えておけば良い。</p>
+<p>クローンにより、それまでの「歴史」全てと、デフォルトブランチの最新のコミットがワーキングツリーとして展開される。</p>
+<div class="figure">
+<img src="fig/clone.png" alt="clone" />
+<p class="caption">clone</p>
+</div>
+<p>以後は、ローカルリポジトリとして通常通りブランチを作ったり、コミットしたりすることができる。</p>
+<h2 id="プッシュ">プッシュ</h2>
+<p>ローカルで作業を行い、歴史がリモートよりも進んだとしよう。ローカルの歴史をリモートに反映することをプッシュと呼び、<code>git push</code>により行う。</p>
+<div class="figure">
+<img src="fig/push.png" alt="push" />
+<p class="caption">push</p>
+</div>
+<h2 id="フェッチ">フェッチ</h2>
+<p>ローカルにクローン済みのリポジトリがあり、リモートで歴史が進んでいる場合、その歴史をローカルに反映させる必要がある。その時に行うのがフェッチであり<code>git fetch</code>により行う。</p>
+<div class="figure">
+<img src="fig/fetch.png" alt="fetch" />
+<p class="caption">fetch</p>
+</div>
+<p>ここで注意したいのは、<code>git fetch</code>は更新された歴史をローカルに持ってきてくれるが、ローカルのブランチは移動しない、ということだ。</p>
+<p>実は、リモートの歴史を取ってくる際、リモートにある<code>main</code>ブランチは、<code>origin/main</code>という名前でローカルに保存される。リモートブランチは<code>git branch</code>では表示されないが、<code>git branch -a</code>と、<code>-a</code>オプションを付けると表示される。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch
+<span class="ex">*</span> main
+
+$ <span class="fu">git</span> branch -a
+<span class="ex">*</span> main
+  <span class="ex">remotes/origin/HEAD</span> -<span class="op">&gt;</span> origin/main
+  <span class="ex">remotes/origin/main</span></code></pre></div>
+<div class="figure">
+<img src="fig/fetch_merge.png" alt="fetch_merge" />
+<p class="caption">fetch_merge</p>
+</div>
+<p>リモートで更新された歴史をフェッチする前は、ローカルリポジトリはリモートが更新されていることを知らないので、<code>main</code>と<code>origin/main</code>は同じコミットを指している。しかし<code>git fetch</code>によりリモートの情報が更新されると、新たに増えたコミットを取り込むと同時に、リモートの<code>main</code>ブランチが指しているコミットを、ローカルの<code>origin/main</code>ブランチが指す。これにより、リモートの情報がローカルに落ちてきたことになる。</p>
+<p>あとは、<code>origin/main</code>を通常のブランチと同様に<code>git merge</code>することで、リモートの修正をローカルのブランチに取り込むことができる。図ではfast-forward可能な状態であったが、歴史が分岐していた場合でも、ローカルの場合と同様にマージすれば良い。</p>
+<h2 id="上流ブランチ">上流ブランチ</h2>
+<p>ローカルにあるブランチに対応するリモートのブランチを <strong>上流ブランチ(upstream branch)</strong> と呼ぶ。最初にクローンした直後、<code>main</code>ブランチと共に、「リモートの<code>main</code>ブランチ」に対応する<code>origin/main</code>というブランチができる。この時、自動的に<code>origin/main</code>ブランチが<code>main</code>ブランチの上流ブランチとして登録されている。</p>
+<p>上流ブランチは、<code>git merge</code>、<code>git rebase</code>等で、引数を省略した時の対象ブランチとなる。</p>
+<p>例えば、カレントブランチが<code>main</code>で、上流ブランチが<code>origin/main</code>である時に</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge
+<span class="fu">git</span> rebase</code></pre></div>
+<p>を実行すると、それぞれ</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge origin/main
+<span class="fu">git</span> rebase origin/main</code></pre></div>
+<p>と等価になる。</p>
+<p>TODO: git fetchの説明</p>
+<h2 id="git-pull"><code>git pull</code></h2>
+<p><code>git pull</code>を実行すると、<code>git fetch</code>と<code>git merge</code>を一度に行うことができる。しかし、<code>git pull</code>の動作は、特に引数を指定した時に直観的でないため、慣れない人が使うとトラブルを起こすことが多い。</p>
+<p>慣れるまでは、とりあえず<code>git pull</code>の存在は忘れ、<code>git fetch</code>してから、<code>git merge</code>する習慣をつければ良い。</p>
           </article>
   </body>
 

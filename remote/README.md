@@ -40,7 +40,7 @@ GitHubのリポジトリには、パブリックなリポジトリとプライ�
 
 ## クローン
 
-リモートリポジトリの情報をローカルに初めて持ってくる時(クローンする時)には`git clone`を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの`appi-github`というアカウント(正確にはOrganization)の、`clone-sample`というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。
+リモートリポジトリの情報をクローンする時、すなわち、ローカルに初めて持ってくる時には`git clone`を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの`appi-github`というアカウント(正確にはOrganization)の、`clone-sample`というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。
 
 * HTTPSの場合：`https://github.com/appi-github/clone-sample.git`
 * SSHの場合:`git@github.com:appi-github/clone-sample.git`
@@ -67,3 +67,71 @@ git clone git@github.com:appi-github/clone-sample.git
 * 自分が作ったリポジトリ(もしくはforkしたリポジトリ)を使うためにクローンする場合はSSH
 
 と覚えておけば良い。
+
+クローンにより、それまでの「歴史」全てと、デフォルトブランチの最新のコミットがワーキングツリーとして展開される。
+
+![clone](fig/clone.png)
+
+以後は、ローカルリポジトリとして通常通りブランチを作ったり、コミットしたりすることができる。
+
+## プッシュ
+
+ローカルで作業を行い、歴史がリモートよりも進んだとしよう。ローカルの歴史をリモートに反映することをプッシュと呼び、`git push`により行う。
+
+![push](fig/push.png)
+
+## フェッチ
+
+ローカルにクローン済みのリポジトリがあり、リモートで歴史が進んでいる場合、その歴史をローカルに反映させる必要がある。その時に行うのがフェッチであり`git fetch`により行う。
+
+![fetch](fig/fetch.png)
+
+ここで注意したいのは、`git fetch`は更新された歴史をローカルに持ってきてくれるが、ローカルのブランチは移動しない、ということだ。
+
+実は、リモートの歴史を取ってくる際、リモートにある`main`ブランチは、`origin/main`という名前でローカルに保存される。リモートブランチは`git branch`では表示されないが、`git branch -a`と、`-a`オプションを付けると表示される。
+
+```sh
+$ git branch
+* main
+
+$ git branch -a
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
+```
+
+![fetch_merge](fig/fetch_merge.png)
+
+リモートで更新された歴史をフェッチする前は、ローカルリポジトリはリモートが更新されていることを知らないので、`main`と`origin/main`は同じコミットを指している。しかし`git fetch`によりリモートの情報が更新されると、新たに増えたコミットを取り込むと同時に、リモートの`main`ブランチが指しているコミットを、ローカルの`origin/main`ブランチが指す。これにより、リモートの情報がローカルに落ちてきたことになる。
+
+あとは、`origin/main`を通常のブランチと同様に`git merge`することで、リモートの修正をローカルのブランチに取り込むことができる。図ではfast-forward可能な状態であったが、歴史が分岐していた場合でも、ローカルの場合と同様にマージすれば良い。
+
+## 上流ブランチ
+
+ローカルにあるブランチに対応するリモートのブランチを **上流ブランチ(upstream branch)** と呼ぶ。最初にクローンした直後、`main`ブランチと共に、「リモートの`main`ブランチ」に対応する`origin/main`というブランチができる。この時、自動的に`origin/main`ブランチが`main`ブランチの上流ブランチとして登録されている。
+
+上流ブランチは、`git merge`、`git rebase`等で、引数を省略した時の対象ブランチとなる。
+
+例えば、カレントブランチが`main`で、上流ブランチが`origin/main`である時に
+
+```sh
+git merge
+git rebase
+```
+
+を実行すると、それぞれ
+
+```sh
+git merge origin/main
+git rebase origin/main
+```
+
+と等価になる。
+
+TODO: git fetchの説明
+
+## `git pull`
+
+`git pull`を実行すると、`git fetch`と`git merge`を一度に行うことができる。しかし、`git pull`の動作は、特に引数を指定した時に直観的でないため、慣れない人が使うとトラブルを起こすことが多い。
+
+慣れるまでは、とりあえず`git pull`の存在は忘れ、`git fetch`してから、`git merge`する習慣をつければ良い。
