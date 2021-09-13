@@ -86,14 +86,18 @@ Omit --global to set the identity only in this repository.</code></pre>
 <p>覚えるコマンド:</p>
 <ul>
 <li><p>init, add, commit</p></li>
-<li>説明メモ
+<li>init
 <ul>
+<li><code>git init</code>でカレントディレクトリを初期化</li>
+<li><code>git init projectname</code>で、<code>projectname</code>というディレクトリを作ってからそこを初期化</li>
+<li><code>git init --bare projectname.git</code>でベアリポジトリを作成</li>
+<li><code>git init --bare</code>でカレントディレクトリをベアリポジトリとするが、おそらく使わないであろう</li>
+</ul></li>
 <li>git addには三種類の意味がある
 <ul>
 <li>リポジトリの管理下にないファイルを管理下に置く</li>
 <li>リポジトリの管理下にあるファイルをステージングする</li>
 <li>Gitにconflictの解消について教える</li>
-</ul></li>
 </ul></li>
 </ul>
 <h2 id="状態表示status-diff">状態表示(<code>status, diff</code>)</h2>

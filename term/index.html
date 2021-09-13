@@ -98,18 +98,18 @@
 <img src="fig/branch.png" alt="ブランチ" />
 <p class="caption">ブランチ</p>
 </div>
-<p>Gitにおけるブランチとはコミットの別名であり、コミットについたラベルだと思えば良い。プロジェクトをGitで初期化した場合、デフォルトで<code>master</code>というブランチが用意される<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>。最初のコミットから歴史が始まるが、そのコミットに<code>master</code>というラベルがはりつく。以後、コミットする度に、歴史が増え、<code>master</code>というラベルが移動していく。</p>
-<p>ブランチはコミットについたラベルであり、自由に作ることができる。ブランチが複数あると、「今自分がどのブランチを見ているのか」という情報が必要だ。それを指すのが「HEAD」である。Gitはデフォルトで<code>master</code>ブランチが作られ、「HEAD」は<code>master</code>を指している。ブランチは、その時に自分が見ているコミット、つまり「HEADが指しているブランチが指しているコミット」に貼りつく。したがって、<code>master</code>ブランチで作業している時に新たなブランチ<code>branch</code>を作ると、<code>master</code>が指すのと同じコミットを<code>branch</code>が指す。</p>
+<p>Gitにおけるブランチとはコミットの別名であり、コミットについたラベルだと思えば良い。プロジェクトをGitで初期化した場合、デフォルトで<code>main</code>というブランチが用意される<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>。最初のコミットから歴史が始まるが、そのコミットに<code>main</code>というラベルがはりつく。以後、コミットする度に、歴史が増え、<code>main</code>というラベルが移動していく。</p>
+<p>ブランチはコミットについたラベルであり、自由に作ることができる。ブランチが複数あると、「今自分がどのブランチを見ているのか」という情報が必要だ。それを指すのが「HEAD」である。Gitはデフォルトで<code>main</code>ブランチが作られ、「HEAD」は<code>main</code>を指している。ブランチは、その時に自分が見ているコミット、つまり「HEADが指しているブランチが指しているコミット」に貼りつく。したがって、<code>main</code>ブランチで作業している時に新たなブランチ<code>branch</code>を作ると、<code>main</code>が指すのと同じコミットを<code>branch</code>が指す。</p>
 <div class="figure">
 <img src="fig/head.png" alt="HEADとブランチ" />
 <p class="caption">HEADとブランチ</p>
 </div>
-<p>さて、ブランチの切り替えとは、「HEADが指すブランチ」を変えることだ。いま、<code>master</code>ブランチから<code>branch</code>ブランチに切り替えよう。すると、「HEAD」が指す先が<code>master</code>から<code>branch</code>に変わる。この状態で何かファイルを修正し、コミットしよう。コミットすると歴史が増えるが、この時「いま見ているブランチ(今回の例では<code>branch</code>)」の指す先が新たに増えたコミットに移動するが、それ以外のブランチは取り残される。</p>
+<p>さて、ブランチの切り替えとは、「HEADが指すブランチ」を変えることだ。いま、<code>main</code>ブランチから<code>branch</code>ブランチに切り替えよう。すると、「HEAD」が指す先が<code>main</code>から<code>branch</code>に変わる。この状態で何かファイルを修正し、コミットしよう。コミットすると歴史が増えるが、この時「いま見ているブランチ(今回の例では<code>branch</code>)」の指す先が新たに増えたコミットに移動するが、それ以外のブランチは取り残される。</p>
 <div class="figure">
 <img src="fig/branch2.png" alt="HEADとブランチ" />
 <p class="caption">HEADとブランチ</p>
 </div>
-<p>さて、<code>branch</code>が先の歴史を指している状態で、<code>master</code>ブランチに戻ろう。HEADが<code>master</code>を指した状態となる。ここで何か修正し、コミットしよう。すると、新たに作られたコミットは、<code>master</code>が指していたコミットにぶら下がるので、ここで歴史が分岐する。</p>
+<p>さて、<code>branch</code>が先の歴史を指している状態で、<code>main</code>ブランチに戻ろう。HEADが<code>main</code>を指した状態となる。ここで何か修正し、コミットしよう。すると、新たに作られたコミットは、<code>main</code>が指していたコミットにぶら下がるので、ここで歴史が分岐する。</p>
 <p>Gitでは、開発において積極的に歴史を分岐させるが、その意味については後述する。</p>
 <div class="figure">
 <img src="fig/detached_head.png" alt="detached HEAD" />
@@ -117,12 +117,12 @@
 </div>
 <p>なお、通常HEADはブランチを経由してコミットを指しているが、操作によってはHEADが直接コミットを指す場合がある。これを「detached HEAD状態」と呼ぶ。detachedとは切り離された、外れている、という意味であり、HEADがブランチから外れていることを意味している。Gitを操作しているとたまにこの状態となるが、その時に慌てないように「detached HEAD状態とはHEADがブランチではなく直接コミットを指している状態である」とだけ覚えておこう。コミットなどの操作は(間接的にせよ直接的にせよ)HEADが指すコミットに対して行われるため、HEADが外れた状態でもコミットなどの操作は可能だ。なぜdetached HEAD状態になるのか、その状態の問題点や、解消の仕方などは後述する。</p>
 <h2 id="マージ">マージ</h2>
-<p>Gitでは、原則として<code>master</code>ブランチで作業しない。自分がこれから行う作業に対応したブランチを用意し(ブランチを切る、と呼ぶことが多い)、そのブランチ上で作業を行う。作業が一段落したら、ブランチで作業した内容を<code>master</code>ブランチに取り込みたくなる。このように、片方のブランチの修正をもう一つのブランチに取り込むことを <strong>マージ(merge)</strong> と呼ぶ。マージには二種類存在する。一つがFast-Forwardマージ、もう一つがNon Fast-Forwardマージだ<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>。</p>
+<p>Gitでは、原則として<code>main</code>ブランチで作業しない。自分がこれから行う作業に対応したブランチを用意し(ブランチを切る、と呼ぶことが多い)、そのブランチ上で作業を行う。作業が一段落したら、ブランチで作業した内容を<code>main</code>ブランチに取り込みたくなる。このように、片方のブランチの修正をもう一つのブランチに取り込むことを <strong>マージ(merge)</strong> と呼ぶ。マージには二種類存在する。一つがFast-Forwardマージ、もう一つがNon Fast-Forwardマージだ<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>。</p>
 <div class="figure">
 <img src="fig/ff1.png" alt="ff1" />
 <p class="caption">ff1</p>
 </div>
-<p>まず、「修正を取り込む」ということの意味を考えてみよう。例えば、<code>master</code>ブランチから分岐した<code>branch</code>に、ファイルを追加してコミットしたとしよう。すると上図の左のような状態となる。<code>master</code>と<code>branch</code>の指すコミットは、それぞれの状態のスナップショットを保存しているとのと同時に<code>master</code>の指すブランチにファイルを追加したら<code>branch</code>の状態になる、と解釈することもできる。</p>
+<p>まず、「修正を取り込む」ということの意味を考えてみよう。例えば、<code>main</code>ブランチから分岐した<code>branch</code>に、ファイルを追加してコミットしたとしよう。すると上図の左のような状態となる。<code>main</code>と<code>branch</code>の指すコミットは、それぞれの状態のスナップショットを保存しているとのと同時に<code>main</code>の指すブランチにファイルを追加したら<code>branch</code>の状態になる、と解釈することもできる。</p>
 <div class="figure">
 <img src="fig/ff2.png" alt="ff2" />
 <p class="caption">ff2</p>
@@ -132,12 +132,12 @@
 <img src="fig/ff_merge.png" alt="Fast Forwardマージ" />
 <p class="caption">Fast Forwardマージ</p>
 </div>
-<p>さて、修正を取り込みたいブランチ(<code>master</code>とする)が、現在作業中のブランチ(<code>branch</code>とする)の直接の祖先であり、かつそこから歴史が分岐していない場合を考えよう。<code>master</code>の指すコミットに、「線」が表す修正を適用していった先に目的の状態(<code>branch</code>が指すコミット)がある。であるから、<code>master</code>の指すコミットに、積みあがった修正を全て適用したら、<code>branch</code>の指すコミットと同じものができあがるはずだ。したがって、<code>branch</code>の修正を取り込む(マージする)には、単に<code>branch</code>の指すコミットまで<code>master</code>を動かせば良い。これをFast-Forward(早送り)マージと呼ぶ。</p>
+<p>さて、修正を取り込みたいブランチ(<code>main</code>とする)が、現在作業中のブランチ(<code>branch</code>とする)の直接の祖先であり、かつそこから歴史が分岐していない場合を考えよう。<code>main</code>の指すコミットに、「線」が表す修正を適用していった先に目的の状態(<code>branch</code>が指すコミット)がある。であるから、<code>main</code>の指すコミットに、積みあがった修正を全て適用したら、<code>branch</code>の指すコミットと同じものができあがるはずだ。したがって、<code>branch</code>の修正を取り込む(マージする)には、単に<code>branch</code>の指すコミットまで<code>main</code>を動かせば良い。これをFast-Forward(早送り)マージと呼ぶ。</p>
 <div class="figure">
 <img src="fig/merge.png" alt="マージ" />
 <p class="caption">マージ</p>
 </div>
-<p>もし、修正を取り込もうとしているブランチが指すコミットが、現在作業中のブランチが指すコミットの直接の祖先でなかった場合、Fast-Forwardマージはできない。例えば<code>master</code>から分岐した<code>branch</code>の修正を<code>master</code>に取り込もうとした時、<code>master</code>にコミットが増えていると、<code>master</code>が指すコミットが<code>branch</code>の直接の祖先ではなくなる。その場合、両方のブランチの共通の祖先からの修正を両方から取り込んで、二つのコミットを親とする新たなコミットを作る。これをNon Fast-Forwardマージ、もしくは単にマージと呼び、この時作られたコミットをマージコミットと呼ぶ。二つのブランチで同じファイルの同じ場所を修正していた場合、Gitは自動でマージすることができない。これを <strong>衝突(conflict)</strong> と呼ぶ。衝突の対処については後で説明する。</p>
+<p>もし、修正を取り込もうとしているブランチが指すコミットが、現在作業中のブランチが指すコミットの直接の祖先でなかった場合、Fast-Forwardマージはできない。例えば<code>main</code>から分岐した<code>branch</code>の修正を<code>main</code>に取り込もうとした時、<code>main</code>にコミットが増えていると、<code>main</code>が指すコミットが<code>branch</code>の直接の祖先ではなくなる。その場合、両方のブランチの共通の祖先からの修正を両方から取り込んで、二つのコミットを親とする新たなコミットを作る。これをNon Fast-Forwardマージ、もしくは単にマージと呼び、この時作られたコミットをマージコミットと呼ぶ。二つのブランチで同じファイルの同じ場所を修正していた場合、Gitは自動でマージすることができない。これを <strong>衝突(conflict)</strong> と呼ぶ。衝突の対処については後で説明する。</p>
 <div class="figure">
 <img src="fig/no-ff.png" alt="no-ff マージ" />
 <p class="caption">no-ff マージ</p>
@@ -167,7 +167,7 @@
 <hr />
 <ol>
 <li id="fn1"><p>英語ではworking treeと呼ぶのが一般的だが、日本語では「ワーキングツリー(work tree)」という呼び方もされる。<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>近年では<code>master/slave</code>といった用語が不適切だという意見が広がっており、<code>master</code>という言葉を避ける傾向にある。GitHubやGitLabでは、デフォルトブランチを<code>master</code>から<code>main</code>に変えた。Gitはまだデフォルトブランチは<code>master</code>だが、2.28よりデフォルトブランチを変更できるようになっており、いずれデフォルトブランチも<code>main</code>となると思われる。<a href="#fnref2">↩</a></p></li>
+<li id="fn2"><p>以前は<code>master</code>という名前であったが、近年では<code>master/slave</code>といった用語が不適切だという意見が広がっており、<code>master</code>という言葉を避ける傾向にある。GitHubやGitLabはデフォルトブランチを<code>master</code>から<code>main</code>とし、Gitもバージョン2.28からデフォルトブランチを変更する機能がついた。<a href="#fnref2">↩</a></p></li>
 <li id="fn3"><p>Fast-Fowardマージについては「早送りマージ」と呼ばれることもあるが、あまり一般的でない。また、Non Fast-Forwardマージについては一般的な訳語が無いようだ。<a href="#fnref3">↩</a></p></li>
 </ol>
 </div>

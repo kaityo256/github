@@ -64,9 +64,10 @@
 <li><code>n</code>まで入力してタブを押すと、<code>name</code>まで入力される</li>
 </ul>
 <p>以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
-<p>また、デフォルトエディタをVimにして、さらに改行コードの扱いについても設定しておこう。</p>
+<p>また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global core.editor vim
-<span class="fu">git</span> config --global core.autocrlf true</code></pre></div>
+<span class="fu">git</span> config --global core.autocrlf true
+<span class="fu">git</span> config --global init.defaultBranch main</code></pre></div>
 <p>次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></code></pre></div>
 <p>以上を実行後、ターミナルで<code>.gitconfig</code>を表示し、先ほど設定した内容が書き込まれていることを確認せよ。</p>
@@ -119,7 +120,7 @@
 <p>この状態を確認してみよう。以下を実行せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status</code></pre></div>
 <p>以下のような表示が得られるはずだ。</p>
-<pre class="txt"><code>On branch master
+<pre class="txt"><code>On branch main
 
 No commits yet
 
@@ -158,9 +159,9 @@ nothing added to commit but untracked files present (use &quot;git add&quot; to 
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
 <p>何も表示されないはずである。ロングバージョンのステータスも見てみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
-<span class="ex">On</span> branch master
+<span class="ex">On</span> branch main
 <span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
-<p>自分がいまmasterブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。</p>
+<p>自分がいまmainブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。</p>
 <h2 id="ファイルの修正">ファイルの修正</h2>
 <p>次に、ファイルを修正してみよう。VSCodeで開いている<code>README.md</code>に、行を付け加えて保存しよう。</p>
 <div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span>
@@ -206,7 +207,7 @@ Hello Git!
 Bye Git!</code></pre></div>
 <p>この状態で、<code>git add</code>せずに<code>git commit</code>しようとすると、「何をコミットするか指定が無いよ(インデックスに何も無いよ)」と怒られる。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> commit -m <span class="st">&quot;modifies README.md&quot;</span>
-<span class="ex">On</span> branch master
+<span class="ex">On</span> branch main
 <span class="ex">Changes</span> not staged for commit:
   <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed<span class="kw">)</span>
   <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore &lt;file&gt;...&quot;</span> to discard changes in working directory<span class="kw">)</span>
@@ -219,7 +220,7 @@ Bye Git!</code></pre></div>
 <h2 id="歴史の確認git-log">歴史の確認(<code>git log</code>)</h2>
 <p>これまでの歴史を確認して見よう。上記の通りに作業して来たなら、3つのコミットが作成されたはずだ。<code>git log</code>で歴史を振り返ってみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log
-<span class="ex">commit</span> be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -<span class="op">&gt;</span> master)
+<span class="ex">commit</span> be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -<span class="op">&gt;</span> main)
 <span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span>
 <span class="ex">Date</span>:   Mon Aug 23 23:32:48 2021 +0900
 
@@ -239,7 +240,7 @@ Bye Git!</code></pre></div>
 <p>いつ、誰が、どのコミットを作ったかが表示される。それぞれのコミットハッシュは異なるものになっているはずだ。</p>
 <p>デフォルトの表示では見づらいので、一つのコミットを一行で表示しても良い。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
-<span class="ex">be7533f</span> (HEAD -<span class="op">&gt;</span> master) <span class="ex">modifies</span> README.md
+<span class="ex">be7533f</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">modifies</span> README.md
 <span class="ex">dd14099</span> adds new line
 <span class="ex">02b8501</span> initial commit</code></pre></div>
 <p>個人的にはこちらの方が見やすいので、<code>l</code>を<code>log --oneline</code>のエイリアスにしてしまっても良いと思う。もしそうしたい場合は、</p>
@@ -274,7 +275,7 @@ Git from VSCode</code></pre></div>
 </div>
 <p>これでコミットができた。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
-<span class="ex">0c18b48</span> (HEAD -<span class="op">&gt;</span> master) <span class="ex">commit</span> from VSCode
+<span class="ex">0c18b48</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">commit</span> from VSCode
 <span class="ex">be7533f</span> modifies README.md
 <span class="ex">dd14099</span> adds new line
 <span class="ex">02b8501</span> initial commit</code></pre></div>

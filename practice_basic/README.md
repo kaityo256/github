@@ -24,11 +24,12 @@ git config --global user.email "メールアドレス"
 
 以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると`git config --global user.name`まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。
 
-また、デフォルトエディタをVimにして、さらに改行コードの扱いについても設定しておこう。
+また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。
 
 ```sh
 git config --global core.editor vim
 git config --global core.autocrlf true
+git config --global init.defaultBranch main
 ```
 
 次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。
@@ -136,7 +137,7 @@ git status
 以下のような表示が得られるはずだ。
 
 ```txt
-On branch master
+On branch main
 
 No commits yet
 
@@ -217,11 +218,11 @@ git st
 
 ```sh
 $ git status
-On branch master
+On branch main
 nothing to commit, working tree clean
 ```
 
-自分がいまmasterブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。
+自分がいまmainブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。
 
 ## ファイルの修正
 
@@ -306,7 +307,7 @@ Bye Git!
 
 ```sh
 $ git commit -m "modifies README.md"
-On branch master
+On branch main
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git restore <file>..." to discard changes in working directory)
@@ -329,7 +330,7 @@ git commit -am "modifies README.md"
 
 ```sh
 $ git log
-commit be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -> master)
+commit be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -> main)
 Author: H. Watanabe <kaityo256@example.com>
 Date:   Mon Aug 23 23:32:48 2021 +0900
 
@@ -354,7 +355,7 @@ Date:   Mon Aug 23 23:29:45 2021 +0900
 
 ```sh
 $ git log --oneline
-be7533f (HEAD -> master) modifies README.md
+be7533f (HEAD -> main) modifies README.md
 dd14099 adds new line
 02b8501 initial commit
 ```
@@ -410,7 +411,7 @@ git add README.md
 
 ```sh
 $ git log --oneline
-0c18b48 (HEAD -> master) commit from VSCode
+0c18b48 (HEAD -> main) commit from VSCode
 be7533f modifies README.md
 dd14099 adds new line
 02b8501 initial commit
