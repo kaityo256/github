@@ -77,11 +77,16 @@ git help config
 
 * init, add, commit
 
-* 説明メモ
-    * git addには三種類の意味がある
-        * リポジトリの管理下にないファイルを管理下に置く
-        * リポジトリの管理下にあるファイルをステージングする
-        * Gitにconflictの解消について教える
+* init 
+    * `git init`でカレントディレクトリを初期化
+    * `git init projectname`で、`projectname`というディレクトリを作ってからそこを初期化
+    * `git init --bare projectname.git`でベアリポジトリを作成
+    * `git init --bare`でカレントディレクトリをベアリポジトリとするが、おそらく使わないであろう
+
+* git addには三種類の意味がある
+    * リポジトリの管理下にないファイルを管理下に置く
+    * リポジトリの管理下にあるファイルをステージングする
+    * Gitにconflictの解消について教える
 
 ## 状態表示(`status, diff`)
 
