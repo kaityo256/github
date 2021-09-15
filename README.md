@@ -54,14 +54,14 @@
 
 * リモートリポジトリとは
 * ベアリポジトリ
-* clone, remote, push, fetch, pull
-* 上流ブランチの説明
-* 特に、以下のコマンドで引数を省略した時の対象となるブランチとなることを説明
-    * `git fetch`
-    * `git merge`
-    * `git rebase`
+* クローン
+* プッシュ
+* フェッチ
+* 上流ブランチとリモート追跡ブランチ
+* その他知っておいた方が良いこと
+    * `git remote`
     * `git pull`
-    * `git pull --rebase`
+    * プッシュしたブランチをリベースしない
 
 ### [Gitの使い方(応用編)](advanced/README.md)
 
