@@ -54,6 +54,7 @@
 <p class="caption">remote.png</p>
 </div>
 <p>複数の人が同じプロジェクトに所属して開発を進めている時、もしくは個人開発で家のマシンと大学のマシンの両方で開発を進めている時、複数の場所からプロジェクトの最新情報にアクセスできる必要がある。そのような時に使うのがリモートリポジトリだ。この時、リモートリポジトリに負わせる役目には二通りの考え方がある。一つは中央集権型で、履歴など情報を全てリモートリポジトリにのみ保存し、ローカルにはワーキングツリーのみ展開する、というものだ。もう一つは分散型で、リモートにもローカルにも全ての情報を保存しておき、適宜同期させるという方針を取る。Subversionなどが中央集権型であり、Gitは分散型である。分散型はそれぞれのリポジトリが完全な情報を保持していることから互いに対等なのだが、一般的には中央リポジトリという特別なリポジトリを作り、全ての情報を中央リポジトリ経由でアクセスする。この中央リポジトリを置く場所がGitHubである。</p>
+<p>Gitでは、複数のリモートリポジトリを登録し、それぞれに名前をつけて管理することができる。しかし、通常は<code>origin</code>という名前のリモートリポジトリを一つだけ用意して運用することが多い。以下でもリモートリポジトリは一つだけとし、名前を<code>origin</code>とすることを前提とする。</p>
 <h3 id="ベアリポジトリ">ベアリポジトリ</h3>
 <p>Git管理下にあるプロジェクトには、ワーキングツリー、インデックス、リポジトリの三つの要素がある。ワーキングツリーは今作業中のファイル、インデックスは「いまコミットをしたら歴史に追加されるスナップショット」を表し、リポジトリはブランチやタグを含めた歴史を保存している。しかしリモートリポジトリはワーキングツリーやインデックスを管理する必要がない。そこで、歴史とタグ情報だけを管理するリポジトリとして <strong>ベアリポジトリ(bare repository)</strong> というものが用意されている。リモートリポジトリはこのベアリポジトリとなっている。ベアリポジトリは<code>project.git</code>と、「プロジェクト名+<code>.git</code>」という名前にする。Gitの管理情報は、<code>.git</code>というディレクトリに格納されているが、ベアリポジトリはその<code>.git</code>の中身だけを含むリポジトリであることに由来する。<code>git init</code>時に<code>--bare</code>オプションをつけるとベアリポジトリを作ることができる。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init --bare project.git</code></pre></div>
@@ -115,26 +116,114 @@ $ <span class="fu">git</span> branch -a
 <span class="ex">*</span> main
   <span class="ex">remotes/origin/HEAD</span> -<span class="op">&gt;</span> origin/main
   <span class="ex">remotes/origin/main</span></code></pre></div>
+<p>この時、<code>remotes/origin/main</code>というのは、<code>origin</code>という名前のリモートリポジトリの<code>main</code>ブランチであることを表現している。リモートリポジトリは複数設定することができ、それぞれに自由に名前をつけることができるが、通常はリモートリポジトリは一つだけ設定し、名前を<code>origin</code>とすることが多い。</p>
 <div class="figure">
 <img src="fig/fetch_merge.png" alt="fetch_merge" />
 <p class="caption">fetch_merge</p>
 </div>
 <p>リモートで更新された歴史をフェッチする前は、ローカルリポジトリはリモートが更新されていることを知らないので、<code>main</code>と<code>origin/main</code>は同じコミットを指している。しかし<code>git fetch</code>によりリモートの情報が更新されると、新たに増えたコミットを取り込むと同時に、リモートの<code>main</code>ブランチが指しているコミットを、ローカルの<code>origin/main</code>ブランチが指す。これにより、リモートの情報がローカルに落ちてきたことになる。</p>
 <p>あとは、<code>origin/main</code>を通常のブランチと同様に<code>git merge</code>することで、リモートの修正をローカルのブランチに取り込むことができる。図ではfast-forward可能な状態であったが、歴史が分岐していた場合でも、ローカルの場合と同様にマージすれば良い。</p>
-<h2 id="上流ブランチ">上流ブランチ</h2>
-<p>ローカルにあるブランチに対応するリモートのブランチを <strong>上流ブランチ(upstream branch)</strong> と呼ぶ。最初にクローンした直後、<code>main</code>ブランチと共に、「リモートの<code>main</code>ブランチ」に対応する<code>origin/main</code>というブランチができる。この時、自動的に<code>origin/main</code>ブランチが<code>main</code>ブランチの上流ブランチとして登録されている。</p>
-<p>上流ブランチは、<code>git merge</code>、<code>git rebase</code>等で、引数を省略した時の対象ブランチとなる。</p>
-<p>例えば、カレントブランチが<code>main</code>で、上流ブランチが<code>origin/main</code>である時に</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge
-<span class="fu">git</span> rebase</code></pre></div>
-<p>を実行すると、それぞれ</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge origin/main
-<span class="fu">git</span> rebase origin/main</code></pre></div>
-<p>と等価になる。</p>
-<p>TODO: git fetchの説明</p>
-<h2 id="git-pull"><code>git pull</code></h2>
-<p><code>git pull</code>を実行すると、<code>git fetch</code>と<code>git merge</code>を一度に行うことができる。しかし、<code>git pull</code>の動作は、特に引数を指定した時に直観的でないため、慣れない人が使うとトラブルを起こすことが多い。</p>
+<h2 id="上流ブランチとリモート追跡ブランチ">上流ブランチとリモート追跡ブランチ</h2>
+<p>Gitではローカルにリモートの情報のコピーを用意しておき、それを介してリモートとやりとりする。慣れないとこのやりとりがイメージしづらいので、一度しっかり理解しておきたい。リモートとのやりとりには、特別なブランチを用いる。</p>
+<p>いま、リモート(<code>origin</code>)にも、ローカルにも<code>main</code>というブランチがあるとしよう。Gitでは、リモートにある情報も全てローカルにコピーがある。リモート<code>origin</code>の<code>main</code>ブランチに対応するブランチは<code>origin/main</code>という名前でローカルに保存されている。このブランチを、ローカルの<code>main</code>ブランチの <strong>上流ブランチ(upstream branch)</strong> と呼ぶ。最初にクローンした直後、<code>main</code>ブランチと共に、「リモートの<code>main</code>ブランチ」に対応する<code>origin/main</code>というブランチが作成され、自動的に<code>origin/main</code>ブランチが<code>main</code>ブランチの上流ブランチとして登録される。ローカルの<code>origin/main</code>は、リモートの<code>main</code>を追跡しており、<code>git fetch</code>や<code>git push</code>により同期する。リモートの<code>main</code>ブランチに対して、<code>origin/main</code>を <strong>リモート追跡ブランチ (remote-tracking branch)</strong> と呼ぶ。図解すると以下のようになる。</p>
+<div class="figure">
+<img src="fig/upstream_branch.png" alt="upstream branch" />
+<p class="caption">upstream branch</p>
+</div>
+<p>ローカルの<code>main</code>ブランチにとっての「上流」はローカルの<code>origin/main</code>ブランチであり、<code>origin/main</code>を<code>main</code>の上流ブランチと呼ぶまた、ローカルの<code>origin/main</code>ブランチはリモートの<code>main</code>ブランチをリモート追跡しており、<code>origin/main</code>をリモートの<code>main</code>ブランチのリモート追跡ブランチと呼ぶつまり<code>origin/main</code>は上流ブランチでもリモート追跡ブランチでもあることに注意したい。</p>
+<p>最初にリポジトリをクローンした時、メインブランチである<code>main</code>ができるが、自動的に上流ブランチ<code>origin/main</code>も作成される。ローカルの<code>main</code>はローカルの<code>origin/main</code>を、ローカルの<code>origin/main</code>はリモートの<code>main</code>を見ている。</p>
+<p>上流ブランチは、<code>git fetch</code>、<code>git merge</code>、<code>git rebase</code>等で、引数を省略した時の対象ブランチとなる。先の<code>fetch</code>、<code>merge</code>、<code>push</code>などの操作を、ブランチがどのように動くかも含めてもう一度見てみよう。</p>
+<p>まず、リモートリポジトリの<code>main</code>の歴史が、ローカルの<code>main</code>よりも進んでいる状態で<code>git fetch</code>しよう。<code>main</code>に上流ブランチ<code>origin/main</code>が設定されており、<code>origin/main</code>はリモートの<code>main</code>をリモート追跡しているため、これは</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> fetch origin main</code></pre></div>
+<p>つまり「リモートリポジトリ<code>origin</code>の<code>main</code>ブランチの指す情報をローカルとってこい」と同じ意味となる。するとリモートから「進んでいる歴史」分のコミットがローカルに落ちてきて、さらにローカルの<code>origin/main</code>ブランチが先に進む。これにより、リモートの<code>main</code>と、ローカルの<code>origin/main</code>が持つ歴史が同じになった。</p>
+<div class="figure">
+<img src="fig/fetch_remote.png" alt="fetch_remote.png" />
+<p class="caption">fetch_remote.png</p>
+</div>
+<p>次に、<code>git merge</code>を実行する。カレントブランチが<code>main</code>であり、上流ブランチとして<code>origin/main</code>が設定されているため、これは</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge origin/main</code></pre></div>
+<p>と同じ意味となる。今回のケースではfast-forward可能であるため、単に<code>main</code>が<code>origin/main</code>の指すのと同じコミットを差すように移動する。これにより、ローカルの<code>main</code>がリモートの<code>main</code>と同じ歴史を持つようになった。</p>
+<p>次にpushを見てみよう。コミットをすることで、ローカルにある<code>main</code>ブランチの歴史が進んだ。しかし、<code>origin/main</code>はそのままだ。この状態で<code>git push</code>をしよう。すると、</p>
+<div class="figure">
+<img src="fig/push_remote.png" alt="push remote" />
+<p class="caption">push remote</p>
+</div>
+<p>すると、ローカルで新たに追加されたコミットがリモートに送られ、リモートの<code>main</code>ブランチが先に進む。さらに、ローカルの<code>origin/main</code>ブランチも先に進む。これにより、ローカルの<code>main</code>ブランチ、<code>origin/main</code>ブランチ、リモートの<code>main</code>ブランチが全て同じ歴史を共有できた。</p>
+<p>まとめると以下のようになる。</p>
+<ul>
+<li><code>git fetch</code>により、リモートの<code>main</code>とローカルの<code>origin/main</code>が同じ状態になる</li>
+<li><code>git merge</code>により、ローカルの<code>main</code>と<code>origin/main</code>が同じ状態になる</li>
+<li><code>git push</code>により、、ローカルの<code>main</code>と<code>origin/main</code>、リモートの<code>main</code>が同じ状態になる</li>
+</ul>
+<p>実際には<code>git fetch</code>や<code>git push</code>などはリモートやブランチを自由に指定することができるが、それは必要になった時に覚えれば良い。まずは<code>main</code>ブランチのみをリモートと同期させ、<code>git fetch</code>や<code>git push</code>は引数無しで実行するようにしておこう。</p>
+<h2 id="その他">その他</h2>
+<p>個人開発においては、リモート操作は初回の<code>git clone</code>、そして開発中の<code>git fetch</code>と<code>git push</code>だけ覚えておけばよい。しかし、Gitには他にもリモート操作のためのコマンドがある。リモート操作がらみで気を付けるべきことと合わせて簡単に紹介しておこう。</p>
+<h3 id="git-remote"><code>git remote</code></h3>
+<p>リモートリポジトリを管理するコマンドが<code>git remote</code>だ。例えば<code>git remote -v</code>で、リモートリポジトリのURL等を知ることができる。</p>
+<p>適当なリポジトリをHTTPSでクローンしてみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> clone https://github.com/appi-github/clone-sample.git</code></pre></div>
+<p><code>clone-sample</code>というディレクトリができたはずなので、そこに入って<code>git remote -v</code>を実行してみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="bu">cd</span> clone-sample
+$ <span class="fu">git</span> remote -v
+<span class="ex">origin</span>  https://github.com/appi-github/clone-sample.git (fetch)
+<span class="ex">origin</span>  https://github.com/appi-github/clone-sample.git (push)</code></pre></div>
+<p>これは、リモートリポジトリの名前として<code>origin</code>が登録されており、<code>fetch</code>と<code>push</code>の対象となるURLとしてどちらも<code>https://github.com/appi-github/clone-sample.git</code>が登録されている、という意味だ。なお、Gitは同じリモートリポジトリの名前で<code>fetch</code>と<code>push</code>に異なるURLを指定できるが、本講義では扱わない。</p>
+<p>もしSSHプロトコルでcloneしていた場合には以下のような表示となる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> remote -v
+<span class="ex">origin</span>  git@github.com:appi-github/clone-sample.git (fetch)
+<span class="ex">origin</span>  git@github.com:appi-github/clone-sample.git (push)</code></pre></div>
+<p><code>git remote</code>を普段使うことはあまりないが、既存のローカルリポジトリをGitHubに登録する時には必要となる。その場合は、まずGitHubにベアリポジトリを作っておき、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:アカウント名/project.git</code></pre></div>
+<p>などとしてリモートリポジトリをローカルリポジトリに登録する。また、ローカルの<code>main</code>ブランチに上流ブランチを設定する必要がある。<code>git branch -u</code>で設定することもできるが、最初の<code>git push</code>時に<code>-u</code>で指定するのが一般的だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push -u origin main</code></pre></div>
+<p>これは</p>
+<ul>
+<li>リモートの<code>main</code>をリモート追跡するブランチ<code>origin/main</code>ローカルブランチを作る</li>
+<li>情報をリモートに送信する</li>
+<li><code>main</code>の上流ブランチとして<code>origin/main</code>を設定する</li>
+</ul>
+<p>という操作を行う。もし<code>-u</code>オプションをつけなかった場合、</p>
+<ul>
+<li>リモートの<code>main</code>をリモート追跡するブランチ<code>origin/main</code>ローカルブランチを作る</li>
+<li>情報をリモートに送信する</li>
+</ul>
+<p>という処理のみ行い、<code>main</code>ブランチの上流ブランチの設定はしない。後で<code>origin/main</code>を<code>main</code>の上流にしたくなった場合はカレントブランチが<code>main</code>の状態で</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -u origin/main</code></pre></div>
+<p>を実行する。これらの操作についてはGitHubの操作の項で改めて説明する。</p>
+<h3 id="git-pull"><code>git pull</code></h3>
+<p><code>git pull</code>を実行すると、<code>git fetch</code>と<code>git merge</code>を一度に行うことができる。カレントブランチに上流ブランチが設定されている状態で</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> pull</code></pre></div>
+<p>を行うと、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> fetch
+<span class="fu">git</span> merge</code></pre></div>
+<p>を実行したのと同じ状況になる。</p>
+<p>しかし、<code>git pull</code>の動作は、特に引数を指定した時に直観的でないため、慣れない人が使うとトラブルを起こすことが多い。</p>
 <p>慣れるまでは、とりあえず<code>git pull</code>の存在は忘れ、<code>git fetch</code>してから、<code>git merge</code>する習慣をつければ良い。</p>
+<h3 id="プッシュしたブランチをリベースしない">プッシュしたブランチをリベースしない</h3>
+<p>TODO: fetch時の差分検出の絵</p>
+<p>リモートリポジトリとローカルリポジトリの「歴史」は<code>git fetch</code>や<code>git push</code>により同期することができる。<code>git fetch</code>をした場合、Gitはローカルの<code>origin/main</code>が指すコミットと、リモートの<code>main</code>が指すコミットを比較することで「差分」を検出する。したがって、<code>git fetch</code>をする場合、ローカルの<code>origin/main</code>が指すコミットがリモートに存在することが前提となる。<code>push</code>も同様だ。</p>
+<p>普通に作業をしていれば、歴史は増える一方で減ることはないから、昔存在したコミットが消えることはなく、<code>origin/main</code>が指すコミットは必ずリモートに存在することになる。しかし、Gitには歴史を改変できるコマンドがある。<code>git rebase</code>だ。</p>
+<p><code>git rebase</code>により歴史を改変すると、リモートとローカルで歴史が食い違ってしまう。すると、<code>git push</code>は差分の追加だけでリモートを更新することができない。</p>
+<p>このような時のために、Gitにはforce pushというオプションが用意されている。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push -f</code></pre></div>
+<p>と<code>-f</code>オプションを付けることで、無理やりローカルの歴史をリモートに反映させることができる。当然、同じリポジトリを共有している他の人は混乱することになるし、個人開発でも、複数のローカルリポジトリがあった場合には収拾つかなくなるであろう。</p>
+<p>慣れるまでは、原則として</p>
+<ul>
+<li>プッシュ済みのブランチ(特に<code>main</code>や<code>master</code>)はリベースしない</li>
+<li>force push (<code>git push -f</code>)は使わない</li>
+</ul>
+<p>ということを守れば良い。もし「しまった！」と思った場合、ほとんどの場合、force pushする前であればなんとかなることが多いので、自分で解決しようとせず近くにいるGitに詳しい人に助けを求めること。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>Gitでは、リモートリポジトリとやりとりをすることで開発を進める。通常、リモートリポジトリは一つだけであり、<code>origin</code>という名前を付ける。通常の開発の流れは以下のようになるだろう。</p>
+<ol style="list-style-type: decimal">
+<li><code>git fetch</code>によりリモートの更新をダウンロード</li>
+<li><code>git merge</code>によりリモートの更新を取り込む</li>
+<li><code>git switch -c newbranch</code>により新たに<code>newbranch</code>ブランチを切って作業開始</li>
+<li>作業修了したら(好みに応じて<code>newbranch</code>ブランチから<code>main</code>にリベースしてから)<code>main</code>から<code>newbranch</code>をマージする</li>
+<li><code>git push</code>する</li>
+</ol>
+<p>リモートリポジトリとはリモート追跡ブランチを使って情報を同期する。ローカルにある<code>origin/main</code>ブランチは、リモート<code>origin</code>の<code>main</code>ブランチをリモート追跡するブランチであり、また多くの場合においてローカルの<code>main</code>ブランチの上流ブランチでもある。</p>
+<p>Gitのリモートがらみには、<code>git pull</code>や、<code>git push -f</code>など、危険なコマンドがある。意味を完全に理解するまではこれらのコマンドを使わないようにすると良いだろう。</p>
           </article>
   </body>
 
