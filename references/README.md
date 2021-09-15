@@ -17,6 +17,7 @@ GitHubの公式ドキュメント。これもわかりやすい。
 * [サル先生のGit入門](https://backlog.com/ja/git-tutorial/)
 * [いつやるの？Git入門](https://www.slideshare.net/matsukaz/git-28304397)
 * [こわくないGit](https://www.slideshare.net/kotas/git-15276118)
+* [Git で「追跡ブランチ」って言うのやめましょう](https://qiita.com/uasi/items/69368c17c79e99aaddbf)
 
 ## 東京工業大学システム開発プロジェクトの公開資料
 
