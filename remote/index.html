@@ -203,13 +203,23 @@ $ <span class="fu">git</span> remote -v
 <p>TODO: fetch時の差分検出の絵</p>
 <p>リモートリポジトリとローカルリポジトリの「歴史」は<code>git fetch</code>や<code>git push</code>により同期することができる。<code>git fetch</code>をした場合、Gitはローカルの<code>origin/main</code>が指すコミットと、リモートの<code>main</code>が指すコミットを比較することで「差分」を検出する。したがって、<code>git fetch</code>をする場合、ローカルの<code>origin/main</code>が指すコミットがリモートに存在することが前提となる。<code>push</code>も同様だ。</p>
 <p>普通に作業をしていれば、歴史は増える一方で減ることはないから、昔存在したコミットが消えることはなく、<code>origin/main</code>が指すコミットは必ずリモートに存在することになる。しかし、Gitには歴史を改変できるコマンドがある。<code>git rebase</code>だ。</p>
-<p><code>git rebase</code>により歴史を改変すると、リモートとローカルで歴史が食い違ってしまう。すると、<code>git push</code>は差分の追加だけでリモートを更新することができない。</p>
-<p>このような時のために、Gitにはforce pushというオプションが用意されている。</p>
+<p><code>git rebase</code>により歴史を改変すると、リモートとローカルで歴史が食い違ってしまう。すると、<code>git push</code>は差分の追加だけ(fast forward)でリモートを更新することができなくなる。</p>
+<p>このような時のために、<code>git push</code>に<code>-f</code>オプションをつけることで、無理やりpushする、force pushというオプションが用意されている。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push -f</code></pre></div>
-<p>と<code>-f</code>オプションを付けることで、無理やりローカルの歴史をリモートに反映させることができる。当然、同じリポジトリを共有している他の人は混乱することになるし、個人開発でも、複数のローカルリポジトリがあった場合には収拾つかなくなるであろう。</p>
+<p>これにより無理やりローカルの歴史をリモートに反映させることができる。</p>
+<div class="figure">
+<img src="fig/force_push.png" alt="force push" />
+<p class="caption">force push</p>
+</div>
+<p>しかし、push済みの歴史が改変されてしまうと、他のローカルリポジトリの持つ歴史と矛盾することになる。もともとリモートの<code>main</code>は<code>c3</code>というコミットを指していた。その状態でクローンしたリポジトリは、<code>origin/main</code>が<code>c3</code>を指すことになる。ところが、そのあとリベースにより改変された歴史が強制プッシュされてしまうと、<code>origin/main</code>が指していた<code>c3</code>というコミットがなくなってしまう。</p>
+<div class="figure">
+<img src="fig/force_push2.png" alt="force push2" />
+<p class="caption">force push2</p>
+</div>
+<p>多人数開発であればもちろんの事、個人の開発でも、家と大学のPCでリポジトリの歴史に矛盾が出たら混乱することが予想できるであろう。</p>
 <p>慣れるまでは、原則として</p>
 <ul>
-<li>プッシュ済みのブランチ(特に<code>main</code>や<code>master</code>)はリベースしない</li>
+<li>プッシュ済みのブランチ(特に<code>main</code>や<code>master</code>)はリベースしない(リベースはローカルブランチのみ)</li>
 <li>force push (<code>git push -f</code>)は使わない</li>
 </ul>
 <p>ということを守れば良い。もし「しまった！」と思った場合、ほとんどの場合、force pushする前であればなんとかなることが多いので、自分で解決しようとせず近くにいるGitに詳しい人に助けを求めること。</p>
