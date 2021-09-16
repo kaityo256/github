@@ -67,7 +67,6 @@
 
 * トラブルシューティング
 * reset
-* log
 * stash
 * blame
 * bisect
