@@ -95,7 +95,9 @@ Omit --global to set the identity only in this repository.</code></pre>
 <span class="fu">mkdir</span> project <span class="co"># projectディレクトリを作成</span>
 <span class="bu">cd</span> project    # projectディレクトリへ移動</code></pre></div>
 <p>カレントディレクトリが<code>project</code>ディレクトリである時に<code>git init</code>することでGitの初期化が行われる。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="bu">pwd</span>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="bu">pwd</span>                      # カレントディレクトリの確認
+<span class="ex">/c/Users/watanabe/project</span>
+
 $ <span class="fu">git</span> init                 # カレントディレクトリをGitリポジトリとして初期化
 <span class="ex">Initialized</span> empty Git repository in C:/Users/watanabe/project/.git/</code></pre></div>
 <p>すると、<code>project</code>ディレクトリ直下に<code>.git</code>というディレクトリが作られる。Gitの管理情報は全てこのディレクトリに格納される。また、Git Bashを使っているなら、プロンプトに<code>~/project (main)</code>と、Git管理されたディレクトリであり、現在のブランチが<code>main</code>であることが表示されたはずだ。</p>

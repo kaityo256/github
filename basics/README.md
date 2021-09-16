@@ -98,7 +98,9 @@ cd project    # projectディレクトリへ移動
 カレントディレクトリが`project`ディレクトリである時に`git init`することでGitの初期化が行われる。
 
 ```sh
-$ pwd
+$ pwd                      # カレントディレクトリの確認
+/c/Users/watanabe/project
+
 $ git init                 # カレントディレクトリをGitリポジトリとして初期化
 Initialized empty Git repository in C:/Users/watanabe/project/.git/
 ```
