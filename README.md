@@ -35,12 +35,15 @@
 
 ### [Gitの基本的な使い方](basics/README.md)
 
-* 初期設定(`config`)
-* 初期化とコミット(`init, add, commit`)
-* 状態表示(`status, diff`)
-* ブランチ操作(`switch, checkout, merge, branch`)
-* VSCodeの設定と操作
-* その他(`.gitignore`)
+* 初期設定
+* Gitの一連の操作
+* `git init`
+* `git add`
+* `git commit`
+* `git diff`
+* `git log`
+* `git config`
+* `.gitignore`
 * 余談：データベース"ふっとばし"スペシャリスト
 
 ### [ブランチ操作](branch/README.md)
