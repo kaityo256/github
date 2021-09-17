@@ -218,11 +218,26 @@ Dropped refs/stash@{0} (171f9ddd0c02ed7e7ed9105aa9ef30f3553aa742)
 
 ### プッシュしようとしたらリジェクトされた
 
+あなたは家で作業をして、一段落したのでコミット、プッシュしてから寝ようとしたら、無情にも`rejected`というメッセージが出て拒否された。
+
+```sh
+To /URL/to/test.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to '/URL/to/test.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+
+そこであなたは、学校で修正をプッシュしたのに、家のリポジトリで`git fetch`、`git merge`するのを忘れていたことに気が付く。
+
 ### リベースしようとしたら衝突した
 
 ## その他の便利なコマンド
 
-### この部分はいつ誰が書いた？
+### この部分はいつ誰が書いた？(`git blame`)
 
 多人数開発をしていると、頻繁に「この部分はいつ誰が書いたんだ？」と思うことであろう。個人開発をしていてもたまに「これ誰が書いたんだよ！」と思うことが多い(もちろん自分である)。そんな時に便利なコマンドが`git blame`だ。
 
@@ -265,7 +280,7 @@ $ git blame test.py
 
 個人開発でバグに気が付いた時、どの関数がどの順番で作られたかは非常に有用な情報なので、個人開発でも役に立つ。
 
-### このバグが入ったのはいつだ？
+### このバグが入ったのはいつだ？(`git bisect`)
 
 プログラムをずっと開発していて、ある時にバグに気が付いたとする。最近入れたバグならデバッグは比較的容易だが、ずいぶん前に入れてしまったバグが今になって顕在化した場合はやっかいだ。三日前の自分は全くの他人であり、そのバグの振る舞いからどこでどういう経緯でバグが入ったかをすぐに特定することは難しいであろう。しかし、少なくとも昔はバグが入っていなかった時があり、現在はバグっているのだから、どこかに「バグが混入したコミット」が存在するはずだ。これを二分探索で調べるためのコマンドが`git bisect`である。
 
