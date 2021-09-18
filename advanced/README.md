@@ -253,6 +253,75 @@ git push # 問題なく実行できる
 
 ### リベースしようとしたら衝突した
 
+### 頭が取れた(`detached HEAD`)
+
+通常、ブランチがコミットを指し、`HEAD`がブランチを指すことで「カレントブランチ」を表現している。例えば適当なリポジトリで`git log --oneline`を実行すると、
+
+```sh
+$ git lone --online
+fe81057 (HEAD -> main) updates from test2
+4692a78 initial commit
+```
+
+などと表示される。これは、`HEAD`が`main`ブランチを指しており(カレントブランチが`main`であり)、`main`ブランチは`fe81057`というコミットを指している状態だ。これにより、`HEAD`は`main`を経由してコミットを指している。
+
+しかし、Gitの操作の途中、`HEAD`がブランチを経由せずにコミットを直接指している状態になることがある。これを`detached HEAD`状態と呼ぶ。
+
+例えば先ほどの状態で`git checkout fe81057`を実行すると、`git status`でこんな表示が出るようになる。
+
+```sh
+HEAD detached at fe81057
+nothing to commit, working tree clean
+```
+
+これは、頭が取れた(`detached HEAD`)状態であり、`HEAD`が直接コミット`fe81057`を指しているよ、という意味だ。`git log --oneline`はこんな表示になる。
+
+```sh
+$ git log --oneline
+fe81057 (HEAD, main) updates from test2
+4692a78 initial commit
+```
+
+先ほどは`HEAD -> main`と、`HEAD`が`main`を指していたが、いまは`HEAD`と`main`が個別にコミット`fe81057`を指している状態であることがわかるであろう。
+
+Gitでは、例えば以下の操作で頭が取れる。
+
+* `git checkout`で直接コミットを指定した
+* `git rebase`中に衝突した
+* `git bisect`の実行中
+
+`git checkout`を直接使うことはあまりないであろう。`git rebase`の最中によくわからなくなったら、`git rebase --abort`で中止し、もう一度ゆっくり考えれば良い。`git bisect`の最中によくわからなくなったら、`git bisect reset`を実行して`bisect`から抜けよう。
+
+それ以外で、「なんだかよくわからないが頭が取れてしまった」という状態になったら、まずはいま`HEAD`が指しているコミットにブランチを作って貼っておこう。
+
+```sh
+$ git status
+HEAD detached at 4692a78
+nothing to commit, working tree clean
+```
+
+いま、頭が取れて、`HEAD`が`4692a78`を指した状態だ。なぜこの状態になったかがよくわからないとしよう。ならば、後でこの状態に戻ってこられるように、ブランチを付けておこう。
+
+```sh
+git branch 20210918_detached_head
+```
+
+これで、`4692a78`に`20210918_detached_head`というブランチがついた。この状態で`main`ブランチに戻る。
+
+```sh
+git switch main
+```
+
+ブランチを見てみよう。
+
+```sh
+$ git branch
+  20210918_detached_head
+* main
+```
+
+先ほど頭が取れた状態で`HEAD`が指していたコミットに`20210918_detached_head`というブランチがついている。しばらくそのままにしておいて、不要だと思えば削除すれば良いだろう。ブランチをつけずに`main`に戻ると、先ほどのコミットハッシュ`4692a78`を覚えていない限り、頭が取れた状態に戻ることはできなくなる。「理由もわからず頭が取れてよくわからない状態になったら、ブランチをつけて`main`に戻る」と覚えておけばよい。
+
 ## その他の便利なコマンド
 
 ### この部分はいつ誰が書いた？(`git blame`)
