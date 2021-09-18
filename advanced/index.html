@@ -132,7 +132,7 @@ $ <span class="fu">git</span> restore -W -S test.txt <span class="co"># 両方�
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> switch -c newbranch 9b662ef
 <span class="ex">Switched</span> to a new branch <span class="st">&#39;newbranch&#39;</span></code></pre></div>
 <p>したがって、<code>git checkout</code>の代わりに<code>git switch</code>を使った方が良い。同様な理由でファイルの修正を元に戻すのも<code>git restore</code>を使った方が良い。古い本やサイトには、まだ<code>git checkout</code>を使う方法が説明されていたりするので注意が必要だ。</p>
-<h3 id="メインブランチで作業を開始してしまった">メインブランチで作業を開始してしまった</h3>
+<h3 id="メインブランチで作業を開始してしまったgit-stash">メインブランチで作業を開始してしまった(<code>git stash</code>)</h3>
 <p>Gitでは原則としてメインブランチでは作業せず、必ずフィーチャーブランチを切って作業する。ところが、ファイルを修正した後で「あっ！メインブランチで作業してた！」と気が付いたとしよう。そんな時は<code>git stash</code>を使う。<code>git stash</code>はコミットを作らずに変更を退避するコマンドだ。</p>
 <p>今、<code>main</code>ブランチにいるまま<code>test.txt</code>を結構修正してしまった状態にある。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
@@ -277,7 +277,8 @@ $ <span class="fu">git</span> commit -m <span class="st">&quot;merge&quot;</span
 <p>「頭が取れているよ (<code>detached HEAD</code>)」という警告が出るが気にしなくて良い。この状態で<code>git rebase --continue</code>を実行すれば、無事にリベースが完了し、<code>HEAD</code>が<code>branch</code>を指して<code>detached HEAD</code>が解消する。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> rebase --continue
 <span class="ex">Successfully</span> rebased and updated refs/heads/branch.</code></pre></div>
-<p>Gitのリベースは理解するまでに時間がかかる。「リベースとは、共通祖先からの修正をリベース先に次々と適用して、新しいコミットを作っていくこと」だと理解していれば、なぜ衝突が複数回起きる可能性があるのか、なぜ<code>git add</code>が衝突解決をGitに教えたことになるのかが理解しやすいであろう。<code>git add</code>は衝突解決をGitに教えるコマンドではなく、あくまでもインデックスに修正をステージするコマンドであり、リベース中のステージングは、「次に作るべきコミットの姿をGitに教える」という役割を果たしている。</p>
+<p>「Gitのリベースとは、共通祖先からの修正をリベース先に次々と適用して、新しいコミットを作っていくこと」だと理解していれば、なぜ衝突が複数回起きる可能性があるのか、なぜ<code>git add</code>が衝突解決をGitに教えたことになるのかが理解しやすいであろう。<code>git add</code>は衝突解決をGitに教えるコマンドではなく、あくまでもインデックスに修正をステージするコマンドであり、リベース中のステージングは、「次に作るべきコミットの姿をGitに教える」という役割を果たしている。</p>
+<p>Gitのリベースは理解が難しいため、特に個人開発の場合は、慣れるまでは<code>git merge</code>を使う、という運用で良い。Gitに慣れ、後でデバッグする時に歴史が整理されていないのが気になりはじめところで<code>git rebase</code>を使い始めると良いだろう。</p>
 <h2 id="その他の便利なコマンド">その他の便利なコマンド</h2>
 <h3 id="この部分はいつ誰が書いたgit-blame">この部分はいつ誰が書いた？(<code>git blame</code>)</h3>
 <p>多人数開発をしていると、頻繁に「この部分はいつ誰が書いたんだ？」と思うことであろう。個人開発をしていてもたまに「これ誰が書いたんだよ！」と思うことが多い(もちろん自分である)。そんな時に便利なコマンドが<code>git blame</code>だ。</p>
