@@ -107,7 +107,11 @@
 
 ### [Gitの操作(応用編)](practice_advanced/README.md)
 
-* `git bisect`を体験する
+* `git amend`によりコミットが変更されることを確認する
+* `git merge`の衝突を解決する
+* `git rebase`により歴史を改変する
+* `git rebase`の衝突を解決する
+* `git bisect`を使ってみる
 
 ### [GitHubの操作](practice_github/README.md)
 
