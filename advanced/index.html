@@ -46,17 +46,299 @@
   <body>
     <article class="markdown-body">
                         <h1 id="gitの使い方応用編">Gitの使い方(応用編)</h1>
-<p>(初心者にとっては)やや使用頻度の低いコマンドの説明。</p>
+<h2 id="gitトラブルシューティング">Gitトラブルシューティング</h2>
+<p>Gitを使っていると、たまに「しまった！」と思うことがある。Gitに慣れていないとトラブルが起きた時に何が起きたかわからず、適切に対処することが難しい。以下ではありがちなトラブルとその対処について説明する。</p>
+<h3 id="コミットメッセージを間違えたgit-commit---amend">コミットメッセージを間違えた(<code>git commit --amend</code>)</h3>
+<p>Gitはコミットの際にメッセージをつけることが必須である。ちゃんとエディタで書く人もいるだろうが、コマンドラインから<code>git commit -m</code>でメッセージを書いてしまうことが多いだろう。その際、コミットの後に「あ！打ち間違えた！」と思うことがある。</p>
+<p>たとえば<code>test.txt</code>を修正し、<code>git add</code>、<code>git commit</code>したとしよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add test.txt
+<span class="fu">git</span> commit -m <span class="st">&quot;updaets test.txt&quot;</span></code></pre></div>
+<p>そしてコミット直後に「あ！<code>updates</code>を打ち間違えている！」と気づくが、すでに歴史に間違いが刻まれてしまった。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">8f7d4f8</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">updaets</span> test.txt
+<span class="ex">78efaf0</span> initial commit</code></pre></div>
+<p>このままではとてもかっこ悪い歴史が残ってしまう。そこで、<code>git commit --amend</code>を実行することで、直前のコミットのコミットメッセージを修正することができる。そのまま実行するとエディタが開くが、<code>-m</code>も指定してメッセージを上書きするのが楽であろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit --amend -m <span class="st">&quot;updates test.txt&quot;</span></code></pre></div>
+<p>歴史を確認しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">52304ef</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">updates</span> test.txt
+<span class="ex">78efaf0</span> initial commit</code></pre></div>
+<p>無事にコミットメッセージが書き換えられた。</p>
+<p>なお、ここで先ほどとコミットハッシュが変わっている(<code>8f7d4f8</code>→<code>52304ef</code>)ことに注意したい。<code>git commit --amend</code>によりコミットメッセージを修正すると、コミットハッシュが変わってしまう。<code>git rebase</code>の時と同様に歴史がおかしくなるため、<code>git push</code>した後には<code>git commit --amend</code>を実行してはならない<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>。</p>
+<h3 id="修正を取り消したいgit-restore">修正を取り消したい(<code>git restore</code>)</h3>
+<p>ファイルを修正したが、その修正をなかったことにしたい、ということがある。例えば、最後にコミットした状態から<code>test.txt</code>に修正が加えられたとしよう。<code>git diff</code>はこうなっている。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> diff
+<span class="fu">diff</span> --git a/test.txt b/test.txt
+<span class="ex">index</span> e965047..4f34f18 100644
+<span class="ex">---</span> a/test.txt
+<span class="ex">+++</span> b/test.txt
+<span class="ex">@@</span> -1 +1,2 @@
+ <span class="ex">Hello</span>
+<span class="ex">+Modification</span> to be undone</code></pre></div>
+<p>「Modification to be undone」という行が追加されている。これを取り消すには、<code>git restore ファイル名</code>とする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> restore test.txt</code></pre></div>
+<p>これにより、<code>test.txt</code>は最後にコミットした状態に戻る。なお、<code>git restore</code>はオプションを指定しなかった場合<code>--worktree</code>が付く。これはワーキングツリーのファイルを修正する。<code>--worktree</code>は<code>-W</code>でも良い。</p>
+<h3 id="ステージングを取り消したいgit-restore---staged">ステージングを取り消したい(<code>git restore --staged</code>)</h3>
+<p>先ほどの修正をした後、<code>git add</code>までした状態を考える。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> diff --staged
+<span class="fu">diff</span> --git a/test.txt b/test.txt
+<span class="ex">index</span> e965047..5c936d2 100644
+<span class="ex">---</span> a/test.txt
+<span class="ex">+++</span> b/test.txt
+<span class="ex">@@</span> -1 +1,2 @@
+ <span class="ex">Hello</span>
+<span class="ex">+Modification</span> to be undone</code></pre></div>
+<p>ステージングした状態を取り消すには<code>git restore --staged ファイル名</code>とする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> restore --staged test.txt</code></pre></div>
+<p>これで、先ほどの「最後のコミットからワーキングツリーのみ修正された状態」に戻る。<code>--staged</code>は<code>-S</code>でも良い。</p>
+<p>あまりないと思うが、ワーキングツリーとインデックス両方に修正がある場合は<code>-W -S</code>で両方一度に取り消すことができる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status -s
+<span class="ex">MM</span> test.txt      # ワーキングツリーとインデックス両方に修正がある
+
+$ <span class="fu">git</span> restore -W -S test.txt <span class="co"># 両方一度に取り消し</span></code></pre></div>
+<h3 id="git-checkoutは使わない"><code>git checkout</code>は使わない</h3>
+<p><code>git switch</code>と<code>git restore</code>はGitのバージョン2.23.0から追加された機能であり、それまでは<code>git checkout</code>がその役目を担っていた。</p>
+<p>例えば以下は同じ意味だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> checkout feature
+<span class="fu">git</span> switch feature</code></pre></div>
+<p>また、ファイルの修正も<code>git checkout</code>でできる。以下は同じ意味だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> checkout -- test.txt
+<span class="fu">git</span> restore --staged test.txt</code></pre></div>
+<p>もともと、<code>git checkout</code>に役目が多すぎたためにコマンドが分けられた背景がある。現在、<code>git checkout</code>を使う必要はほとんどない。また、<code>git switch</code>と異なり、<code>git checkout</code>は直接コミットハッシュを指定することができる。</p>
+<p>例えば、いまカレントブランチが<code>main</code>であり、コミット<code>9b662ef</code>を指している状態であるとしよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">9b662ef</span> (HEAD -<span class="op">&gt;</span> main) <span class="bu">test</span></code></pre></div>
+<p>この状態で<code>9b662ef</code>を指定して<code>git checkout</code>すると、<code>HEAD</code>がブランチではなく、直接コミットハッシュを指す「detached HEAD」状態となる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> checkout 9b662ef
+<span class="ex">Note</span>: switching to <span class="st">&#39;9b662ef&#39;</span>.
+
+<span class="ex">You</span> are in <span class="st">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
+<span class="ex">changes</span> and commit them, and you can discard any commits you make in this
+<span class="ex">state</span> without impacting any branches by switching back to a branch.
+
+<span class="ex">If</span> you want to create a new branch to retain commits you create, you may
+<span class="kw">do</span> <span class="ex">so</span> (now or later) <span class="ex">by</span> using -c with the switch command. Example:
+
+  <span class="fu">git</span> switch -c <span class="op">&lt;</span>new-branch-name<span class="op">&gt;</span>
+
+<span class="ex">Or</span> undo this operation with:
+
+  <span class="fu">git</span> switch -
+
+<span class="ex">Turn</span> off this advice by setting config variable advice.detachedHead to false
+
+<span class="ex">HEAD</span> is now at 9b662ef test</code></pre></div>
+<p>ブランチを介さないでGitを操作するのは事故のもとである。一方、<code>git switch</code>は直接コミットを指定することはできず、コミットハッシュとブランチ名を同時に指定する必要がある。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> switch -c newbranch 9b662ef
+<span class="ex">Switched</span> to a new branch <span class="st">&#39;newbranch&#39;</span></code></pre></div>
+<p>したがって、<code>git checkout</code>の代わりに<code>git switch</code>を使った方が良い。同様な理由でファイルの修正を元に戻すのも<code>git restore</code>を使った方が良い。古い本やサイトには、まだ<code>git checkout</code>を使う方法が説明されていたりするので注意が必要だ。</p>
+<h3 id="メインブランチで作業を開始してしまった">メインブランチで作業を開始してしまった</h3>
+<p>Gitでは原則としてメインブランチでは作業せず、必ずフィーチャーブランチを切って作業する。ところが、ファイルを修正した後で「あっ！メインブランチで作業してた！」と気が付いたとしよう。そんな時は<code>git stash</code>を使う。<code>git stash</code>はコミットを作らずに変更を退避するコマンドだ。</p>
+<p>今、<code>main</code>ブランチにいるまま<code>test.txt</code>を結構修正してしまった状態にある。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
+<span class="ex">On</span> branch main
+<span class="ex">Changes</span> not staged for commit:
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed<span class="kw">)</span>
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore &lt;file&gt;...&quot;</span> to discard changes in working directory<span class="kw">)</span>
+        <span class="ex">modified</span>:   test.txt
+
+<span class="ex">no</span> changes added to commit (use <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span>)</code></pre></div>
+<p>この状態で<code>git stash</code>を実行すると、最後のコミットからの修正が退避される。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> stash  # 修正が退避される
+<span class="ex">Saved</span> working directory and index state WIP on main: 57222d5 update
+
+$ <span class="fu">git</span> status <span class="co"># カレントブランチはきれいな状態に戻る</span>
+<span class="ex">On</span> branch main
+<span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
+<p><code>git stash</code>はスタックになっており、どんどん修正を積み上げることができる。積み上げた修正は<code>git stash list</code>で見ることができる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> stash list
+<span class="ex">stash@</span><span class="dt">{0}</span>: WIP on main: 57222d5 update</code></pre></div>
+<p>積んだ修正は<code>git stash pop</code>で適用できる。新しいブランチを切ってから適用しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> switch -c feature
+<span class="ex">Switched</span> to a new branch <span class="st">&#39;feature&#39;</span>
+
+$ <span class="fu">git</span> stash apply pop
+<span class="ex">On</span> branch feature
+<span class="ex">Changes</span> not staged for commit:
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed<span class="kw">)</span>
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore &lt;file&gt;...&quot;</span> to discard changes in working directory<span class="kw">)</span>
+        <span class="ex">modified</span>:   test.txt
+
+<span class="ex">no</span> changes added to commit (use <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span>)
+<span class="ex">Dropped</span> refs/stash@<span class="dt">{0}</span> (171f9ddd0c02ed7e7ed9105aa9ef30f3553aa742)</code></pre></div>
+<p>これにより、あたかも「最初から<code>feature</code>ブランチを切ってから修正をした」ような状態となった。あとはキリの良いところまで作業してコミットし、<code>main</code>ブランチにマージするなりその前にリベースするなりすれば良い。うっかりメインブランチで作業を開始しがちな人(例えば私)は覚えておきたいコマンドだ。</p>
+<p>なお、<code>git stash</code>を実行するたびに修正が詰みあがっていく。それぞれに<code>stash@{0}</code>、<code>stash@{1}</code>という名前がつき、<code>git stash apply</code>により名前を指定して適用することもできる。しかし、その場合は適用した修正がスタックに残るため、後で<code>git stash drop</code>で消さなければならない。一方、<code>git stash pop</code>は、最後に積んだ修正を適用し、その修正をスタックから削除する。</p>
+<p>あまり積むと後で見てわからなくなるので、原則として<code>git stash</code>は<code>git stash pop</code>と対で利用すると良い。</p>
+<h3 id="プッシュしようとしたらリジェクトされた">プッシュしようとしたらリジェクトされた</h3>
+<p>あなたは家で作業をして、一段落したのでコミット、プッシュしてから寝ようとしたら、無情にも<code>rejected</code>というメッセージが出て拒否された。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">To</span> /URL/to/test.git
+ ! [<span class="ex">rejected</span>]        main -<span class="op">&gt;</span> main (fetch first)
+<span class="ex">error</span>: failed to push some refs to <span class="st">&#39;/URL/to/test.git&#39;</span>
+<span class="ex">hint</span>: Updates were rejected because the remote contains work that you do
+<span class="ex">hint</span>: not have locally. This is usually caused by another repository pushing
+<span class="ex">hint</span>: to the same ref. You may want to first integrate the remote changes
+<span class="ex">hint</span>: (e.g., <span class="st">&#39;git pull ...&#39;</span>) <span class="ex">before</span> pushing again.
+<span class="ex">hint</span>: See the <span class="st">&#39;Note about fast-forwards&#39;</span> in <span class="st">&#39;git push --help&#39;</span> for details.</code></pre></div>
+<p>そこであなたは、大学で修正をプッシュしたのに、家のリポジトリで<code>git fetch</code>、<code>git merge</code>するのを忘れていたことに気が付く。もしプロジェクトがバージョン管理されておらず、プッシュではなく単に大学のサーバにアップロードをしていたら、大学での修正は失われてしまっていたかもしれない。しかし、幸運なことにあなたはGitを使っており、大学で行った修正がGitHubに、家で行った修正がローカルにある。この状態で、まず学校の修正をローカルに持ってこよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> fetch</code></pre></div>
+<p>これにより、ローカルの<code>origin/main</code>が大学で行った作業を反映したコミットを指すようになった。ローカルの<code>main</code>と、<code>origin/main</code>は、同じコミットから歴史が分岐した状態だ。これを一つにするにはマージすれば良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge origin/main</code></pre></div>
+<p>もし衝突したら、適切に修正して<code>git add</code>、<code>git commit</code>すれば良い。これで両方の修正を取り込んだ新たな歴史ができた。この歴史は、リモートの<code>main</code>と歴史を共有しているので、そのまま<code>git push</code>ができる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push <span class="co"># 問題なく実行できる</span></code></pre></div>
+<p>家と大学など、複数の場所で開発を進めることはよくあるであろう。その時、一方でpushを忘れてしまったり、fetch/mergeするのを忘れてコミットしてしまったりすると、<code>git push</code>ができずエラーが起きる。その場合は、慌てずに<code>git fetch</code>、<code>git merge origin/main</code>してから<code>git push</code>すれば良い。</p>
+<h3 id="頭が取れたdetached-head">頭が取れた(<code>detached HEAD</code>)</h3>
+<p>通常、ブランチがコミットを指し、<code>HEAD</code>がブランチを指すことで「カレントブランチ」を表現している。例えば適当なリポジトリで<code>git log --oneline</code>を実行すると、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> lone --online
+<span class="ex">fe81057</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">updates</span> from test2
+<span class="ex">4692a78</span> initial commit</code></pre></div>
+<p>などと表示される。これは、<code>HEAD</code>が<code>main</code>ブランチを指しており(カレントブランチが<code>main</code>であり)、<code>main</code>ブランチは<code>fe81057</code>というコミットを指している状態だ。これにより、<code>HEAD</code>は<code>main</code>を経由してコミットを指している。</p>
+<p>しかし、Gitの操作の途中、<code>HEAD</code>がブランチを経由せずにコミットを直接指している状態になることがある。これを<code>detached HEAD</code>状態と呼ぶ。</p>
+<p>例えば先ほどの状態で<code>git checkout fe81057</code>を実行すると、<code>git status</code>でこんな表示が出るようになる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">HEAD</span> detached at fe81057
+<span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
+<p>これは、頭が取れた(<code>detached HEAD</code>)状態であり、<code>HEAD</code>が直接コミット<code>fe81057</code>を指しているよ、という意味だ。<code>git log --oneline</code>はこんな表示になる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">fe81057</span> (HEAD, main) <span class="ex">updates</span> from test2
+<span class="ex">4692a78</span> initial commit</code></pre></div>
+<p>先ほどは<code>HEAD -&gt; main</code>と、<code>HEAD</code>が<code>main</code>を指していたが、いまは<code>HEAD</code>と<code>main</code>が個別にコミット<code>fe81057</code>を指している状態であることがわかるであろう。</p>
+<p>Gitでは、例えば以下の操作で頭が取れる。</p>
 <ul>
-<li>rebase</li>
-<li>reset</li>
-<li>log</li>
-<li>stash</li>
-<li>blame</li>
-<li>bisect</li>
-<li>cherry-pick</li>
-<li>tag</li>
+<li><code>git checkout</code>で直接コミットを指定した</li>
+<li><code>git rebase</code>中に衝突した</li>
+<li><code>git bisect</code>の実行中</li>
 </ul>
+<p><code>git checkout</code>を直接使うことはあまりないであろう。<code>git rebase</code>中の衝突については後述する。<code>git bisect</code>の最中によくわからなくなったら、<code>git bisect reset</code>を実行して<code>bisect</code>から抜けよう。</p>
+<p>それ以外で、「なんだかよくわからないが頭が取れてしまった」という状態になったら、まずはいま<code>HEAD</code>が指しているコミットにブランチを作って貼っておこう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
+<span class="ex">HEAD</span> detached at 4692a78
+<span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
+<p>いま、頭が取れて、<code>HEAD</code>が<code>4692a78</code>を指した状態だ。なぜこの状態になったかがよくわからないとしよう。ならば、後でこの状態に戻ってこられるように、ブランチを付けておこう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch 20210918_detached_head</code></pre></div>
+<p>これで、<code>4692a78</code>に<code>20210918_detached_head</code>というブランチがついた。この状態で<code>main</code>ブランチに戻る。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch main</code></pre></div>
+<p>ブランチを見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch
+  <span class="ex">20210918_detached_head</span>
+<span class="ex">*</span> main</code></pre></div>
+<p>先ほど頭が取れた状態で<code>HEAD</code>が指していたコミットに<code>20210918_detached_head</code>というブランチがついている。しばらくそのままにしておいて、不要だと思えば削除すれば良いだろう。ブランチをつけずに<code>main</code>に戻ると、先ほどのコミットハッシュ<code>4692a78</code>を覚えていない限り、頭が取れた状態に戻ることはできなくなる。「理由もわからず頭が取れてよくわからない状態になったら、ブランチをつけて<code>main</code>に戻る」と覚えておけばよい。</p>
+<h3 id="リベースしようとしたら衝突した">リベースしようとしたら衝突した</h3>
+<p>リベースとは、リベース先にしたいブランチ(例えば<code>main</code>)と、現在のブランチ(例えば<code>feature</code>)について、共通祖先から<code>feature</code>までの修正を<code>main</code>に順番に適用して、できた最後のブランチに<code>feature</code>ブランチを移動させる操作だ。一度だけマージが行われる<code>git merge</code>とは異なり、パッチの数だけマージ作業が行われる。したがって、パッチの数だけ衝突の可能性がある。また、リベース中に衝突すると、いわゆる頭が取れた(<code>detached HEAD</code>)状態になるために焦りがちだ。その時、「リベースは、修正を次々と適用して新しいコミットを作っている」という感覚を持つと対応がイメージしやすい。</p>
+<div class="figure">
+<img src="fig/rebase_conflict.png" alt="rebase_conflict" />
+<p class="caption">rebase_conflict</p>
+</div>
+<p>いま、上図のような状況を考えよう。<code>root</code>というコミットから、<code>main</code>と<code>branch</code>に歴史が分岐している。ここで<code>branch</code>から<code>main</code>に対して<code>git rebase</code>を実行する。</p>
+<p>すると、<code>root</code>から<code>f1</code>、<code>f1</code>から<code>f2</code>といった「修正パッチ」を、現在<code>main</code>が指している<code>m3</code>に適用し、新たに<code>f1'</code>、<code>f2'</code>、<code>f3'</code>というコミットを作ろうとする。</p>
+<p>しかしいま、<code>f1'</code>を作り、次に<code>f2'</code>を作ろうとしたところで衝突が起きてしまった。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> rebase main
+<span class="ex">Auto-merging</span> test.txt
+<span class="ex">CONFLICT</span> (content)<span class="bu">:</span> Merge conflict in test.txt
+<span class="ex">error</span>: 99a8712を適用できませんでした... f2
+<span class="ex">Resolve</span> all conflicts manually, mark them as resolved with
+<span class="st">&quot;git add/rm &lt;conflicted_files&gt;&quot;</span>, <span class="kw">then</span> <span class="ex">run</span> <span class="st">&quot;git rebase --continue&quot;</span>.
+<span class="ex">You</span> can instead skip this commit: run <span class="st">&quot;git rebase --skip&quot;</span>.
+<span class="ex">To</span> abort and get back to the state before <span class="st">&quot;git rebase&quot;</span>, run <span class="st">&quot;git rebase --abort&quot;</span>.
+<span class="ex">Could</span> not apply 99a8712... f2</code></pre></div>
+<p>リベース中に衝突が起きると、<code>detached HEAD</code>となるため、例えばGit Bashなどでカレントブランチを表示している状態にしていても、ブランチが表示されなくなる。</p>
+<p>現在の状態を見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
+<span class="ex">interactive</span> rebase in progress<span class="kw">;</span> <span class="ex">onto</span> 3152c68
+<span class="ex">Last</span> commands done (2 commands done)<span class="bu">:</span>
+   <span class="ex">pick</span> 1c8a63e f1
+   <span class="ex">pick</span> 99a8712 f2
+<span class="ex">Next</span> command to do (1 remaining command)<span class="bu">:</span>
+   <span class="ex">pick</span> 6aa5661 f3
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git rebase --edit-todo&quot;</span> to view and edit<span class="kw">)</span>
+<span class="ex">You</span> are currently rebasing branch <span class="st">&#39;branch&#39;</span> on <span class="st">&#39;3152c68&#39;</span>.
+  <span class="kw">(</span><span class="ex">fix</span> conflicts and then run <span class="st">&quot;git rebase --continue&quot;</span><span class="kw">)</span>
+  <span class="kw">(</span>このパッチをスキップするには<span class="st">&quot;git rebase --skip&quot;</span>を使用してください<span class="kw">)</span>
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git rebase --abort&quot;</span> to check out the original branch<span class="kw">)</span>
+
+<span class="ex">Unmerged</span> paths:
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore --staged &lt;file&gt;...&quot;</span> to unstage<span class="kw">)</span>
+  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to mark resolution<span class="kw">)</span>
+        <span class="ex">both</span> modified:   test.txt
+
+<span class="ex">no</span> changes added to commit (use <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span>)</code></pre></div>
+<p>大量の情報があるが、</p>
+<ul>
+<li>現在、リベース中であること (<code>interactive rebase in progress</code>)</li>
+<li><code>pick 99a8712 f2</code>を実行したところで止まっていること</li>
+<li><code>pick 6aa5661 f3</code>が残っていること</li>
+<li>衝突を修正してから<code>git rebase --continue</code>を実行するか、リベースを中止して先ほどのブランチに戻るなら<code>git rebase --abort</code>を実行して欲しいこと</li>
+</ul>
+<p>などが書いてある。繰り返しになるが、Gitのメッセージは非常にていねいかつ有用なので、「ちゃんと読む」のがGit上達の近道だ。</p>
+<p>さて、先ほどの図を見るとわかる通り、このリベースで作ろうとしているコミットは3つだ。そのうち二つ目の<code>f2'</code>を作るところで止まっている。したがって今やるべきことは、<code>f2'</code>のあるべき姿をインデックスに再現してコミットし、リベースを続行することだ。</p>
+<p>衝突が起きているファイル<code>test.txt</code>を確認し、両方の修正を取り込んだら、<code>git add</code>、<code>git commit</code>しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> add test.txt
+$ <span class="fu">git</span> commit -m <span class="st">&quot;merge&quot;</span>
+[<span class="ex">detached</span> HEAD 10876ee] merge
+ <span class="ex">1</span> file changed, 1 insertion(+), <span class="ex">1</span> deletion(-)</code></pre></div>
+<p>「頭が取れているよ (<code>detached HEAD</code>)」という警告が出るが気にしなくて良い。この状態で<code>git rebase --continue</code>を実行すれば、無事にリベースが完了し、<code>HEAD</code>が<code>branch</code>を指して<code>detached HEAD</code>が解消する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> rebase --continue
+<span class="ex">Successfully</span> rebased and updated refs/heads/branch.</code></pre></div>
+<p>Gitのリベースは理解するまでに時間がかかる。「リベースとは、共通祖先からの修正をリベース先に次々と適用して、新しいコミットを作っていくこと」だと理解していれば、なぜ衝突が複数回起きる可能性があるのか、なぜ<code>git add</code>が衝突解決をGitに教えたことになるのかが理解しやすいであろう。<code>git add</code>は衝突解決をGitに教えるコマンドではなく、あくまでもインデックスに修正をステージするコマンドであり、リベース中のステージングは、「次に作るべきコミットの姿をGitに教える」という役割を果たしている。</p>
+<h2 id="その他の便利なコマンド">その他の便利なコマンド</h2>
+<h3 id="この部分はいつ誰が書いたgit-blame">この部分はいつ誰が書いた？(<code>git blame</code>)</h3>
+<p>多人数開発をしていると、頻繁に「この部分はいつ誰が書いたんだ？」と思うことであろう。個人開発をしていてもたまに「これ誰が書いたんだよ！」と思うことが多い(もちろん自分である)。そんな時に便利なコマンドが<code>git blame</code>だ。</p>
+<p>いま、こんなPythonスクリプトがあったとしよう。</p>
+<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python"><span class="kw">def</span> func1():
+    <span class="bu">print</span>(<span class="st">&quot;Hello func1&quot;</span>)
+
+
+<span class="kw">def</span> func2():
+    <span class="bu">print</span>(<span class="st">&quot;Hello func2&quot;</span>)
+
+
+<span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&#39;__main__&#39;</span>:
+    <span class="bu">print</span>(<span class="st">&quot;Hello&quot;</span>)
+    func1()
+    func2()</code></pre></div>
+<p><code>git blame</code>にファイル名を指定すると、どの行が、いつ、誰によって修正されたかが表示される。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> blame test.py
+<span class="ex">56127fbb</span> (H. Watanabe 2021-09-17 21:22:49 +0900  1) <span class="ex">def</span> func1()<span class="bu">:</span>
+<span class="ex">56127fbb</span> (H. Watanabe 2021-09-17 21:22:49 +0900  2)     <span class="ex">print</span>(<span class="st">&quot;Hello func1&quot;</span>)
+<span class="ex">56127fbb</span> (H. Watanabe 2021-09-17 21:22:49 +0900  3)
+<span class="ex">56127fbb</span> (H. Watanabe 2021-09-17 21:22:49 +0900  4)
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900  5) <span class="ex">def</span> func2()<span class="bu">:</span>
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900  6)     <span class="ex">print</span>(<span class="st">&quot;Hello func2&quot;</span>)
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900  7)
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900  8)
+^<span class="ex">fea5775</span> (H. Watanabe 2021-09-17 21:22:08 +0900  9) <span class="kw">if</span> <span class="ex">__name__</span> == <span class="st">&#39;__main__&#39;</span>:
+^<span class="ex">fea5775</span> (H. Watanabe 2021-09-17 21:22:08 +0900 10)     <span class="ex">print</span>(<span class="st">&quot;Hello&quot;</span>)
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900 11)     <span class="fu">func1()</span>
+<span class="ex">26bdec20</span> (H. Watanabe 2021-09-17 21:23:31 +0900 12)     <span class="fu">func2()</span></code></pre></div>
+<p>これを見れば、<code>func1</code>や<code>func2</code>がいつ作られたかがわかる。<code>git blame</code>には行を指定したり、コミットハッシュを指定したりするなど多くのオプションがあるが、エディタや統合環境と一緒に使うことがほとんどであろう。</p>
+<p>個人開発でバグに気が付いた時、どの関数がどの順番で作られたかは非常に有用な情報なので、個人開発でも役に立つ。</p>
+<h3 id="このバグが入ったのはいつだgit-bisect">このバグが入ったのはいつだ？(<code>git bisect</code>)</h3>
+<p>プログラムをずっと開発していて、ある時にバグに気が付いたとする。最近入れたバグならデバッグは比較的容易だが、ずいぶん前に入れてしまったバグが今になって顕在化した場合はやっかいだ。三日前の自分は全くの他人であり、そのバグの振る舞いからどこでどういう経緯でバグが入ったかをすぐに特定することは難しいであろう。しかし、少なくとも昔はバグが入っていなかった時があり、現在はバグっているのだから、どこかに「バグが混入したコミット」が存在するはずだ。これを二分探索で調べるためのコマンドが<code>git bisect</code>である。</p>
+<p>今、バグが入ったことが気が付いたブランチがある。例えばカレントブランチである<code>main</code>が指しているコミットはバグっているとしよう。そして、適当に探した昔のコミット<code>e34d733</code>はバグってなかったことが確認できたとしよう。バグはこの二つのコミットの間にある。二分探索を開始しよう。<code>git bisect start 問題のある場所 問題のない場所</code>を実行する。場所はコミットハッシュやブランチで指定できる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect start main e34d733</code></pre></div>
+<p>これによりGitは二分探索モードとなり、まずは適当なコミットを持ってくる。このコミットがバグっているかどうかGitに教えてやろう。もしバグっていたら</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect bad</code></pre></div>
+<p>もし問題がなければ</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect good</code></pre></div>
+<p>を実行する。その度にGitは問題の範囲を狭めていき、最終的にバグが混入したコミットを見つけてくれる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> bisect bad
+<span class="ex">e6348e408b57fdb42eb1281cb77b5c331cd400e7</span> is the first bad commit
+<span class="kw">(</span><span class="ex">snip</span><span class="kw">)</span></code></pre></div>
+<p>上記は、最後に<code>git bisect bad</code>を実行したら、それによりGitが問題箇所を特定し、<code>e6348e4</code>が問題の入ったコミットだよ、と教えてくれた。ここで<code>git diff</code>を取ったりいろいろできるが、とりあえず「バグった印」としてブランチをつけて置くと良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch bug</code></pre></div>
+<p>これで、問題の入ったコミットに<code>bug</code>というブランチがついた。二分探索モードを抜けよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect reset</code></pre></div>
+<p>後は先ほどつけた<code>bug</code>の時点に<code>git switch</code>で戻って詳細を調べれば良い。</p>
+<p>今回は手動で<code>good</code>/<code>bad</code>判定をしたが、判定を自動実行するシェルスクリプトが書けるなら、上記の動作を自動化できる。例えば現在のリポジトリの状態に対して、問題がなければ成功(終了ステータス0を返す)、問題があれば失敗(終了ステータス1を返す)ような<code>test.sh</code>というシェルスクリプトがあるなら、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect start main e34d733
+<span class="fu">git</span> bisect run ./test.sh</code></pre></div>
+<p>と<code>git bisect run</code>コマンドにそのスクリプトを渡すだけで自動的に二分探索してくれる。一般に二分探索は非常に効率が良く、数回も実行すれば問題のコミットを特定できるが、いちいち<code>git bisect good/bad</code>と入力するのも面倒だし、また人力だと間違えることもあるので、可能なら自動化したい。これらについては後に演習で実際に体験する。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>Gitで直面しがちなトラブルとその対処法や、知っていると便利なコマンドについて紹介した。Gitのコマンドが実際に何をやっているかを理解していないと、トラブルの対処が難しい。単に「こういう場合はこうすれば良い」と場当たり的な対処を覚えるのではなく、「いまこういう状態で」「ここを解決したいのでこのコマンドを使っている」といったイメージを大事にして欲しい。</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>個人開発であれば強制プッシュ(<code>git push -f</code>)するという手もあるが、GitHubに強制プッシュの履歴が残り、やはりあまりかっこよくない。そもそも<code>main</code>ブランチで作業するのがよくないため、常に別ブランチで作業するようにして、<code>main</code>ブランチにリベースしてコミットやメッセージを整理してからマージする習慣をつけたい。<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
           </article>
   </body>
 

@@ -113,14 +113,22 @@
 </ul>
 <h3 id="gitの使い方応用編"><a href="advanced/index.html">Gitの使い方(応用編)</a></h3>
 <ul>
-<li>トラブルシューティング</li>
-<li>reset</li>
-<li>log</li>
-<li>stash</li>
-<li>blame</li>
-<li>bisect</li>
-<li>cherry-pick</li>
-<li>tag</li>
+<li>Gitトラブルシューティング
+<ul>
+<li>コミットメッセージを間違えた(<code>git commit --amend</code>)</li>
+<li>修正を取り消したい(<code>git restore</code>)</li>
+<li>ステージングを取り消したい(<code>git restore --staged</code>)</li>
+<li><code>git checkout</code>は使わない</li>
+<li>メインブランチで作業を開始してしまった(<code>git stash</code>)</li>
+<li>プッシュしようとしたらリジェクトされた</li>
+<li>頭が取れた(<code>detached HEAD</code>)</li>
+<li>リベースしようとしたら衝突した</li>
+</ul></li>
+<li>その他の便利なコマンド
+<ul>
+<li>この部分はいつ誰が書いた？(<code>git blame</code>)</li>
+<li>このバグが入ったのはいつだ？(<code>git bisect</code>)</li>
+</ul></li>
 </ul>
 <h3 id="gitの仕組み"><a href="internals/index.html">Gitの仕組み</a></h3>
 <ul>

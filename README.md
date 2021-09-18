@@ -68,13 +68,18 @@
 
 ### [Gitの使い方(応用編)](advanced/README.md)
 
-* トラブルシューティング
-* reset
-* stash
-* blame
-* bisect
-* cherry-pick
-* tag
+* Gitトラブルシューティング
+    * コミットメッセージを間違えた(`git commit --amend`)
+    * 修正を取り消したい(`git restore`)
+    * ステージングを取り消したい(`git restore --staged`)
+    * `git checkout`は使わない
+    * メインブランチで作業を開始してしまった(`git stash`)
+    * プッシュしようとしたらリジェクトされた
+    * 頭が取れた(`detached HEAD`)
+    * リベースしようとしたら衝突した
+* その他の便利なコマンド
+    * この部分はいつ誰が書いた？(`git blame`)
+    * このバグが入ったのはいつだ？(`git bisect`)
 
 ### [Gitの仕組み](internals/README.md)
 
