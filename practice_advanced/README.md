@@ -62,7 +62,83 @@ git log --all --graph --oneline
 
 ## 課題2: git mergeによる衝突の解決
 
-TODO:
+### リポジトリのクローン
+
+サンプル用のリポジトリをクローンせよ。
+
+```sh
+cd github
+git clone https://github.com/appi-github/merge-sample.git
+cd merge-sample
+```
+
+### ブランチの準備
+
+`origin/knock`が存在することを確認せよ。
+
+```sh
+git branch -vva
+```
+
+`origin/knock`から`knock`ブランチを作成せよ。
+
+```sh
+git branch knock origin/knock
+```
+
+### 差分確認
+
+`main`ブランチと、`knock`ブランチの差分を確認せよ。
+
+```sh
+git diff knock
+```
+
+### マージと、マージの中止
+
+`main`ブランチから、`knock`ブランチをマージせよ。
+
+```sh
+git merge knock
+```
+
+`poetry.txt`で衝突が起きたはずだ。中身を確認せよ。
+
+```sh
+cat poetry.txt
+```
+
+一度マージを中止して元に戻ることを確認しよう。
+
+```sh
+git merge --abort
+cat poetry.txt
+```
+
+### マージと衝突の解決
+
+次は衝突を解決し、マージを実行しよう。
+
+```sh
+git merge knock
+```
+
+衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。その後、
+
+```sh
+git add poetry.txt
+git commit -m "knock"
+```
+
+を実行し、マージを完了させよ。
+
+### レポート課題
+
+以下のコマンドでマージが完了した状態の歴史を表示し、それをレポートとして提出せよ。
+
+```sh
+git log --all --graph --oneline
+```
 
 ## 課題3: git rebaseによる歴史改変
 

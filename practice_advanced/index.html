@@ -76,16 +76,46 @@
 <p><code>git commit --amend</code>はコミットハッシュを変更する。先ほど、変更前のコミットに別名をつけておいたので、そこで歴史が分岐したことを確認しよう。以下のコマンドを実行した結果をレポートとして提出せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題2-git-mergeによる衝突の解決">課題2: git mergeによる衝突の解決</h2>
-<p>TODO:</p>
+<h3 id="リポジトリのクローン-1">リポジトリのクローン</h3>
+<p>サンプル用のリポジトリをクローンせよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/merge-sample.git
+<span class="bu">cd</span> merge-sample</code></pre></div>
+<h3 id="ブランチの準備">ブランチの準備</h3>
+<p><code>origin/knock</code>が存在することを確認せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -vva</code></pre></div>
+<p><code>origin/knock</code>から<code>knock</code>ブランチを作成せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch knock origin/knock</code></pre></div>
+<h3 id="差分確認">差分確認</h3>
+<p><code>main</code>ブランチと、<code>knock</code>ブランチの差分を確認せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> diff knock</code></pre></div>
+<h3 id="マージとマージの中止">マージと、マージの中止</h3>
+<p><code>main</code>ブランチから、<code>knock</code>ブランチをマージせよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge knock</code></pre></div>
+<p><code>poetry.txt</code>で衝突が起きたはずだ。中身を確認せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> poetry.txt</code></pre></div>
+<p>一度マージを中止して元に戻ることを確認しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge --abort
+<span class="fu">cat</span> poetry.txt</code></pre></div>
+<h3 id="マージと衝突の解決">マージと衝突の解決</h3>
+<p>次は衝突を解決し、マージを実行しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge knock</code></pre></div>
+<p>衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。その後、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add poetry.txt
+<span class="fu">git</span> commit -m <span class="st">&quot;knock&quot;</span></code></pre></div>
+<p>を実行し、マージを完了させよ。</p>
+<h3 id="レポート課題-1">レポート課題</h3>
+<p>以下のコマンドでマージが完了した状態の歴史を表示し、それをレポートとして提出せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題3-git-rebaseによる歴史改変">課題3: git rebaseによる歴史改変</h2>
 <p>TODO:</p>
 <h2 id="課題4-git-rebaseによる衝突の解決">課題4: git rebaseによる衝突の解決</h2>
-<h3 id="リポジトリのクローン-1">リポジトリのクローン</h3>
+<h3 id="リポジトリのクローン-2">リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
 <span class="fu">git</span> clone https://github.com/appi-github/rebase-conflict-sample
 <span class="bu">cd</span> rebase-conflict-sample</code></pre></div>
-<h3 id="ブランチの準備">ブランチの準備</h3>
+<h3 id="ブランチの準備-1">ブランチの準備</h3>
 <p><code>origin/branch</code>から<code>branch</code>を作成せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c branch origin/branch</code></pre></div>
 <h3 id="歴史の確認-1">歴史の確認</h3>
@@ -111,12 +141,12 @@
 <p>残りのリベースプロセスを続行しよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase --continue</code></pre></div>
 <p>最後まで実行され、リベースが完了するはずだ。</p>
-<h3 id="レポート課題-1">レポート課題</h3>
+<h3 id="レポート課題-2">レポート課題</h3>
 <p>以下のコマンドでリベースが完了した状態の歴史を表示し、それをレポートとして提出せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline --graph</code></pre></div>
 <p>リベース後の歴史は期待通りとなっているか？それはどこを見るとわかるか？</p>
 <h2 id="課題5-git-bisectの確認">課題5: git bisectの確認</h2>
-<h3 id="リポジトリのクローン-2">リポジトリのクローン</h3>
+<h3 id="リポジトリのクローン-3">リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
 <span class="fu">git</span> clone https://github.com/appi-github/bisect-sample.git
@@ -125,7 +155,7 @@
 <p><code>evenodd.sh</code>は、本来であれば入力された数値の偶奇を判定するコードであったが、いつのまにか全ての数字に<code>even</code>と答えるようになった。適当な数字を与えて実行し、確認せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./evenodd.sh</span> 1
 <span class="ex">./evenodd.sh</span> 2</code></pre></div>
-<h3 id="ブランチの準備-1">ブランチの準備</h3>
+<h3 id="ブランチの準備-2">ブランチの準備</h3>
 <p><code>origin/root</code>から<code>root</code>を作成し、カレントブランチを<code>root</code>にせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c root origin/root</code></pre></div>
 <h3 id="バグっていないことを確認">バグっていないことを確認</h3>
@@ -171,7 +201,7 @@
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -v</code></pre></div>
 <p>終わったら二分探索モードを抜けよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect reset</code></pre></div>
-<h3 id="レポート課題-2">レポート課題</h3>
+<h3 id="レポート課題-3">レポート課題</h3>
 <p>いま、<code>main</code>ブランチにいるはずだが、先ほどバグの入ったコミットにつけたブランチに入ろう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch bug</code></pre></div>
 <p>いま、「初めてバグが入ったコミット」にいるはずなのだから、「このコミット」と「一つ前のコミット」の差分を見れば、バグが入った原因がわかるはずだ。以下を実行し、出力された内容をレポートとして提出せよ。</p>
