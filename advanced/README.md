@@ -251,8 +251,6 @@ git push # 問題なく実行できる
 
 家と大学など、複数の場所で開発を進めることはよくあるであろう。その時、一方でpushを忘れてしまったり、fetch/mergeするのを忘れてコミットしてしまったりすると、`git push`ができずエラーが起きる。その場合は、慌てずに`git fetch`、`git merge origin/main`してから`git push`すれば良い。
 
-### リベースしようとしたら衝突した
-
 ### 頭が取れた(`detached HEAD`)
 
 通常、ブランチがコミットを指し、`HEAD`がブランチを指すことで「カレントブランチ」を表現している。例えば適当なリポジトリで`git log --oneline`を実行すると、
@@ -290,7 +288,7 @@ Gitでは、例えば以下の操作で頭が取れる。
 * `git rebase`中に衝突した
 * `git bisect`の実行中
 
-`git checkout`を直接使うことはあまりないであろう。`git rebase`の最中によくわからなくなったら、`git rebase --abort`で中止し、もう一度ゆっくり考えれば良い。`git bisect`の最中によくわからなくなったら、`git bisect reset`を実行して`bisect`から抜けよう。
+`git checkout`を直接使うことはあまりないであろう。`git rebase`中の衝突については後述する。`git bisect`の最中によくわからなくなったら、`git bisect reset`を実行して`bisect`から抜けよう。
 
 それ以外で、「なんだかよくわからないが頭が取れてしまった」という状態になったら、まずはいま`HEAD`が指しているコミットにブランチを作って貼っておこう。
 
@@ -321,6 +319,85 @@ $ git branch
 ```
 
 先ほど頭が取れた状態で`HEAD`が指していたコミットに`20210918_detached_head`というブランチがついている。しばらくそのままにしておいて、不要だと思えば削除すれば良いだろう。ブランチをつけずに`main`に戻ると、先ほどのコミットハッシュ`4692a78`を覚えていない限り、頭が取れた状態に戻ることはできなくなる。「理由もわからず頭が取れてよくわからない状態になったら、ブランチをつけて`main`に戻る」と覚えておけばよい。
+
+### リベースしようとしたら衝突した
+
+リベースとは、リベース先にしたいブランチ(例えば`main`)と、現在のブランチ(例えば`feature`)について、共通祖先から`feature`までの修正を`main`に順番に適用して、できた最後のブランチに`feature`ブランチを移動させる操作だ。一度だけマージが行われる`git merge`とは異なり、パッチの数だけマージ作業が行われる。したがって、パッチの数だけ衝突の可能性がある。また、リベース中に衝突すると、いわゆる頭が取れた(`detached HEAD`)状態になるために焦りがちだ。その時、「リベースは、修正を次々と適用して新しいコミットを作っている」という感覚を持つと対応がイメージしやすい。
+
+![rebase_conflict](fig/rebase_conflict.png)
+
+いま、上図のような状況を考えよう。`root`というコミットから、`main`と`branch`に歴史が分岐している。ここで`branch`から`main`に対して`git rebase`を実行する。
+
+すると、`root`から`f1`、`f1`から`f2`といった「修正パッチ」を、現在`main`が指している`m3`に適用し、新たに`f1'`、`f2'`、``f3'``というコミットを作ろうとする。
+
+しかしいま、`f1'`を作り、次に`f2'`を作ろうとしたところで衝突が起きてしまった。
+
+```sh
+$ git rebase main
+Auto-merging test.txt
+CONFLICT (content): Merge conflict in test.txt
+error: 99a8712を適用できませんでした... f2
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+Could not apply 99a8712... f2
+```
+
+リベース中に衝突が起きると、`detached HEAD`となるため、例えばGit Bashなどでカレントブランチを表示している状態にしていても、ブランチが表示されなくなる。
+
+現在の状態を見てみよう。
+
+```sh
+$ git status
+interactive rebase in progress; onto 3152c68
+Last commands done (2 commands done):
+   pick 1c8a63e f1
+   pick 99a8712 f2
+Next command to do (1 remaining command):
+   pick 6aa5661 f3
+  (use "git rebase --edit-todo" to view and edit)
+You are currently rebasing branch 'branch' on '3152c68'.
+  (fix conflicts and then run "git rebase --continue")
+  (このパッチをスキップするには"git rebase --skip"を使用してください)
+  (use "git rebase --abort" to check out the original branch)
+
+Unmerged paths:
+  (use "git restore --staged <file>..." to unstage)
+  (use "git add <file>..." to mark resolution)
+        both modified:   test.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+大量の情報があるが、
+
+* 現在、リベース中であること (`interactive rebase in progress`)
+* `pick 99a8712 f2`を実行したところで止まっていること
+* `pick 6aa5661 f3`が残っていること
+* 衝突を修正してから`git rebase --continue`を実行するか、リベースを中止して先ほどのブランチに戻るなら`git rebase --abort`を実行して欲しいこと
+
+などが書いてある。繰り返しになるが、Gitのメッセージは非常にていねいかつ有用なので、「ちゃんと読む」のがGit上達の近道だ。
+
+さて、先ほどの図を見るとわかる通り、このリベースで作ろうとしているコミットは3つだ。そのうち二つ目の`f2'`を作るところで止まっている。したがって今やるべきことは、`f2'`のあるべき姿をインデックスに再現してコミットし、リベースを続行することだ。
+
+衝突が起きているファイル`test.txt`を確認し、両方の修正を取り込んだら、`git add`、`git commit`しよう。
+
+```sh
+$ git add test.txt
+$ git commit -m "merge"
+[detached HEAD 10876ee] merge
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+「頭が取れているよ (`detached HEAD`)」という警告が出るが気にしなくて良い。この状態で`git rebase --continue`を実行すれば、無事にリベースが完了し、`HEAD`が`branch`を指して`detached HEAD`が解消する。
+
+```sh
+$ git rebase --continue
+Successfully rebased and updated refs/heads/branch.
+```
+
+Gitのリベースは理解するまでに時間がかかる。「リベースとは、共通祖先からの修正をリベース先に次々と適用して、新しいコミットを作っていくこと」だと理解していれば、なぜ衝突が複数回起きる可能性があるのか、なぜ`git add`が衝突解決をGitに教えたことになるのかが理解しやすいであろう。`git add`は衝突解決をGitに教えるコマンドではなく、あくまでもインデックスに修正をステージするコマンドであり、リベース中のステージングは、「次に作るべきコミットの姿をGitに教える」という役割を果たしている。
 
 ## その他の便利なコマンド
 
@@ -419,3 +496,7 @@ git bisect run ./test.sh
 ```
 
 と`git bisect run`コマンドにそのスクリプトを渡すだけで自動的に二分探索してくれる。一般に二分探索は非常に効率が良く、数回も実行すれば問題のコミットを特定できるが、いちいち`git bisect good/bad`と入力するのも面倒だし、また人力だと間違えることもあるので、可能なら自動化したい。これらについては後に演習で実際に体験する。
+
+## まとめ
+
+Gitで直面しがちなトラブルとその対処法や、知っていると便利なコマンドについて紹介した。Gitのコマンドが実際に何をやっているかを理解していないと、トラブルの対処が難しい。単に「こういう場合はこうすれば良い」と場当たり的な対処を覚えるのではなく、「いまこういう状態で」「ここを解決したいのでこのコマンドを使っている」といったイメージを大事にして欲しい。
