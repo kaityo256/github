@@ -105,6 +105,10 @@
 * 歴史の確認(`git log`)
 * VSCodeからの操作
 
+### [Gitの操作(応用編)](practice_advanced/README.md)
+
+* `git bisect`を体験する
+
 ### [GitHubの操作](practice_github/README.md)
 
 * アカウント作成
