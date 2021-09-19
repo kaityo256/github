@@ -229,9 +229,9 @@ update
 
 ![commit.png](fig/commit.png)
 
-スナップショットを表すtreeオブジェクトが`dd1d7ee`から`55e11d0`に更新され、新たに親コミットとして、先ほどの`ca70291`が保存されています。
+スナップショットを表すtreeオブジェクトが`dd1d7ee`から`55e11d0`に更新され、新たに親コミットとして、先ほどの`ca70291`が保存されている。
 
-マージにより作られたマージコミットの場合は、二つの親コミットの情報を含んでいます。いま、こんな歴史を持つリポジトリを考えよう。
+マージにより作られたマージコミットの場合は、二つの親コミットの情報を含んでいる。いま、こんな歴史を持つリポジトリを考えよう。
 
 ```sh
 $ git log --graph --pretty=oneline
@@ -261,6 +261,111 @@ Merge branch 'branch'
 ```
 
 スナップショットを保存するtreeオブジェクト`706a174`の他に、二つの親コミット`953cb60`と`6aecd68`が保存されていることがわかる。
+
+## treeオブジェクト
+
+treeオブジェクトは、ディレクトリに対応するオブジェクトだ。先ほどのblobオブジェクトの作り方を見てわかるように、blobオブジェクトはファイル名を保存していない。blobオブジェクトとファイル名を対応させるのもtreeオブジェクトの役目だ。また、コミットオブジェクトが格納するのは、スナップショット全体を表現するtreeオブジェクトである。
+
+treeオブジェクトがディレクトリに対応することを見るため、適当にディレクトリを含むリポジトリを作ってみよう。
+
+```sh
+mkdir tree
+cd tree
+git init
+mkdir dir1 dir2
+echo "file1" > dir1/file1.txt
+echo "file2" > dir2/file2.txt
+echo "README" > README.md
+git add README.md dir1 dir2
+```
+
+コミットしてみる。
+
+```sh
+$ git commit -m "initial commit"
+[master (root-commit) 662458a] initial commit
+ 3 files changed, 3 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 dir1/file1.txt
+ create mode 100644 dir2/file2.txt
+```
+
+これで、コミットオブジェクト(`662458a`)が作られた。中身を見てみよう。
+
+```sh
+$ git cat-file -p 662458a
+tree 193fea0500b331a7ccb536aa691d8eb7df8afd13
+author H. Watanabe <kaityo256@example.com> 1630737694 +0900
+committer H. Watanabe <kaityo256@example.com> 1630737694 +0900
+
+initial commit
+```
+
+treeオブジェクトとコミットメッセージ等の情報を含んでいることがわかる。root commitなので、親コミットの情報はない。同じ手順を踏めば、コミットハッシュは異なっても、同じtreeオブジェクトができているはずだ。treeオブジェクト`193fea0`は、このコミットのスナップショットを保存している。見てみよう。
+
+```sh
+$ git cat-file -p 193fea0
+100644 blob e845566c06f9bf557d35e8292c37cf05d97a9769    README.md
+040000 tree 0b9f291245f6c596fd30bee925fe94fe0cbadd60    dir1
+040000 tree 345699cffb47ac20257e0ce4cebcbfc4b2a7f9e3    dir2
+```
+
+ファイル`README.md`に対応する`blob`オブジェクトと、ディレクトリ`dir1`、`dir2`に対応するtreeオブジェクトが含まれている。二つのtreeオブジェクトも見てみよう。
+
+```sh
+$ git cat-file -p 0b9f291
+100644 blob e2129701f1a4d54dc44f03c93bca0a2aec7c5449    file1.txt
+$ git cat-file -p 345699c
+100644 blob 6c493ff740f9380390d5c9ddef4af18697ac9375    file2.txt
+```
+
+ファイル構造とオブジェクトの構造を図示すると以下のようになる。
+
+![tree.png](fig/tree.png)
+
+さて、blobオブジェクトやtreeオブジェクトにはファイル名、ディレクトリ名は含まれておらず、treeオブジェクトは、自分が管理するオブジェクトと名前の対応を管理している。
+
+また、blobオブジェクトのハッシュは、ファイルサイズと中身だけで決まり、ファイル名は関係ない。したがって、Gitは「同じ中身だけど、異なるファイル名」を、同じblobオブジェクトで管理する。これを確認してみよう。
+
+```sh
+mkdir synonym
+cd synonym
+git init
+echo "Hello" > file1.txt
+cp file1.txt file2.txt
+git add file1.txt file2.txt
+```
+
+これで、中身が同じファイル`file1.txt`、`file2.txt`がステージングされた。コミットしてみる。
+
+```sh
+$ git commit -m "initial commit"
+[master (root-commit) 75470e6] initial commit
+ 2 files changed, 2 insertions(+)
+ create mode 100644 file1.txt
+ create mode 100644 file2.txt
+```
+
+コミットオブジェクト`75470e6`ができたので、中身を見てみよう。
+
+```sh
+$ git cat-file -p 75470e6
+tree e79a5d99a8e5cd5da0260866b85df60052fd045e
+author H. Watanabe <kaityo256@example.com> 1630745015 +0900
+committer H. Watanabe <kaityo256@example.com> 1630745015 +0900
+
+initial commit
+```
+
+treeオブジェクト`e79a5d9`ができている。中身を見てみよう。
+
+```sh
+$ git cat-file -p e79a5d9
+100644 blob e965047ad7c57865823c7d992b1d046ea66edf78    file1.txt
+100644 blob e965047ad7c57865823c7d992b1d046ea66edf78    file2.txt
+```
+
+全く同じblobオブジェクトに別名を与えていることがわかる。
 
 ## Gitの参照(refs)
 
