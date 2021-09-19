@@ -73,6 +73,7 @@
     * 修正を取り消したい(`git restore`)
     * ステージングを取り消したい(`git restore --staged`)
     * `git checkout`は使わない
+    * リモートを間違えて登録した(`git remote remove`)
     * メインブランチで作業を開始してしまった(`git stash`)
     * プッシュしようとしたらリジェクトされた
     * 頭が取れた(`detached HEAD`)
@@ -117,9 +118,11 @@
 
 * アカウント作成
 * リポジトリの作成
+* コミットとプッシュ
 * issueのオープンとクローズ
 * Projectの使い方(Automated Kanban)
 * forkとclone、GitHub Pagesの公開
+* プルリクエスト
 
 ## 何を説明するかメモ
 

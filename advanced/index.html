@@ -132,6 +132,17 @@ $ <span class="fu">git</span> restore -W -S test.txt <span class="co"># 両方�
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> switch -c newbranch 9b662ef
 <span class="ex">Switched</span> to a new branch <span class="st">&#39;newbranch&#39;</span></code></pre></div>
 <p>したがって、<code>git checkout</code>の代わりに<code>git switch</code>を使った方が良い。同様な理由でファイルの修正を元に戻すのも<code>git restore</code>を使った方が良い。古い本やサイトには、まだ<code>git checkout</code>を使う方法が説明されていたりするので注意が必要だ。</p>
+<h3 id="リモートを間違えて登録したgit-remote-remove">リモートを間違えて登録した(<code>git remote remove</code>)</h3>
+<p>GitHubを使っていて、リモートリポジトリのアドレスを間違えることがよくある。例えば、GitHubで新しいリポジトリを作り、そこに既存のリポジトリをプッシュしようとして、</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin https://github.com/kaityo256/somerepository.git
+<span class="fu">git</span> branch -M main
+<span class="fu">git</span> push -u origin main</code></pre></div>
+<p>を実行してusernameを聞かれ、「あっ！SSHのつもりがHTTPSを選んじゃった」と気が付いた時だ。ここで、改めて</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:kaityo256/somerepository.git</code></pre></div>
+<p>と、SSHで再登録しようとしても、「error: remote origin already exists.」とつれない返事が返ってくる。この時、まず<code>origin</code>として登録されたリモートを削除してから再登録すれば良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote remove origin</code></pre></div>
+<p>これで、リモートリポジトリ<code>origin</code>は削除されたので、改めてSSHプロトコルで再登録すれば良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:kaityo256/somerepository.git</code></pre></div>
 <h3 id="メインブランチで作業を開始してしまったgit-stash">メインブランチで作業を開始してしまった(<code>git stash</code>)</h3>
 <p>Gitでは原則としてメインブランチでは作業せず、必ずフィーチャーブランチを切って作業する。ところが、ファイルを修正した後で「あっ！メインブランチで作業してた！」と気が付いたとしよう。そんな時は<code>git stash</code>を使う。<code>git stash</code>はコミットを作らずに変更を退避するコマンドだ。</p>
 <p>今、<code>main</code>ブランチにいるまま<code>test.txt</code>を結構修正してしまった状態にある。</p>
@@ -323,11 +334,13 @@ $ <span class="fu">git</span> commit -m <span class="st">&quot;merge&quot;</span
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> bisect bad
 <span class="ex">e6348e408b57fdb42eb1281cb77b5c331cd400e7</span> is the first bad commit
 <span class="kw">(</span><span class="ex">snip</span><span class="kw">)</span></code></pre></div>
-<p>上記は、最後に<code>git bisect bad</code>を実行したら、それによりGitが問題箇所を特定し、<code>e6348e4</code>が問題の入ったコミットだよ、と教えてくれた。ここで<code>git diff</code>を取ったりいろいろできるが、とりあえず「バグった印」としてブランチをつけて置くと良い。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch bug</code></pre></div>
+<p>上記は、最後に<code>git bisect bad</code>を実行したら、それによりGitが問題箇所を特定し、<code>e6348e4</code>が問題の入ったコミットだよ、と教えてくれた。ここで<code>git diff</code>を取ったりいろいろできるが、とりあえず発見されたコミットに「バグった印」としてブランチをつけて置くと良い。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch bug e6348e4</code></pre></div>
 <p>これで、問題の入ったコミットに<code>bug</code>というブランチがついた。二分探索モードを抜けよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect reset</code></pre></div>
-<p>後は先ほどつけた<code>bug</code>の時点に<code>git switch</code>で戻って詳細を調べれば良い。</p>
+<p>後は先ほどつけた<code>bug</code>の時点に<code>git switch</code>で戻って詳細を調べれば良い。特に、ここで初めてバグが入ったのだから、一つ前のコミットとの差分が重要な情報となるだろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch bug
+<span class="fu">git</span> diff HEAD^</code></pre></div>
 <p>今回は手動で<code>good</code>/<code>bad</code>判定をしたが、判定を自動実行するシェルスクリプトが書けるなら、上記の動作を自動化できる。例えば現在のリポジトリの状態に対して、問題がなければ成功(終了ステータス0を返す)、問題があれば失敗(終了ステータス1を返す)ような<code>test.sh</code>というシェルスクリプトがあるなら、</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect start main e34d733
 <span class="fu">git</span> bisect run ./test.sh</code></pre></div>

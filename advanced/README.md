@@ -158,6 +158,34 @@ Switched to a new branch 'newbranch'
 
 したがって、`git checkout`の代わりに`git switch`を使った方が良い。同様な理由でファイルの修正を元に戻すのも`git restore`を使った方が良い。古い本やサイトには、まだ`git checkout`を使う方法が説明されていたりするので注意が必要だ。
 
+### リモートを間違えて登録した(`git remote remove`)
+
+GitHubを使っていて、リモートリポジトリのアドレスを間違えることがよくある。例えば、GitHubで新しいリポジトリを作り、そこに既存のリポジトリをプッシュしようとして、
+
+```sh
+git remote add origin https://github.com/kaityo256/somerepository.git
+git branch -M main
+git push -u origin main
+```
+
+を実行してusernameを聞かれ、「あっ！SSHのつもりがHTTPSを選んじゃった」と気が付いた時だ。ここで、改めて
+
+```sh
+git remote add origin git@github.com:kaityo256/somerepository.git
+```
+
+と、SSHで再登録しようとしても、「error: remote origin already exists.」とつれない返事が返ってくる。この時、まず`origin`として登録されたリモートを削除してから再登録すれば良い。
+
+```sh
+git remote remove origin
+```
+
+これで、リモートリポジトリ`origin`は削除されたので、改めてSSHプロトコルで再登録すれば良い。
+
+```sh
+git remote add origin git@github.com:kaityo256/somerepository.git
+```
+
 ### メインブランチで作業を開始してしまった(`git stash`)
 
 Gitでは原則としてメインブランチでは作業せず、必ずフィーチャーブランチを切って作業する。ところが、ファイルを修正した後で「あっ！メインブランチで作業してた！」と気が付いたとしよう。そんな時は`git stash`を使う。`git stash`はコミットを作らずに変更を退避するコマンドだ。
@@ -476,10 +504,10 @@ e6348e408b57fdb42eb1281cb77b5c331cd400e7 is the first bad commit
 (snip)
 ```
 
-上記は、最後に`git bisect bad`を実行したら、それによりGitが問題箇所を特定し、`e6348e4`が問題の入ったコミットだよ、と教えてくれた。ここで`git diff`を取ったりいろいろできるが、とりあえず「バグった印」としてブランチをつけて置くと良い。
+上記は、最後に`git bisect bad`を実行したら、それによりGitが問題箇所を特定し、`e6348e4`が問題の入ったコミットだよ、と教えてくれた。ここで`git diff`を取ったりいろいろできるが、とりあえず発見されたコミットに「バグった印」としてブランチをつけて置くと良い。
 
 ```sh
-git branch bug
+git branch bug e6348e4
 ```
 
 これで、問題の入ったコミットに`bug`というブランチがついた。二分探索モードを抜けよう。
@@ -488,7 +516,12 @@ git branch bug
 git bisect reset
 ```
 
-後は先ほどつけた`bug`の時点に`git switch`で戻って詳細を調べれば良い。
+後は先ほどつけた`bug`の時点に`git switch`で戻って詳細を調べれば良い。特に、ここで初めてバグが入ったのだから、一つ前のコミットとの差分が重要な情報となるだろう。
+
+```sh
+git switch bug
+git diff HEAD^
+```
 
 今回は手動で`good`/`bad`判定をしたが、判定を自動実行するシェルスクリプトが書けるなら、上記の動作を自動化できる。例えば現在のリポジトリの状態に対して、問題がなければ成功(終了ステータス0を返す)、問題があれば失敗(終了ステータス1を返す)ような`test.sh`というシェルスクリプトがあるなら、
 
