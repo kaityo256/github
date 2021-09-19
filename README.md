@@ -118,7 +118,7 @@
 * `git rebase`の衝突を解決する
 * `git bisect`を使ってみる
 
-### [GitHubの操作](practice_github/README.md)
+### [GitHubの操作(基本編)](practice_github/README.md)
 
 * アカウント作成
 * リポジトリの作成
@@ -128,42 +128,9 @@
 * forkとclone、GitHub Pagesの公開
 * プルリクエスト
 
-## 何を説明するかメモ
+### GitHubの操作(応用編)
 
-* 座学
-    * バージョン管理とは
-    * ソフトウェア開発で気を付けるべきこと
-    * ライセンス
-    * BTS/ITS
-    * Gitの仕組みと使い方
-    * Gitで管理するもの、しないもの
-    * GitHubの使い方
-* 演習
-    * Git演習
-        * 基本的な操作の確認
-        * git init
-        * git add, commit
-        * git branch
-        * git merge
-        * コマンドでの動作確認とVS Codeでの確認
-        * マージの確認(fast-forward, non fast-forward, conflictの対処)
-        * 実戦的な使い方
-        * (途中でバグが入った歴史を持つコードを使って、git logやbisectを使う)
-        * git-bisect-exampleというリポジトリを作る
-        * rebase の仕方
-        * トラブル対応
-        * mergeしたらconflictした！
-            * とりあえず元に戻そう git merge --revert
-        * detached HEADの対応 (rebaseで失敗したもの)
-    * GitHub演習
-        * issue
-        * issue drivenな開発例
-        * issue を切って、ブランチを作り、コミットログで自動でissueを閉じる
-        * Project
-        * CI
-    * 複数人による開発
-        * issue
-        * プルリク
+* 実際にウェブアプリ(ゲーム)を作ってみる
 
 ## [参考文献](references/README.md)
 
