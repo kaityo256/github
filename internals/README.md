@@ -367,15 +367,17 @@ $ git cat-file -p e79a5d9
 
 全く同じblobオブジェクトに別名を与えていることがわかる。
 
-## Gitの参照(refs)
+## Gitの参照
+
+Gitオブジェクトの次は、Gitの参照を見てみよう。参照はブランチやタグなどで`.git/refs`以下に格納されている。
 
 ### HEADとブランチの実体
 
 ![head](fig/head.png)
 
-通常、GitではHEADがブランチを、ブランチがコミットを指しています。例えばカレントブランチが`main`である場合を考えましょう。`HEAD`の実体は`.git/HEAD`というファイルで、`main`の実体は`.git/refs/heads/main`になっています。それを見ていきましょう。
+通常、GitではHEADがブランチを、ブランチがコミットを指している。`HEAD`の実体は`.git/HEAD`というファイルだ。ブランチは`git/refs`にブランチ名と同名のファイルとして保存されている。例えば`main`ブランチの実体は`.git/refs/heads/main`というファイルだ。この関係を見てみよう。
 
-適当なディレクトリ`test`を作って、その中で`git init`しましょう。
+適当なディレクトリ`test`を作って、その中で`git init`する。
 
 ```sh
 mkdir test
@@ -383,28 +385,21 @@ cd test
 git init
 ```
 
-この時点で`.git`が作られ、その中に`HEAD`が作られます。見てみましょう。
+この時点で`.git`が作られ、その中に`HEAD`が作られた。ファイルの中身を見てみよう。
 
 ```sh
 $ cat .git/HEAD
 ref: refs/heads/main
 ```
 
-`HEAD`は`refs/heads/main`を指しているよ、とあります。しかし、`git init`直後はまだこのファイルはありません。
+この`ref: refs/heads/main`は、「`HEAD`は今`refs/heads/main`を指しているよ」という意味だ。しかし、`git init`直後はまだこのファイルは存在しない。
 
 ```sh
 $ cat .git/refs/heads/main
 cat: .git/refs/heads/main: そのようなファイルやディレクトリはありません
 ```
 
-この状態で`git log`しても「歴史が無いよ」と言われます。
-
-```sh
-$ git log
-fatal: your current branch 'main' does not have any commits yet
-```
-
-さて、適当なファイルを作って、`git add`、`git commit`しましょう。
+さて、適当なファイルを作って、`git add`、`git commit`してみよう。
 
 ```sh
 $ echo "Hello" > hello.txt
@@ -415,25 +410,25 @@ $ git commit -m "initial commit"
  create mode 100644 hello.txt
 ```
 
-初めて`git commit`した時点で、`main`ブランチの実体が作られます。
+初めて`git commit`した時点で、`main`ブランチの実体が作られる。
 
 ```sh
 $ cat .git/refs/heads/main
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-先ほど作られたコミットオブジェクト`c950332`を指していますね。このように、通常は`HEAD`はブランチのファイルの場所を指し、ブランチのファイルはコミットオブジェクトのハッシュを保存しています。`git log`で見てみましょう。
+`main`ブランチの実体である`main`というファイルには、コミットオブジェクトのハッシュが入っている。今回のケースでは、先ほど作られたコミットオブジェクト`c950332`が保存されている。このように、通常は`HEAD`はブランチのファイルの場所を指し、ブランチのファイルはコミットオブジェクトのハッシュを保存している。`git log`で見てみよう。
 
 ```sh
 $ git log --oneline
 c950332 (HEAD -> main) initial commit
 ```
 
-`HEAD -> main`と、`HEAD`が`main`を指していることが明示されています。
+`HEAD -> main`と、`HEAD`が`main`を指していることが明示されている。
 
 ### Detached HEAD状態
 
-さて、直接コミットハッシュを指定して`git checkout`してみましょう。
+さて、直接コミットハッシュを指定して`git checkout`してみよう。
 
 ```sh
 $ git checkout c950332
@@ -457,25 +452,25 @@ Turn off this advice by setting config variable advice.detachedHead to false
 HEAD is now at c950332 initial commit
 ```
 
-これで、`HEAD`がブランチを介してではなく、直接コミットを指している状態、いわゆる「detached HEAD」になりました。この状態で`git log`を見てみます。
+これで、`HEAD`がブランチを介してではなく、直接コミットを指している状態、いわゆる頭が取れた(`detached HEAD`)状態になった。この状態で`git log`を見てみる。
 
 ```sh
 $ git log --oneline
 c950332 (HEAD, main) initial commit
 ```
 
-先ほどと異なり、`HEAD`と`main`の間の矢印が消えました。`HEAD`の中身を見てみましょう。
+先ほどと異なり、`HEAD`と`main`の間の矢印が消えた。`HEAD`ファイルの中身を見てみよう。
 
 ```sh
 $ cat .git/HEAD
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-`HEAD`が直接コミットを指していることがわかります。
+先ほどは`ref: refs/heads/main`と、`main`ブランチの実体ファイルへのパスが格納されていたが、今は`HEAD`が直接コミットを指していることを反映して、そのコミットハッシュが保存されている。
 
 ![detached_head](fig/detached_head.png)
 
-`main`に戻りましょう。
+`main`ブランチに戻ろう。
 
 ```sh
 $ git switch main
@@ -483,24 +478,24 @@ $ cat .git/HEAD
 ref: refs/heads/main
 ```
 
-`.git/HEAD`の中身がブランチへの参照に戻ります。
+`.git/HEAD`の中身がブランチへの参照に戻っている。
 
 ### ブランチの作成と削除
 
-`main`ブランチから、もう一つブランチを生やして見ましょう。
+`main`ブランチから、もう一つブランチを生やしてみよう。
 
 ```sh
 git switch -c branch
 ```
 
-これで、`branch`ブランチが作られ、`main`の指すコミットと同じコミットを指しているはずです。まずは`git log`で見てみましょう。
+これで、`branch`ブランチが作られ、`main`の指すコミットと同じコミットを指しているはずだ。まずは`git log`で見てみよう。
 
 ```sh
 $ git log --oneline
 c950332 (HEAD -> branch, main) initial commit
 ```
 
-`HEAD`は`branch`を指し、`branch`も`main`も`c950332`を指している状態です。ファイルの中身も確認しましょう。
+`HEAD`は`branch`を指し、`branch`も`main`も`c950332`を指している状態になっている。ファイルの中身も確認しよう。
 
 ```sh
 $ cat .git/HEAD
@@ -513,9 +508,9 @@ $ cat .git/refs/heads/branch
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-`.git/refs/heads/main`と同じ内容の`.git/refs/heads/branch`が作成されています。
+`.git/refs/heads/main`と同じ内容の`.git/refs/heads/branch`が作成されている。
 
-では、人為的に`.git/refs/heads/`にもう一つファイルを作ったらどうなるでしょうか？
+ここで、人為的に`.git/refs/heads/`にもう一つファイルを作ってみよう。
 
 ```sh
 $ cp .git/refs/heads/main .git/refs/heads/branch2
@@ -523,16 +518,16 @@ $ ls .git/refs/heads
 branch  branch2  main
 ```
 
-`.git/refs/heads`内に、`branch2`というファイルが作成されました。`git log`を見てみましょう。
+`.git/refs/heads`内に、`branch2`というファイルが作成された。`git log`を見てみると、
 
 ```sh
 $ git log --oneline
 c950332 (HEAD -> branch, main, branch2) initial commit
 ```
 
-`branch2`が増え、`main`や`branch`と同じコミットを指していることが表示されました。すなわち、`git`は`git log`が叩かれた時、全てのブランチがどのコミットを指しているか調べています。また、ブランチの作成が、単にファイルのコピーで実装されていることがわかります。
+`branch2`が増え、`main`や`branch`と同じコミットを指していることが表示された。すなわち、`git`は`git log`が叩かれた時、全てのブランチがどのコミットを指しているか調べていることがわある。また、ブランチの作成が、単にファイルのコピーで実装されていることもわかった。
 
-作った`branch2`をgitを使って消しましょう。
+作った`branch2`をgitを使って消してみよう。
 
 ```sh
 $ git branch -d branch2
@@ -542,80 +537,17 @@ $ ls .git/refs/heads
 branch  main
 ```
 
-問題なく消せます。`.git/refs/heads`にあったブランチの実体も消えました。つまり、ブランチの削除は単にファイルの削除です。
+問題なく消せた。`.git/refs/heads`にあったブランチの実体も消えた。つまり、ブランチの削除は単にファイルの削除として実装されている。
 
-### 歴史の削除
+### リモートブランチと上流ブランチ
 
-`git init`直後はブランチの実体ファイルが無く、その状態で`git log`をすると「一つもコミットが無いよ」と言われました。それを見てみましょう。
-
-現在、カレントブランチは`branch`で、最初のコミット`c950332`を指しています。
-
-```sh
-$ git log --oneline
-c950332 (HEAD -> branch, main) initial commit
-```
-
-`branch`の実体を消してしまいましょう。
-
-```sh
-rm .git/refs/heads/branch
-```
-
-もう一度`git log`をしてみます。
-
-```sh
-$ git log
-fatal: your current branch 'branch' does not have any commits yet
-```
-
-ブランチが無いので、「歴史がない」と判断されます。しかし、インデックスの実体`.git/index`は存在するため、`git diff`はできます。ちょっとファイルを修正して`git diff`してみましょう。
-
-```sh
-$ echo "Hi" >> hello.txt
-$ git diff
-diff --git a/hello.txt b/hello.txt
-index e965047..2236327 100644
---- a/hello.txt
-+++ b/hello.txt
-@@ -1 +1,2 @@
- Hello
-+Hi
-```
-
-この状態で`git add`、`git commit`することができます。
-
-```sh
-$ git add hello.txt
-$ git commit -m "updates hello.txt"
-[branch (root-commit) a35d7e4] updates hello.txt
- 1 file changed, 2 insertions(+)
- create mode 100644 hello.txt
-```
-
-ブランチの実体がなかったため、これが最初のコミット(`root-commit`)とみなされ、ここでブランチが作成されます。
-
-```sh
-$ ls .git/refs/heads
-branch  main
-```
-
-`main`に戻っておきましょう。
-
-```sh
-git switch main
-```
-
-### リモートブランチ
-
-リモートブランチも、普通にブランチと同じようにファイルで実装されています。見てみましょう。
-
-まずはリモートブランチ用のベアリポジトリを作ります。一つの上のディレクトリに掘りましょう。
+リモートブランチも、普通にブランチと同じようにファイルで実装されている。まずは一つ上のディレクトリにリモートブランチ用のベアリポジトリを作ろう。
 
 ```sh
 git init --bare ../test.git
 ```
 
-ベアリポジトリは、`.git`の中身がそのままディレクトリにぶちまけられたような内容になっています。見てみましょう。
+ベアリポジトリは、`.git`の中身がそのままディレクトリに展開された内容になっている。
 
 ```sh
 $ tree ../test.git
@@ -649,9 +581,9 @@ $ tree ../test.git
 9 directories, 16 files
 ```
 
-`git init`直後の`.git`ディレクトリと同じ中身になっていますね。
+`git init`直後の`.git`ディレクトリと同じ中身であることがわかる。
 
-さて、こいつを`origin`に指定して、上流ブランチを`origin/main`にして`push`してやりましょう。
+さて、このリポジトリをリモートリポジトリ`origin`として登録し、上流ブランチを`origin/main`にして`push`しよう。
 
 ```sh
 $ git remote add origin ../test.git
@@ -665,7 +597,7 @@ To ../test.git
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 ```
 
-これで、`origin/main`ブランチが作成され、`main`の上流ブランチとして登録されました。
+これで、`origin/main`ブランチが作成され、`main`の上流ブランチとして登録された。`git branch`で見てみよう。
 
 ```sh
 $ git branch -vva
@@ -674,23 +606,21 @@ $ git branch -vva
   remotes/origin/main c950332 initial commit
 ```
 
-`remotes/origin/main`ブランチが作成され、`main`ブランチの上流が`origin/main`になっています。
-
-さて、`remotes/origin/main`の実体は、`.git/refs/remotes/origin/main`にあります。そこには、単にコミットハッシュが記録されているだけです。
+`remotes/origin/main`ブランチが作成され、`main`ブランチの上流が`origin/main`になっていることがわかる。さて、`main`ブランチの実体は`.git/refs/main`というファイルだった。同様に、`remotes/origin/main`の実体は、`.git/refs/remotes/origin/main`にある。ブランチの名前を(ディレクトリも含めて)そのまま`.git/ref`に展開したような形になっている。`.git/refs/remotes/origin/main`の中身は、単にコミットハッシュが記録されているだけだ。
 
 ```sh
 $ cat .git/refs/remotes/origin/main
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-また、`main`の実体も同じコミットハッシュを指しているだけです。
+また、`main`の実体も同じコミットハッシュを指しているだけで、ここに上流ブランチの情報はない
 
 ```sh
 $ cat .git/refs/heads/main
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-では、`main`の上流ブランチはどこで管理されているかというと、`.git/config`です。中身を見てみましょう。
+`main`の上流ブランチは、ブランチの実体ファイルではなく、`.git/config`というファイルに保存されている。中身を見てみよう。
 
 ```sh
 $ cat .git/config
@@ -707,7 +637,7 @@ $ cat .git/config
         merge = refs/heads/main
 ```
 
-このファイルの階層構造は`git config`でそのままたどることができます。
+このファイルの階層構造は`git config`でそのままたどることができる。
 
 ```sh
 $ git config branch.main.remote
@@ -717,23 +647,23 @@ $ git config remote.origin.url
 url = ../test.git
 ```
 
-また、`git log`は、リモートブランチも調べてくれます。
+また、`git log`は、リモートブランチも調べてくれる。
 
 ```sh
 $ git log --oneline
 c950332 (HEAD -> main, origin/main) initial commit
 ```
 
-`origin/main`が、`main`と同じブランチを指していることがわかります。ちなみに、先ほど作った`branch`は、`main`と全く歴史を共有していないので、ここには現れません。
+`origin/main`が、`main`と同じブランチを指していることがわかる。
 
-もう一つリモートリポジトリを増やしてみましょう。
+もう一つリモートリポジトリを増やしてみよう。
 
 ```sh
 git init --bare ../test2.git
 git remote add origin2 ../test2.git
 ```
 
-これで、`.git/config`には`origin2`の情報が追加されます。
+これで、`.git/config`には`origin2`の情報が追加される。
 
 ```sh
 $ cat .git/config
@@ -764,9 +694,9 @@ $ tree .git/refs/remotes
 1 directory, 1 file
 ```
 
-`origin`の実体がディレクトリで、その下に`main`ファイルがありますが、`origin2`というディレクトリが無いことがわかります。
+`origin`の実体がディレクトリで、その下に`main`ファイルがあるが、`origin2`というディレクトリはまだ存在しないことがわかる。
 
-さて、`main`ブランチの上流ブランチを`origin2/main`にして`push`しましょう。
+ここで、`main`ブランチの上流ブランチを`origin2/main`にして`push`してみる。
 
 ```sh
 $ git push -u origin2
@@ -779,7 +709,7 @@ To ../test2.git
 Branch 'main' set up to track remote branch 'main' from 'origin2'.
 ```
 
-これで`origin2/main`の実体が作られます。
+このタイミングで`origin2/main`の実体が作られる。
 
 ```sh
 $ tree .git/refs/remotes
@@ -792,24 +722,183 @@ $ tree .git/refs/remotes
 2 directories, 2 files
 ```
 
-そして、`origin2/main`が`main`や`origin/main`と同じコミットハッシュを指します。
+そして、`origin2/main`が`main`や`origin/main`と同じコミットハッシュを指す。
 
 ```sh
 $ cat .git/refs/remotes/origin2/main
 c9503326279796b24be86bdf9beb01c1af2d2b95
 ```
 
-なので、`git log`に`origin2/main`も出てきます。
+したがって、`git log`に`origin2/main`も表示されるようになる
 
 ```sh
+$ git log --oneline
 c950332 (HEAD -> main, origin2/main, origin/main) initial commit
 ```
 
+## インデックス
+
+ワーキングツリーとリポジトリの間に「インデックス」を挟み、コミットの前にステージングを行うのがGitの特徴だ。このインデックスの実体は`.git/index`という一つのファイルだ。この中身もちょっと覗いてみよう。
+
+### インデックスの実体と中身
+
+適当なディレクトリを掘って、そこにファイルを作り、`git init`してみる。
+
+```sh
+mkdir index_test
+cd index_test
+echo "My first file" > test.txt
+git init
+```
+
+さて、`git init`した直後は、まだ`index`は作られていない。
+
+```sh
+$ ls .git/index
+ls: cannot access '.git/index': No such file or directory
+```
+
+しかし、`git add`すると`index`が作られる。
+
+```sh
+$ git add test.txt
+$ ls .git/index
+.git/index
+```
+
+また、`git add test.txt`したことで、`test.txt`に対応するblobオブジェクトも作られている。
+
+```sh
+$ ls -1 .git/objects/*/*
+.git/objects/36/3d8b784900d74b3159e8e93a651c0db42629ef
+```
+
+`git add`は、ファイルをインデックスに登録するコマンドであった。したがって、いま`test.txt`がインデックスに登録されたはずだ。インデックスの中身は、`git ls-files --stage`で見ることができる。
+
+```sh
+$ git ls-files --stage
+100644 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt
+```
+
+確かに`test.txt`というファイルに対応するblobオブジェクトができている。そのハッシュは`363d8b784900d74b3159e8e93a651c0db42629ef`であり、先ほど`.git/objects`に作成されたものだ。
+
+つまり、`git add test.txt`をした時、Gitは
+
+* `test.txt`に対応するblobオブジェクトを作り、SHA-1ハッシュを計算してファイル名とする。
+* 作られたオブジェクトは`.git/objects`に保存。ただし、ハッシュの上二文字をディレクトリとし、残りをファイル名として仕分けする
+* `index`にそのblobオブジェクトと名前を登録する
+
+という作業をしている。
+
+### ブランチ切り替えとインデックス
+
+ブランチを切り替えると、インデックスがどうなるか見てみよう。
+
+まずはブランチ`branch_a`を作り、そこに`file_a.txt`を追加、コミットする。
+
+```sh
+$ git switch -c branch_a
+Switched to a new branch 'branch_a'
+$ echo "This is A" > file_a.txt
+$ git add file_a.txt
+$ git commit -m "adds file_a.txt"
+[branch_a 41e4b52] adds file_a.txt
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file_a.txt
+```
+
+これで、ワーキングツリーには`test.txt`と`file_a.txt`の二つのファイルが含まれるようになった。当然、インデックスにも同じファイルが登録されている。
+
+```sh
+$ git ls-files --stage
+100644 e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt
+100644 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt
+```
+
+`file_a.txt`のblobオブジェクトが増えている。これが`file_a.txt`のハッシュであることを確認しておこう。
+
+```sh
+$ git hash-object file_a.txt
+e32836f4cedd87510bfd2f145bc0696861fdb026
+```
+
+この状態で、ブランチを切り替えてみよう。まずは`main`に戻る。
+
+```sh
+$ git switch main
+Switched to branch 'main'
+```
+
+インデックスを見てみよう。
+
+```sh
+$ git ls-files --stage
+100644 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt
+```
+
+`main`ブランチには`test.txt`しかないので、インデックスにあるのも`test.txt`のblobオブジェクトだけだ。
+
+新たなブランチ`branch_b`を作り、歴史を分岐させよう。
+
+```sh
+$ git switch -c branch_b
+Switched to a new branch 'branch_b'
+```
+
+ファイル`file_b.txt`を追加し、コミットする。
+
+```sh
+$ echo "This is B" > file_b.txt
+$ git add file_b.txt
+$ git commit -m "adds file_b.txt"
+[branch_b 81085f2] adds file_b.txt
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file_b.txt
+```
+
+`git add`の時点で`file_b.txt`に対応するblobオブジェクトが作られ、インデックスに登録される。インデックスの中身を見てみよう。
+
+```sh
+$ git ls-files --stage
+100644 6a571f63d9d0bce7995b5c08d218370d7ea719a5 0    file_b.txt
+100644 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt
+```
+
+`test.txt`と`file_b.txt`が入っている。
+
+この状態で、`branch_a`ブランチに切り替えて見よう。
+
+```sh
+$ git switch branch_a
+Switched to branch 'branch_a'
+```
+
+ワーキングツリーのファイルが`test.txt`と`file_a.txt`になる。
+
+```sh
+$ ls
+file_a.txt  test.txt
+```
+
+インデックスの中身も連動する。
+
+```sh
+$ git ls-files --stage
+100644 e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt
+100644 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt
+```
+
+![index](https://github.com/kaityo256/zenn-content/raw/main/articles/inside_the_index/switch.png)
+
+つまり、ブランチ切り替えの際、ワーキングツリーだけでなく、インデックスも切り替えられている。
+
 ## まとめ
 
-Gitのオブジェクトとブランチの実装について見てみた。Gitのオブジェクトは、ファイルがblobオブジェクトに、ディレクトリがtreeオブジェクトに対応し、コミットオブジェクトは、スナップショットを表すtreeオブジェクトと、親コミットのハッシュ、そしてコミットの作者やメッセージの情報をまとめたものだ。オブジェクトの名前はSHA-1ハッシュ値になっており、blobオブジェクトやtreeオブジェクトは中身からハッシュ値が決まるため、同じ内容なら同じハッシュ値となる。
+Gitのオブジェクト、ブランチ、そしてインデックスの実装について見てみた。Gitのオブジェクトは、ファイルがblobオブジェクトに、ディレクトリがtreeオブジェクトに対応し、コミットオブジェクトは、スナップショットを表すtreeオブジェクトと、親コミットのハッシュ、そしてコミットの作者やメッセージの情報をまとめたものだ。オブジェクトの名前はSHA-1ハッシュ値になっており、blobオブジェクトやtreeオブジェクトは中身からハッシュ値が決まるため、同じ内容なら同じハッシュ値となる。
 
 ブランチはファイルとして実装され、ブランチの作成はファイルのコピー、削除はファイルの削除で実装されている。また、`origin/main`みたいなリモートブランチは、`origin`はディレクトリとして実装されている。上流ブランチなどの情報は`.git/config`にあり、`git config`で表示できる情報は、そのまま`.git/config`内のファイルの構造に対応している。
+
+インデックスは`.git/index`というファイルが実体であり、その中身は「blobオブジェクトの目録」であった。ブランチを切り替えるとインデックスの中身も切り替わる。そしてワーキングツリーがきれいな状態の場合は、ワーキングツリーとインデックスの中身は一致している。
 
 以上を見て、非常に「素直」に実装されていることがわかったと思う。よくわからないコミットハッシュや、`.git`ディレクトリの中身も、上記の知識を持ってから見てみると「なるほどな」とわかった気になるものだ。
 
