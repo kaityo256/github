@@ -157,7 +157,110 @@ $ od -tx1 .git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96
 
 ### コミットオブジェクト
 
-コミットオブジェクトは、コミット、すなわちスナップショットを保存するためのものだ。スナップショットは、次に説明するtreeオブジェクトが保存しています。また、親コミットの情報も持っています。以上をまとめると、コミットオブジェクトは
+コミットオブジェクトは、コミット、すなわちスナップショットを保存するためのものだ。先ほど、`git add`した状態で止めていたのを、コミットしてみよう。
+
+```sh
+$ git commit -m "initial commit"
+[master (root-commit) ca70291] initial commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 test.txt
+ ```
+
+コミットハッシュ`ca70291`を持つコミットが作られた。これに対応するオブジェクトがコミットオブジェクトだ。いま、オブジェクトが何個できたか見てみよう。
+
+```sh
+$ ls -1 .git/objects/*/*
+.git/objects/ca/70291031230dde40264d62b6e8d2424e2c9366
+.git/objects/dd/1d7ee1e23a241a3597a0d0be5139a997fc29c8
+.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96
+```
+
+`.git/objects`以下に3つオブジェクトができている。このうち、`e51ca0d`は`test.txt`に対応するblobオブジェクト、`ca70291`は今作ったコミットオブジェクト、もう一つの`dd1d7ee`は後述するtreeオブジェクトであり、コミットが保持するスナップショットを表現する
+。blobオブジェクトやtreeオブジェクトは、同じ中身であれば同じハッシュ値を持つ。一方、コミットオブジェクトのハッシュはぶつかっては困るので、毎回異なるものになる。
+
+さっき作ったコミットオブジェクト`ca70291`のタイプを見てみよう。。ちなみに、先ほど述べたように、ハッシュ値は他と区別が付けば40桁全てを指定する必要はない。
+
+```sh
+$ git cat-file -t ca70291
+commit
+```
+
+確かにコミットオブジェクトになっている。この表示から`ca70291`はコミットオブジェクトであることがわかる。コミットオブジェクトは、以下の情報をまとめたものだ。
+
+* スナップショットを保存するtreeオブジェクト
+* 親コミットのコミットハッシュ
+    * root-commitなら親コミット情報なし
+    * merge commitなら親コミット情報二つ
+* コミットの作成者情報
+* コミットメッセージ
+
+中身を見てみよう。
+
+```sh
+$ git cat-file -p ca70291
+tree dd1d7ee1e23a241a3597a0d0be5139a997fc29c8
+author H. Watanabe <kaityo256@example.com> 1632060650 +0900
+committer H. Watanabe <kaityo256@example.com> 1632060650 +0900
+
+initial commit
+```
+
+`dd1d7ee`というtreeオブジェクト、作成者、コミットメッセージを含んでいることがわかる。なお、これはroot commitなので、親コミットの情報は持っていない。適当に修正してコミットしてみよう。
+
+```sh
+$ echo "Hello commit object" >> test.txt
+$ git commit -am "update"
+[master 1f620eb] update
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+新しく`1f620eb`というコミットができた。中身を見てみよう。
+
+```sh
+$ git cat-file -p 1f620eb
+tree 55e11d02569af14b5d29fe56fd44c1cc32c55e72
+parent ca70291031230dde40264d62b6e8d2424e2c9366
+author H. Watanabe <kaityo256@example.com> 1630738892  +0900
+committer H. Watanabe <kaityo256@example.com> 1630738892 +0900
+
+
+update
+```
+
+![commit.png](fig/commit.png)
+
+スナップショットを表すtreeオブジェクトが`dd1d7ee`から`55e11d0`に更新され、新たに親コミットとして、先ほどの`ca70291`が保存されています。
+
+マージにより作られたマージコミットの場合は、二つの親コミットの情報を含んでいます。いま、こんな歴史を持つリポジトリを考えよう。
+
+```sh
+$ git log --graph --pretty=oneline
+*   f4baa057ce89467a2faced36229da02799c9e394 (HEAD -> master) Merge branch 'branch'
+|\
+| * 6aecd68aa423651edda9d22e20925314ff3e8386 (branch) update
+* | 953cb6056e5f0437f0d4e102f232d8eb705f6428 adds test2.txt
+|/
+* 6db4350c6ebd75338ac4bc2eb2a2924895a0c73b initial commit
+```
+
+root commitである`6db4350`から`6aecd68`と`953cb60`が分岐し、マージされて`f4baa05`になっている。
+
+![merge.png](fig/merge.png)
+
+この最後のマージコミットf4baa05の中身を見てみよう。
+
+```sh
+$ git cat-file -p f4baa05
+tree 706a1741c1d94977ba496449d80ab848ca945e14
+parent 953cb6056e5f0437f0d4e102f232d8eb705f6428
+parent 6aecd68aa423651edda9d22e20925314ff3e8386
+author H. Watanabe <kaityo256@example.com> 1630743012 +0900
+committer H. Watanabe <kaityo256@example.com> 1630743012 +0900
+
+Merge branch 'branch'
+```
+
+スナップショットを保存するtreeオブジェクト`706a174`の他に、二つの親コミット`953cb60`と`6aecd68`が保存されていることがわかる。
 
 ## Gitの参照(refs)
 
