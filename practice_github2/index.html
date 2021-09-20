@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title></title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                        <h1 id="githubの操作応用編">GitHubの操作(応用編)</h1>
+<h2 id="目標">目標</h2>
+<ul>
+<li>既存のリポジトリをforkする</li>
+<li>GitHub Pagesを使ってウェブサイトを公開する</li>
+<li>プルリクを体験する</li>
+</ul>
+<h2 id="課題1-mnistの学習済みモデルをウェブで試す">課題1: MNISTの学習済みモデルをウェブで試す</h2>
+<p>MNISTは有名は手書き数字のデータセットだ。これを学習させたモデルをブラウザで読み込み、実際に数字を描いてみてちゃんと認識できるか確認してみよう。</p>
+<h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
+<p>GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。</p>
+<p>まず、既存のリポジトリをforkしよう。GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
+<p><a href="https://github.com/appi-github/pages-sample" class="uri">https://github.com/appi-github/pages-sample</a></p>
+<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、<code>pages-sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
+<h3 id="step-2-pagesの設定">Step 2: Pagesの設定</h3>
+<p>GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。</p>
+<ul>
+<li>上のタブの「Settings」を選ぶ。</li>
+<li>左のメニューの「Pages」を選ぶ。</li>
+<li>「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、<code>main</code>を選ぶ。</li>
+<li>「<code>/root</code>」というボタンが現れるので、クリックして「<code>/docs</code>」を選んで「Save」ボタンを押す。</li>
+</ul>
+<p>すると、</p>
+<pre class="txt"><code>Your site is ready to be published at https://アカウント名.github.io/pages-sample/</code></pre>
+<p>という表示がされる。実際に公開するまでしばらくかかるため、数分まってからクリックしてアクセスしよう。もし「404」と表示されたら、またしばらく待ってからリロードすること。「MNIST Check」という画面が出たら成功だ。</p>
+<p>先ほどの設定は、<code>main</code>ブランチにあるスナップショットの、<code>/docs</code>をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は<code>/docs</code>以下に<code>index.html</code>が置いてあるので、それが表示されている。</p>
+<h3 id="step-3-数字認識を確認">Step 3: 数字認識を確認</h3>
+<p>画面には二つの黒い領域がある。左の「Please draw here」とある方にマウスで数字を入力してみよ。右側の「Input Image」が更新され、「Your figure is ... 1!」などというメッセージが表示されるはずだ。</p>
+<p>学習済みモデルは、28x28ピクセルの画像を学習しているため、入力された画像を、まずは28x28ピクセルに変換する必要がある。それが右側の「Input Image」である。この「Input Image」を学習済みニューラルネットワークに入力し、これが何の数字であるかを推定している。本来は前処理をして渡すのだが、それを省いているために認識精度がかなり低くなっているはずだ。いろいろ数字を入力し、どの数字の認識が悪いか試してみよ。</p>
+<h3 id="レポート課題">レポート課題</h3>
+<p>最も「これはないだろう」という判定画面(誰が見ても6なのに4と判定してしまった等)を選び、そのスクリーンショットをレポートとして提出せよ。また、どのような数字が誤判定しやすいか、またそれはなぜかを考察せよ。</p>
+<h2 id="課題2-プルリクエストを作ってみる">課題2: プルリクエストを作ってみる</h2>
+<h2 id="課題3-簡単なゲーム作成">課題3: 簡単なゲーム作成</h2>
+          </article>
+  </body>
+
+  </html>

@@ -125,8 +125,12 @@
 * コミットとプッシュ
 * issueのオープンとクローズ
 * Projectの使い方(Automated Kanban)
-* forkとclone、GitHub Pagesの公開
-* プルリクエスト
+
+### [GitHubの操作(応用編)](practice_github2/README.md)
+
+* MNISTの学習済みモデルをウェブで試す
+* プルリクエストを作ってみる
+* 簡単なゲーム作成
 
 ### GitHubの操作(応用編)
 
