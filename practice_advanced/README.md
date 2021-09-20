@@ -10,7 +10,7 @@
 
 ## 課題1: git amendによるコミット修正
 
-### リポジトリのクローン
+### Step 1: リポジトリのクローン
 
 サンプル用のリポジトリをクローンせよ。
 
@@ -20,7 +20,7 @@ git clone git clone https://github.com/appi-github/amend-sample.git
 cd amend-sample
 ```
 
-### 歴史の確認
+### Step 2: 歴史の確認
 
 履歴を確認し、最新のコミットメッセージに打ち間違いがあることを確認せよ。
 
@@ -28,7 +28,7 @@ cd amend-sample
 git log --oneline
 ```
 
-### コミットの保存
+### Step 3: コミットの保存
 
 修正する前に、現在の最新のコミットに別名をつけておこう。
 
@@ -36,7 +36,7 @@ git log --oneline
 git branch original_main
 ```
 
-### コミットの修正
+### Step 4: コミットの修正
 
 コミットメッセージを修正しよう。
 
@@ -44,7 +44,7 @@ git branch original_main
 git commit -amend -m "updates README.md"
 ```
 
-### 歴史の修正を確認
+### Step 5: 歴史の修正を確認
 
 歴史が修正されたことを確認しよう。
 
@@ -62,7 +62,7 @@ git log --all --graph --oneline
 
 ## 課題2: git mergeによる衝突の解決
 
-### リポジトリのクローン
+### Step 1: リポジトリのクローン
 
 サンプル用のリポジトリをクローンせよ。
 
@@ -72,7 +72,7 @@ git clone https://github.com/appi-github/merge-sample.git
 cd merge-sample
 ```
 
-### ブランチの準備
+### Step 2: ブランチの準備
 
 `origin/knock`が存在することを確認せよ。
 
@@ -86,7 +86,7 @@ git branch -vva
 git branch knock origin/knock
 ```
 
-### 差分確認
+### Step 3: 差分確認
 
 `main`ブランチと、`knock`ブランチの差分を確認せよ。
 
@@ -94,7 +94,7 @@ git branch knock origin/knock
 git diff knock
 ```
 
-### マージと、マージの中止
+### Step 4: マージと、マージの中止
 
 `main`ブランチから、`knock`ブランチをマージせよ。
 
@@ -115,7 +115,7 @@ git merge --abort
 cat poetry.txt
 ```
 
-### マージと衝突の解決
+### Step 5: マージと衝突の解決
 
 次は衝突を解決し、マージを実行しよう。
 
@@ -142,11 +142,130 @@ git log --all --graph --oneline
 
 ## 課題3: git rebaseによる歴史改変
 
-TODO:
+### Step 1: リポジトリのクローン
+
+サンプル用のリポジトリをクローンせよ。
+
+```sh
+cd 
+cd github
+git clone https://github.com/appi-github/rebase-history-sample.git
+cd rebase-history-sample
+```
+
+### Step 2: 歴史の確認
+
+現在の歴史を確認しよう。
+
+```sh
+$ git log --oneline
+b6f729a (HEAD -> main, origin/main, origin/HEAD) Bob headed off to school.
+f1ecd8d Ice cream was gone.
+de96bad The ice cream was still there.
+9e6dca2 (origin/start) The two woke up.
+```
+
+時間は「下から上」に流れている。したがって、現在の歴史は
+
+1. AliceとBobが目を覚ます
+2. Aliceがアイスを確認する
+3. Aliceがアイスが無くなっていることに気づく
+4. Bobが学校へ行く
+
+となっている。`alice.txt`と`bob.txt`には、それぞれの行動が記されている。差分を見てみよう。
+
+```sh
+git diff HEAD^
+git diff HEAD^ HEAD^^
+git diff HEAD^^ HEAD^^^
+```
+
+上記は歴史を一つずつさかのぼっている。「ボブが学校へ行く」「Aliceがアイスが無くなっていることに気づく」「Aliceがアイスを確認する」という順番になっている。
+
+さて、このままではBobがAliceのアイスを食べたことがバレてしまい、大目玉をくらう。`git rebase`で歴史を改変してアリバイを作ってあげよう。
+
+### Step 3: ブランチの作成
+
+二人が起きた時点にブランチを作る。
+
+```sh
+git branch start origin/start
+```
+
+### Step 4: コミットの入れ替え
+
+`main`ブランチから`start`ブランチに対してリベースをする。
+
+```sh
+git rebase -i start
+```
+
+こんな画面が表示されたはずだ。
+
+```txt
+pick de96bad The ice cream was still there.
+pick f1ecd8d Ice cream was gone.
+pick b6f729a Bob headed off to school.
+```
+
+これを順序を入れ替えて以下の状態にせよ。
+
+```txt
+pick b6f729a Bob headed off to school.
+pick de96bad The ice cream was still there.
+pick f1ecd8d Ice cream was gone.
+```
+
+Vimで入れ替えるには、以下の手順を取る。
+
+1. 「j」と「k」でカーソルを上下に移動し、「Bob headed off to school.」の行に合わせる
+2. 「dd」と入力し、3行目を切り取る
+3. 「k」を数回入力し、カーソルを一番上に移動する
+4. 「P (シフトキーを押しながらp)」を入力し、行の一番上に先ほど切り取った行を貼り付ける
+5. 「ZZ (シフトキーを押しながらZを二回)」を入力し、歴史改変を終了する。
+
+### Step 5: 改変された歴史の確認
+
+歴史が無事に改変されたか確認しよう。
+
+```sh
+$ git log --oneline
+469ce60 (HEAD -> main) Ice cream was gone.
+65552f7 The ice cream was still there.
+650e6bd Bob headed off to school.
+9e6dca2 (origin/start, start) The two woke up.
+```
+
+歴史は以下のように改変された。
+
+1. AliceとBobが目を覚ます
+2. Bobが学校へ行く
+3. Aliceがアイスを確認する
+4. Aliceがアイスが無くなっていることに気づく
+
+Bobが学校に行った後にアイスがあることが確認されているのだから、Bobはアイスを食べることができない。すなわちアリバイが成立し、Aliceに怒られることは無くなった。
+
+`alice.txt`と`bob.txt`には、それぞれの行動が記されている。差分を見てみよう。
+
+```sh
+git diff HEAD^
+git diff HEAD^ HEAD^^
+git diff HEAD^^ HEAD^^^
+```
+
+これで一つずつ歴史をさかのぼることができる。「アリスがアイスがないことに気づく」「アリスがアイスの存在を確認する」「ボブが学校に行く」という歴史になっていることがわかるだろう。
+
+### レポート課題
+
+歴史を改変した後に、以下のコマンドを実行した結果をレポートとして提出せよ。
+
+```sh
+git log --oneline
+```
 
 ## 課題4: git rebaseによる衝突の解決
 
-### リポジトリのクローン
+### Step 1: リポジトリのクローン
 
 サンプル用のリポジトリをクローンせよ。
 
@@ -156,7 +275,7 @@ git clone https://github.com/appi-github/rebase-conflict-sample
 cd rebase-conflict-sample
 ```
 
-### ブランチの準備
+### Step 2: ブランチの準備
 
 `origin/branch`から`branch`を作成せよ。
 
@@ -164,7 +283,7 @@ cd rebase-conflict-sample
 git switch -c branch origin/branch
 ```
 
-### 歴史の確認
+### Step 3: 歴史の確認
 
 現在の歴史が分岐していることを確認せよ。
 
@@ -172,7 +291,7 @@ git switch -c branch origin/branch
 git log --all --graph --oneline
 ```
 
-### リベースの実行
+### Step 4: リベースの実行
 
 `branch`から`main`に対してリベースを実行し、衝突が発生することを確認せよ。
 
@@ -180,7 +299,7 @@ git log --all --graph --oneline
 git rebase main
 ```
 
-### 状態の確認
+### Step 5: 状態の確認
 
 現在の状態を確認せよ。
 
@@ -190,7 +309,7 @@ git status
 
 特に、いまリベース中であること、どのコミットを処理中に衝突が起きたのか、衝突が起きたのはどのファイルかを確認すること。
 
-### 衝突の解決
+### Step 6: 衝突の解決
 
 VSCodeで衝突状態にあるファイル(`text1.txt`)を修正し、衝突を解決せよ。
 
@@ -200,7 +319,7 @@ code .
 
 `text1.txt`を開くと衝突箇所が表示されているので、`Accept Both Changes`をクリックするだけで良い。
 
-### 解決をGitに伝える
+### Step 7: 解決をGitに伝える
 
 解決が終わったら`git add`、`git commit`を実行し、Gitに衝突の解決を伝えよう。
 
@@ -211,7 +330,7 @@ git commit -m "f2"
 
 コミット実行時に`detached HEAD`と表示されることに注意。
 
-### リベースの続行
+### Step 8: リベースの続行
 
 残りのリベースプロセスを続行しよう。
 
@@ -231,9 +350,9 @@ git log --oneline --graph
 
 リベース後の歴史は期待通りとなっているか？それはどこを見るとわかるか？
 
-## 課題5: git bisectの確認
+## 発展課題: git bisectの確認
 
-### リポジトリのクローン
+### Step 1: リポジトリのクローン
 
 サンプル用のリポジトリをクローンせよ。
 
@@ -243,7 +362,7 @@ git clone https://github.com/appi-github/bisect-sample.git
 cd bisect-sample
 ```
 
-### バグの確認
+### Step 2: バグの確認
 
 `evenodd.sh`は、本来であれば入力された数値の偶奇を判定するコードであったが、いつのまにか全ての数字に`even`と答えるようになった。適当な数字を与えて実行し、確認せよ。
 
@@ -252,7 +371,7 @@ cd bisect-sample
 ./evenodd.sh 2
 ```
 
-### ブランチの準備
+### Step 3: ブランチの準備
 
 `origin/root`から`root`を作成し、カレントブランチを`root`にせよ。
 
@@ -260,7 +379,7 @@ cd bisect-sample
 git switch -c root origin/root
 ```
 
-### バグっていないことを確認
+### Step 4: バグっていないことを確認
 
 先ほどと同様に`evenodd.sh`を実行し、正しく実行されることを確認せよ。確認後、`main`ブランチに戻っておくこと。
 
@@ -268,7 +387,7 @@ git switch -c root origin/root
 git switch main
 ```
 
-### `git bisect`の実行
+### Step 5: `git bisect`の実行
 
 少なくとも`root`ブランチでは正常に動作し、`main`ブランチでは問題があることがわかった。そこで、`git bisect`により「問題が初めておきたコミット」を発見しよう。以下を実行し、二分探索モードに入る。
 
@@ -276,7 +395,7 @@ git switch main
 git bisect start main root
 ```
 
-### 状態の確認
+### Step 6: 状態の確認
 
 現在の状態を確認せよ。
 
@@ -286,7 +405,7 @@ git status
 
 特に、頭がとれた(`detached HEAD`)状態であること、二分探索モードであること、どうすればこのモードを抜けることができるか等について確認すること。
 
-### good/bad判定
+### Step 7: good/bad判定
 
 いま、Gitは適当なコミットが指すスナップショットをワーキングツリーとして展開している。この状態にバグがあるのか、それともないのかをGitに教えよう。
 
@@ -311,7 +430,7 @@ git bisect bad
 
 を実行せよ。そのたびにGitは次の候補を持ってくるので、終了するまで上記の操作を繰り返すこと。Gitが「初めて問題が起きたらコミット」を見つけたら`コミットハッシュ is the first bad commit`という表示がなされるはずだ。
 
-### ブランチの付与と二分探索モードの終了
+### Step 8: ブランチの付与と二分探索モードの終了
 
 このコミットにブランチをつけておこう。
 
@@ -325,7 +444,7 @@ git branch bug 先ほど見つけたコミットハッシュ
 git bisect reset
 ```
 
-### 自動チェックの確認
+### Step 9: 自動チェックの確認
 
 いちいちバグの有無を人力で確認し、`git bisect good/bad`を入力するのは面倒だ。「成功/失敗」を判定するスクリプトを使って、二分探索を自動化しよう。そのようなスクリプト`test.sh`が用意されている。
 
