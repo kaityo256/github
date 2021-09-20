@@ -55,6 +55,7 @@
 <li><code>git bisect</code>を使ってみる</li>
 </ul>
 <h2 id="課題1-git-amendによるコミット修正">課題1: git amendによるコミット修正</h2>
+<p>コミットメッセージでうっかりタイポしてしまった。恥ずかしいので修正しよう。</p>
 <h3 id="step-1-リポジトリのクローン">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
@@ -76,6 +77,7 @@
 <p><code>git commit --amend</code>はコミットハッシュを変更する。先ほど、変更前のコミットに別名をつけておいたので、そこで歴史が分岐したことを確認しよう。以下のコマンドを実行した結果をレポートとして提出せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題2-git-mergeによる衝突の解決">課題2: git mergeによる衝突の解決</h2>
+<p>ある詩人が、ロバの上で詩を作っていたが、「僧は推す、月下の門」とするか、「僧は敲く、月下の門」とするか迷って、都の長官、韓愈の列に突っ込んでしまった。<code>git merge</code>でどちらにするか決断して上げよう。</p>
 <h3 id="step-1-リポジトリのクローン-1">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
@@ -108,6 +110,7 @@
 <p>以下のコマンドでマージが完了した状態の歴史を表示し、それをレポートとして提出せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題3-git-rebaseによる歴史改変">課題3: git rebaseによる歴史改変</h2>
+<p>Bobは、姉であるAliceの大事なアイスを食べてしまった。このままでは大目玉だ。<code>git rebase</code>により歴史を改変し、Bobにアリバイを作ってあげよう。</p>
 <h3 id="step-1-リポジトリのクローン-2">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> 
@@ -216,6 +219,7 @@ pick f1ecd8d Ice cream was gone.</code></pre>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline --graph</code></pre></div>
 <p>リベース後の歴史は期待通りとなっているか？それはどこを見るとわかるか？</p>
 <h2 id="発展課題-git-bisectの確認">発展課題: git bisectの確認</h2>
+<p>数の偶奇を判定するスクリプト<code>evenodd.sh</code>を開発していたが、いつの間にか全ての数字に<code>even</code>と答えるようになってしまった。<code>git bisect</code>による二分探索でどこでバグが入ったか調べよう。</p>
 <h3 id="step-1-リポジトリのクローン-4">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
