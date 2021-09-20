@@ -178,3 +178,146 @@ GitHub側で情報が更新され、`README.md`に「Hello GitHub」が表示さ
 
 ## 課題2: ローカルのリポジトリをGitHubに登録
 
+先ほどはGitHub側で新規リポジトリを作り、それをローカルにクローンした。しかし、まずローカルで開発を進め、ある程度形になったらGitHubに登録することの方が多いであろう。そこで、ローカルでリポジトリを作ってからGitHubに登録する作業を体験しよう。
+
+### Step 1: ローカルにリポジトリを作る
+
+Git Bashの`github`ディレクトリ以下に`test2`というディレクトリを作ろう。
+
+```sh
+cd
+cd github
+mkdir test2
+cd test2
+```
+
+ここでまた`README.md`ファイルを作る。
+
+```sh
+code README.md
+```
+
+内容は何でも良いが、例えば以下の内容を入力して保存しよう。
+
+```md
+# test2
+
+2nd repository
+```
+
+この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。
+
+```sh
+git init
+git add README.md
+git commit -m "initial commit"
+```
+
+### Step 2: GitHubにベアリポジトリを作る
+
+GitHubのホーム画面の左上の「Repositories」の右にある「New」をクリックする。Repository nameはtest2、Descriptionは無くても良いが、とりあえず2nd repositoryとしておこう。また、今回もPrivateリポジトリとする。
+
+空のリポジトリを作りたいので、「Initialize this repository with:」のチェックは全て外した状態で「Create Repository」とすること。
+
+すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、ここでは「既に存在するリポジトリをpushする(...or push an existing repository from the command line)」を選びたいので、そこに書かれている以下のコマンドをコピーする。
+
+```sh
+git remote add origin git@github.com:アカウント名/test2.git
+git branch -M main
+git push -u origin main
+```
+
+これをGit Bashに貼り付けて実行すれば、プッシュできる。この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。
+
+### レポート課題
+
+GitHubの`test2`リポジトリにおいて`README.md`が表示されている画面のスクリーンショットをレポートとして提出せよ。
+
+## 課題3: Issue管理
+
+Gitでは、原則としてメインブランチで作業をしない。これから作業をする内容によってブランチを作成し、そのブランチ上で作業し、完成したらメインブランチにマージする、という作業を繰り返すことで開発をすすめる。それぞれの作業に対応するブランチを作業ブランチ(トピックブランチもしくはフィーチャーブランチ)と呼ぶ。
+
+一般に、必要な作業は複数同時に発生する。このとき、どのタスクを実行中で、どのタスクが手つかずか、タスク管理をしたくなる。原則としてタスクと作業ブランチは一対一に対応するのであるから、それらをツールで一度に管理したくなるのは自然であろう。それがGitHubのissueである。
+
+GitHubを使う場合、
+
+* これから行う作業をissueに登録する。
+* 登録されたissueのうち、これから手をつけるissueに対応した作業ブランチを作成する
+* 作業ブランチで作業し、修正をコミットする
+* メインブランチにマージする
+
+という流れで開発をすすめる。issueとは「課題」という意味であり、一般に課題を管理するシステムをIssue Tracking System (ITS)と呼ぶ。一種のTodo リストだと思えば良い。GitHubはITSの機能を持っている。
+
+以下ではブランチとIssueを連携させた開発について体験しよう。
+
+### Step 1: Issueの作成
+
+* 先ほど作った`test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Repositories」の「アカウント名/test」を選べばよい。
+* 上のタブから「Issues」をクリックし、「New Issue」ボタンを押す。
+* Titleに「READMEの修正」と書く
+* コメント(Leave a commentとあるところ)に「内容を追加」と書く。
+* Labelsとして「enhancement」を選ぶ。
+
+以上の操作の後「Submit new issue」をクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。
+
+### Step 2: ブランチの作成
+
+次に、issueに対応するブランチを作成する。ブランチの命名規則には様々な流儀があるが、先ほどつけたラベル(enhancement)、issue番号(1)、そして修正内容を含めるのが一般的だ。ここではディレクトリ型の命名規則を採用しよう。ディレクトリ型の命名規則では「ラベル/issue番号/内容」という名前のブランチを作成する。今回、「enhancement」というラベルをつけたが、これは「新しい機能(feature)を追加する」という意味なので、「feat」とする。あとはissue番号1番、READMEの修正なので、全てまとめて`feat/1/README`というブランチを作ることにする。
+
+Git Bashで以下を実行せよ。
+
+```sh
+cd
+cd github
+cd test
+git switch -c feat/1/README
+```
+
+### Step 3: コミットとマージ
+
+今、カレントブランチが`feat/1/README`ブランチとなったはずだ。このブランチ上で、README.mdに一行追加しよう。
+
+```sh
+# test
+test repository
+
+Hello GitHub
+modifies README
+```
+
+修正したら、`git add`、`git commit`するが、コミットメッセージを`closes #1`とする。シャープ`#`を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。
+
+```sh
+git add README.md
+git commit -m "closes #1"
+```
+
+修正を`main`に取り込もう。
+
+```sh
+git switch main
+git merge feat/1/README
+```
+
+### Step 4: 修正のプッシュとissueのクローズ
+
+以上の修正をpushする。pushする前に、先ほどのissueの画面をブラウザで表示しておくこと。ブラウザの画面が見える状態でGit Bashから`git push`する。
+
+```sh
+git push
+```
+
+ブラウザのissueの画面を見てみよう。push後に自動的にissueが閉じられたはずだ。
+
+このように、`fixes`、`closes`といった動詞と`#1`のような形でissue番号が含まれたコミットメッセージを含むコミットがpushされると、GitHubがそれを検出し、自動的に対応するissueを閉じてくれる。
+
+不要になったブランチは消しておこう。
+
+```sh
+git branch -d feat/1/README
+```
+
+### レポート課題
+
+issueが自動的に閉じられた画面のスクリーンショットをレポートとして提出せよ。
+
