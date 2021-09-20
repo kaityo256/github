@@ -321,3 +321,51 @@ git branch -d feat/1/README
 
 issueが自動的に閉じられた画面のスクリーンショットをレポートとして提出せよ。
 
+## 課題4: Projectの利用
+
+issueには「open (未完了)」と「closed (完了)」の二状態しかないが、issueが増えてくると、いまどのissueがどういう状態なのかをより細かく管理したくなる。例えば未完了と完了の間に、「作業中」という状態が欲しくなる。このような状態を管理するのがProjectだ。以下では、もっとも基本的なProjectであるKanbanを使ってみよう。
+
+### Step 1: Projectの作成
+
+* GitHubの`test`リポジトリの上のタブから「Project」を選び、「Create a project」をクリックする。
+* 「Project board name」は「カンバン」と入力
+* 「Description 」も「カンバン」と入力
+* 「Project template」は「Automated Kanban」を選ぶ
+
+以上の設定の後「Create project」を実行する。デフォルトで「To do (未完了)」「In progress (作業中)」「Done (完了)」の三つのカラムがある。「To do」にいくつか項目があるが、これは「カード」と呼ばれる。「カンバン」とは、「看板」のことで、トヨタの生産管理法「カンバン方式」に由来する。
+
+既に「To do」に3つカードがあるため、それぞれのカードの右上の「...」から「Archive」を選んで、三つとも片づけておこう。
+
+### Step 2: Issueの作成とProjectへの関連付け
+
+上のタブから「Issues」をクリックし、「New Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。ラベルは先ほどと異なるもので試したいので「documentation」を選ぶ
+
+Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。
+
+```md
+- [ ] 修正1 (#1 に追加)
+- [ ] 修正2
+```
+
+ここで「`#`」と数字の間には空白をいれず、「`#1`」の後には半角空白を入れるのをわすれないこと。また、`- [ ]`の間には半角空白を入れる。入力をしたら「Preview」タブを見て、チェックボックスができているか、別のissueにリンクされているか確認すること。
+
+このissueをprojectと関連付けよう。右の「Labels」の紫下にある「Projects」を開き、先ほど作った「カンバン」を選ぼう。
+
+以上の準備が済んだら「Submit new issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。
+
+### Step 3: ブランチの作成
+
+Git Bashに戻り、ブランチを作成しよう。今回はラベルが`documentation`、issue番号が2番、内容がREADMEの修正なので、`doc/2/README`としよう。Git Bashの`test`リポジトリで以下を実行せよ。
+
+```sh
+git switch -c doc/2/README
+```
+
+ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの`test`リポジトリの「Projects」タブから「カンバン」を選ぶ。
+
+すると、「To do」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「カンバン」で、状態が「In progress」になっていることがわかる。
+
+状態とブランチの関係はプロジェクトやチームによって異なるが、例えば「ブランチを作ったらIn progressにする」というルールにしておくと、逆に「In progressになっていれば、ブランチがあるはず」とわかって便利だ。
+
+
+
