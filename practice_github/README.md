@@ -367,5 +367,46 @@ git switch -c doc/2/README
 
 状態とブランチの関係はプロジェクトやチームによって異なるが、例えば「ブランチを作ったらIn progressにする」というルールにしておくと、逆に「In progressになっていれば、ブランチがあるはず」とわかって便利だ。
 
+### Step 4: 修正とマージ
 
+また`README.md`を修正しよう。「Hello Kanban」という一行を追加せよ。
+
+```md
+# test
+test repository
+
+Hello GitHub
+modifies README
+Hello Kanban
+```
+
+ファイルを保存したら、今度は`fixes #2`というメッセージでコミットする。
+
+```sh
+git add README.md
+git commit -m "fixes #2"
+```
+
+また`main`ブランチに戻って、修正を取り込もう。まだpushしないこと。
+
+```sh
+git switch main
+git merge doc/2/README
+```
+
+### Step 4: 修正のプッシュとカードの移動
+
+マージが終了したらブラウザで先ほどの「カンバン」の画面を見よう。まだカードは「In progress」にある。
+
+この状態でGit Bashから`git push`しよう。
+
+```sh
+git push
+```
+
+2番のIssueが閉じられると同時に、自動でカードが「In progress」から「Done」に移動したはずだ。
+
+### レポート課題
+
+Projectの「カンバン」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。
 

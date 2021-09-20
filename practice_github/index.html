@@ -54,6 +54,225 @@
 <li>Project(Automated Kanban)の使い方を覚える</li>
 <li>GitHub Pagesの公開を体験する</li>
 </ul>
+<h2 id="課題1-githubアカウントを作成とssh接続">課題1: GitHubアカウントを作成とSSH接続</h2>
+<h3 id="step-1-アカウントの作成">Step 1: アカウントの作成</h3>
+<p>まず、GitHubにアカウントを作成する。既にGitHubにアカウントを持っている人はこのステップをスキップしてよい。ユーザ名、メールアドレス、パスワードを入力するが、ユーザー名は今後長く使う可能性があるのでよく考えること。場合によっては本名よりも有名になる可能性もある。メールアドレスは普段使うアドレスを設定しておく。このアドレスは公開されない(公開することもできる)。</p>
+<p><a href="https://github.com/" class="uri">https://github.com/</a>にアクセスし、右上から「Sign up」を選ぶ。</p>
+<ul>
+<li>Enter your email : メールアドレスを入力する</li>
+<li>Create a password: パスワードを入力する</li>
+<li>Enter a username: GitHubのアカウント名を入力</li>
+<li>Would you like to receive product updates and announcements via email?: アナウンスを受け取るか。通常は不要なのでnで良い。</li>
+<li>Verify your account: 人間であることを証明するため、パズル認証を解く</li>
+<li>Create account: 実行すると、登録メールにlaunch code(6桁の数字)が届くので、メールを確認して入力</li>
+<li>最初にアンケートを聞かれる。答えても良いが、面倒なら「Skip personlization」</li>
+</ul>
+<p>「Learn Git and GitHub without any code!」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。</p>
+<h3 id="step-2-ssh公開鍵の確認と作成">Step 2: SSH公開鍵の確認と作成</h3>
+<p>SSH公開鍵を作成する。Git Bashを起動せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">ls</span> .ssh</code></pre></div>
+<p>を実行し、<code>id_rsa.pub</code>と<code>id_rsa</code>が表示された場合は既に公開鍵が作られている。これらの鍵を自分で作った記憶があり、かつ秘密鍵にパスフレーズが設定されているのならこのステップをスキップして良い。パスフレーズの確認は以下のコマンドでできる。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">ssh-keygen</span> -yf .ssh/id_rsa</code></pre></div>
+<p>実行後、パスフレーズが聞かれ、入力したら<code>ssh-rsa AAAAB...</code>という長い文字列が表示されたらそのまま使ってよいので、次のステップに進む。もしパスフレーズを入力せずに文字列が表示されたり、パスフレーズを忘れてしまった場合は以下の手順で作り直す。</p>
+<p>SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bashのホームディレクトリで以下のコマンドを実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ssh-keygen</span>
+<span class="ex">Generating</span> public/private rsa key pair.pat
+<span class="ex">Enter</span> file in which to save the key (/c/Users/watanabe/.ssh/id_rsa)<span class="bu">:</span> <span class="co"># ←ここではそのままリターン</span>
+<span class="ex">Created</span> directory <span class="st">&#39;/c/Users/watanabe/.ssh&#39;</span>.
+<span class="ex">Enter</span> passphrase (empty for no passphrase)<span class="bu">:</span> <span class="co"># ここでパスフレーズを入力</span>
+<span class="ex">Enter</span> same passphrase again:                # 同じパスフレーズを入力</code></pre></div>
+<p>パスフレーズを二度入力した後、</p>
+<pre class="txt"><code>Your identification has been saved in /path/to/.ssh/id_rsa
+Your public key has been saved in /path/to/.ssh/id_rsa.pub</code></pre>
+<p>といったメッセージが表示されたら成功である(<code>path/to</code>は環境によって異なることを表しており、その通りに表示されるわけではない。以下同様)。<code>id_rsa</code>が秘密鍵、<code>id_rsa.pub</code>が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。</p>
+<h3 id="step-3-ssh公開鍵の登録">Step 3: SSH公開鍵の登録</h3>
+<p>GitHubに公開鍵を登録する。</p>
+<ul>
+<li>GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。</li>
+<li>左に「Account settings」というメニューが現れるので「SSH and GPG keys」を選ぶ。</li>
+<li>「SSH keys」右にある「New SSH key」ボタンを押す</li>
+<li>「Title」と「Key」を入力する。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、<code>.ssh/id_rsa</code>ファイルの中身をコピペする。Git Bashで以下を実行せよ。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> .ssh/id_rsa.pub</code></pre></div>
+<p>すると、<code>ssh-rsa</code>から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「Add SSH key」ボタンを押す。</p>
+<p><code>This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.</code>というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。</p>
+<h3 id="step-4-鍵の登録の確認">Step 4: 鍵の登録の確認</h3>
+<p>正しく鍵が登録されたか見てみよう。Git Bashで、以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ssh</span> -T git@github.com</code></pre></div>
+<p>もし<code>Are you sure you want to continue connecting (yes/no/[fingerprint])?</code>というメッセージが表示されたら<code>yes</code>と入力する。</p>
+<p><code>Enter passphrase for key '/path/to/.ssh/id_rsa':</code>と表示されたら、先ほど設定したパスフレーズを入力する。その結果、</p>
+<pre class="txt"><code>Hi GitHubアカウント名! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code></pre>
+<p>と表示されたら、鍵の登録に成功している。</p>
+<h3 id="step-4-リポジトリの作成とクローン">Step 4: リポジトリの作成とクローン</h3>
+<p>では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。</p>
+<ul>
+<li>GitHubのホーム画面を表示する。左上のネコのようなアイコン(Octocat)をクリックするとホーム画面に戻る。</li>
+<li>ホーム画面に戻ったら「Create repository」ボタンを押す。</li>
+<li>リポジトリの新規作成画面では、以下の項目を設定しよう。
+<ul>
+<li>Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここではtestとしておく。</li>
+<li>Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。</li>
+<li>Public/Private: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。</li>
+<li>Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」と「Choose a license」をチェックしよう。「Choose a license」をクリックすると選択肢が現れるが、ここでは「MIT License」を選んでおこう。</li>
+</ul></li>
+<li>以上の設定を終了したら「Create repository」ボタンを押す。</li>
+<li>リポジトリの画面に移るので、右上の「Code」をクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると<code>git@github.com:</code>から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。</li>
+</ul>
+<p>次に、ローカルマシンで<code>github</code>というディレクトリを作り、その下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="fu">mkdir</span> github
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone git@github.com:アカウント名/test.git</code></pre></div>
+<p>先ほどURLをコピーしていたので、<code>git clone</code>まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。</p>
+<h3 id="step-5-ローカルの修正とpush">Step 5: ローカルの修正とpush</h3>
+<p>手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。</p>
+<p>まず、クローンしたリポジトリの<code>README.md</code>を修正しよう。先ほどクローンされた<code>test</code>に移動し、VSCodeで<code>README.md</code>を開こう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> test
+<span class="ex">code</span> README.md</code></pre></div>
+<p>すると、以下のような内容が表示されるはずだ。</p>
+<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># test</span>
+test repository</code></pre></div>
+<p>これを、以下のように内容を修正し、保存せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># test</span>
+<span class="bu">test</span> repository
+
+<span class="ex">Hello</span> GitHub</code></pre></div>
+<p>この状態で、<code>README.md</code>の修正を<code>git add</code>して<code>git commit</code>しよう。Git Bashで以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md
+<span class="fu">git</span> commit -m <span class="st">&quot;updates README.md&quot;</span></code></pre></div>
+<p>これでローカルの「歴史」は、GitHubが記憶している「歴史」よりも先に進んだ。歴史を見てみよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">1db6b18</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">updates</span> README.md
+<span class="ex">0a103b5</span> (origin/main, origin/HEAD) <span class="ex">Initial</span> commit</code></pre></div>
+<p>コミットハッシュは人によって異なるが、<code>origin/main</code>よりも、<code>HEAD -&gt; main</code>が一つ先の歴史を指していることがわかる。この「新しくなった歴史」をGitHubに教えよう。ターミナルで以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push</code></pre></div>
+<p>パスフレーズを聞かれるので入力せよ。これでローカルの修正がリモート(GitHub)に反映された。もう一度ブラウザでGitHubのリポジトリを見てみよう。ブラウザをリロードしてみよ。ローカルの変更が反映され、画面に「Hello GitHub」の画面が表示されたら成功だ。</p>
+<h3 id="レポート課題">レポート課題</h3>
+<p>GitHub側で情報が更新され、<code>README.md</code>に「Hello GitHub」が表示されている画面のスクリーンショットをレポートとして提出せよ。</p>
+<h2 id="課題2-ローカルのリポジトリをgithubに登録">課題2: ローカルのリポジトリをGitHubに登録</h2>
+<p>先ほどはGitHub側で新規リポジトリを作り、それをローカルにクローンした。しかし、まずローカルで開発を進め、ある程度形になったらGitHubに登録することの方が多いであろう。そこで、ローカルでリポジトリを作ってからGitHubに登録する作業を体験しよう。</p>
+<h3 id="step-1-ローカルにリポジトリを作る">Step 1: ローカルにリポジトリを作る</h3>
+<p>Git Bashの<code>github</code>ディレクトリ以下に<code>test2</code>というディレクトリを作ろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">mkdir</span> test2
+<span class="bu">cd</span> test2</code></pre></div>
+<p>ここでまた<code>README.md</code>ファイルを作る。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">code</span> README.md</code></pre></div>
+<p>内容は何でも良いが、例えば以下の内容を入力して保存しよう。</p>
+<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># test2</span>
+
+2nd repository</code></pre></div>
+<p>この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init
+<span class="fu">git</span> add README.md
+<span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></code></pre></div>
+<h3 id="step-2-githubにベアリポジトリを作る">Step 2: GitHubにベアリポジトリを作る</h3>
+<p>GitHubのホーム画面の左上の「Repositories」の右にある「New」をクリックする。Repository nameはtest2、Descriptionは無くても良いが、とりあえず2nd repositoryとしておこう。また、今回もPrivateリポジトリとする。</p>
+<p>空のリポジトリを作りたいので、「Initialize this repository with:」のチェックは全て外した状態で「Create Repository」とすること。</p>
+<p>すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、ここでは「既に存在するリポジトリをpushする(...or push an existing repository from the command line)」を選びたいので、そこに書かれている以下のコマンドをコピーする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:アカウント名/test2.git
+<span class="fu">git</span> branch -M main
+<span class="fu">git</span> push -u origin main</code></pre></div>
+<p>これをGit Bashに貼り付けて実行すれば、プッシュできる。この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。</p>
+<h3 id="レポート課題-1">レポート課題</h3>
+<p>GitHubの<code>test2</code>リポジトリにおいて<code>README.md</code>が表示されている画面のスクリーンショットをレポートとして提出せよ。</p>
+<h2 id="課題3-issue管理">課題3: Issue管理</h2>
+<p>Gitでは、原則としてメインブランチで作業をしない。これから作業をする内容によってブランチを作成し、そのブランチ上で作業し、完成したらメインブランチにマージする、という作業を繰り返すことで開発をすすめる。それぞれの作業に対応するブランチを作業ブランチ(トピックブランチもしくはフィーチャーブランチ)と呼ぶ。</p>
+<p>一般に、必要な作業は複数同時に発生する。このとき、どのタスクを実行中で、どのタスクが手つかずか、タスク管理をしたくなる。原則としてタスクと作業ブランチは一対一に対応するのであるから、それらをツールで一度に管理したくなるのは自然であろう。それがGitHubのissueである。</p>
+<p>GitHubを使う場合、</p>
+<ul>
+<li>これから行う作業をissueに登録する。</li>
+<li>登録されたissueのうち、これから手をつけるissueに対応した作業ブランチを作成する</li>
+<li>作業ブランチで作業し、修正をコミットする</li>
+<li>メインブランチにマージする</li>
+</ul>
+<p>という流れで開発をすすめる。issueとは「課題」という意味であり、一般に課題を管理するシステムをIssue Tracking System (ITS)と呼ぶ。一種のTodo リストだと思えば良い。GitHubはITSの機能を持っている。</p>
+<p>以下ではブランチとIssueを連携させた開発について体験しよう。</p>
+<h3 id="step-1-issueの作成">Step 1: Issueの作成</h3>
+<ul>
+<li>先ほど作った<code>test</code>リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Repositories」の「アカウント名/test」を選べばよい。</li>
+<li>上のタブから「Issues」をクリックし、「New Issue」ボタンを押す。</li>
+<li>Titleに「READMEの修正」と書く</li>
+<li>コメント(Leave a commentとあるところ)に「内容を追加」と書く。</li>
+<li>Labelsとして「enhancement」を選ぶ。</li>
+</ul>
+<p>以上の操作の後「Submit new issue」をクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。</p>
+<h3 id="step-2-ブランチの作成">Step 2: ブランチの作成</h3>
+<p>次に、issueに対応するブランチを作成する。ブランチの命名規則には様々な流儀があるが、先ほどつけたラベル(enhancement)、issue番号(1)、そして修正内容を含めるのが一般的だ。ここではディレクトリ型の命名規則を採用しよう。ディレクトリ型の命名規則では「ラベル/issue番号/内容」という名前のブランチを作成する。今回、「enhancement」というラベルをつけたが、これは「新しい機能(feature)を追加する」という意味なので、「feat」とする。あとはissue番号1番、READMEの修正なので、全てまとめて<code>feat/1/README</code>というブランチを作ることにする。</p>
+<p>Git Bashで以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="bu">cd</span> test
+<span class="fu">git</span> switch -c feat/1/README</code></pre></div>
+<h3 id="step-3-コミットとマージ">Step 3: コミットとマージ</h3>
+<p>今、カレントブランチが<code>feat/1/README</code>ブランチとなったはずだ。このブランチ上で、README.mdに一行追加しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># test</span>
+<span class="bu">test</span> repository
+
+<span class="ex">Hello</span> GitHub
+<span class="ex">modifies</span> README</code></pre></div>
+<p>修正したら、<code>git add</code>、<code>git commit</code>するが、コミットメッセージを<code>closes #1</code>とする。シャープ<code>#</code>を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md
+<span class="fu">git</span> commit -m <span class="st">&quot;closes #1&quot;</span></code></pre></div>
+<p>修正を<code>main</code>に取り込もう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch main
+<span class="fu">git</span> merge feat/1/README</code></pre></div>
+<h3 id="step-4-修正のプッシュとissueのクローズ">Step 4: 修正のプッシュとissueのクローズ</h3>
+<p>以上の修正をpushする。pushする前に、先ほどのissueの画面をブラウザで表示しておくこと。ブラウザの画面が見える状態でGit Bashから<code>git push</code>する。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push</code></pre></div>
+<p>ブラウザのissueの画面を見てみよう。push後に自動的にissueが閉じられたはずだ。</p>
+<p>このように、<code>fixes</code>、<code>closes</code>といった動詞と<code>#1</code>のような形でissue番号が含まれたコミットメッセージを含むコミットがpushされると、GitHubがそれを検出し、自動的に対応するissueを閉じてくれる。</p>
+<p>不要になったブランチは消しておこう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -d feat/1/README</code></pre></div>
+<h3 id="レポート課題-2">レポート課題</h3>
+<p>issueが自動的に閉じられた画面のスクリーンショットをレポートとして提出せよ。</p>
+<h2 id="課題4-projectの利用">課題4: Projectの利用</h2>
+<p>issueには「open (未完了)」と「closed (完了)」の二状態しかないが、issueが増えてくると、いまどのissueがどういう状態なのかをより細かく管理したくなる。例えば未完了と完了の間に、「作業中」という状態が欲しくなる。このような状態を管理するのがProjectだ。以下では、もっとも基本的なProjectであるKanbanを使ってみよう。</p>
+<h3 id="step-1-projectの作成">Step 1: Projectの作成</h3>
+<ul>
+<li>GitHubの<code>test</code>リポジトリの上のタブから「Project」を選び、「Create a project」をクリックする。</li>
+<li>「Project board name」は「カンバン」と入力</li>
+<li>「Description 」も「カンバン」と入力</li>
+<li>「Project template」は「Automated Kanban」を選ぶ</li>
+</ul>
+<p>以上の設定の後「Create project」を実行する。デフォルトで「To do (未完了)」「In progress (作業中)」「Done (完了)」の三つのカラムがある。「To do」にいくつか項目があるが、これは「カード」と呼ばれる。「カンバン」とは、「看板」のことで、トヨタの生産管理法「カンバン方式」に由来する。</p>
+<p>既に「To do」に3つカードがあるため、それぞれのカードの右上の「...」から「Archive」を選んで、三つとも片づけておこう。</p>
+<h3 id="step-2-issueの作成とprojectへの関連付け">Step 2: Issueの作成とProjectへの関連付け</h3>
+<p>上のタブから「Issues」をクリックし、「New Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。ラベルは先ほどと異なるもので試したいので「documentation」を選ぶ</p>
+<p>Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。</p>
+<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown">- <span class="fl">[ ] 修正1 (#1 に追加)</span>
+<span class="fl">- [ ] 修正2</span></code></pre></div>
+<p>ここで「<code>#</code>」と数字の間には空白をいれず、「<code>#1</code>」の後には半角空白を入れるのをわすれないこと。また、<code>- [ ]</code>の間には半角空白を入れる。入力をしたら「Preview」タブを見て、チェックボックスができているか、別のissueにリンクされているか確認すること。</p>
+<p>このissueをprojectと関連付けよう。右の「Labels」の紫下にある「Projects」を開き、先ほど作った「カンバン」を選ぼう。</p>
+<p>以上の準備が済んだら「Submit new issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。</p>
+<h3 id="step-3-ブランチの作成">Step 3: ブランチの作成</h3>
+<p>Git Bashに戻り、ブランチを作成しよう。今回はラベルが<code>documentation</code>、issue番号が2番、内容がREADMEの修正なので、<code>doc/2/README</code>としよう。Git Bashの<code>test</code>リポジトリで以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c doc/2/README</code></pre></div>
+<p>ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの<code>test</code>リポジトリの「Projects」タブから「カンバン」を選ぶ。</p>
+<p>すると、「To do」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「カンバン」で、状態が「In progress」になっていることがわかる。</p>
+<p>状態とブランチの関係はプロジェクトやチームによって異なるが、例えば「ブランチを作ったらIn progressにする」というルールにしておくと、逆に「In progressになっていれば、ブランチがあるはず」とわかって便利だ。</p>
+<h3 id="step-4-修正とマージ">Step 4: 修正とマージ</h3>
+<p>また<code>README.md</code>を修正しよう。「Hello Kanban」という一行を追加せよ。</p>
+<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># test</span>
+test repository
+
+Hello GitHub
+modifies README
+Hello Kanban</code></pre></div>
+<p>ファイルを保存したら、今度は<code>fixes #2</code>というメッセージでコミットする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md
+<span class="fu">git</span> commit -m <span class="st">&quot;fixes #2&quot;</span></code></pre></div>
+<p>また<code>main</code>ブランチに戻って、修正を取り込もう。まだpushしないこと。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch main
+<span class="fu">git</span> merge doc/2/README</code></pre></div>
+<h3 id="step-4-修正のプッシュとカードの移動">Step 4: 修正のプッシュとカードの移動</h3>
+<p>マージが終了したらブラウザで先ほどの「カンバン」の画面を見よう。まだカードは「In progress」にある。</p>
+<p>この状態でGit Bashから<code>git push</code>しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push</code></pre></div>
+<p>2番のIssueが閉じられると同時に、自動でカードが「In progress」から「Done」に移動したはずだ。</p>
+<h3 id="レポート課題-3">レポート課題</h3>
+<p>Projectの「カンバン」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。</p>
           </article>
   </body>
 
