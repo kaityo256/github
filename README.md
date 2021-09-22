@@ -120,15 +120,14 @@
 
 ### [GitHubの操作(基本編)](practice_github/README.md)
 
-* アカウント作成
-* リポジトリの作成
-* コミットとプッシュ
-* issueのオープンとクローズ
-* Projectの使い方(Automated Kanban)
+* GitHubアカウントを作成とSSH接続
+* ローカルのリポジトリをGitHubに登録
+* Issue管理
+* Projectの利用
+* プルリクエストを作ってみる
 
 ### [GitHubの操作(応用編)](practice_github2/README.md)
 
-* プルリクエストを作ってみる
 * MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
 
