@@ -128,13 +128,9 @@
 
 ### [GitHubの操作(応用編)](practice_github2/README.md)
 
-* MNISTの学習済みモデルをウェブで試す
 * プルリクエストを作ってみる
+* MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
-
-### GitHubの操作(応用編)
-
-* 実際にウェブアプリ(ゲーム)を作ってみる
 
 ## [参考文献](references/README.md)
 
