@@ -48,46 +48,12 @@
                         <h1 id="githubの操作応用編">GitHubの操作(応用編)</h1>
 <h2 id="目標">目標</h2>
 <ul>
-<li>既存のリポジトリをforkする</li>
 <li>GitHub Pagesを使ってウェブサイトを公開する</li>
-<li>プルリクを体験する</li>
+<li>簡単なブラウザゲームを作る</li>
 </ul>
-<h2 id="課題1-プルリクエストを作ってみる">課題1: プルリクエストを作ってみる</h2>
-<p>GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。</p>
-<h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
-<p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。</p>
-<ul>
-<li><p>A班の場合 <a href="https://github.com/appi-github/pullreq_2021_a" class="uri">https://github.com/appi-github/pullreq_2021_a</a></p></li>
-<li><p>B班の場合 <a href="https://github.com/appi-github/pullreq_2021_b" class="uri">https://github.com/appi-github/pullreq_2021_b</a></p></li>
-</ul>
-<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2021_a</code>として説明するが、B班は適宜<code>pullreq_2021_b</code>に読み替えること。</p>
-<h3 id="step-2-リポジトリのクローン">Step 2: リポジトリのクローン</h3>
-<p>ブラウザのURLが<code>https://github.com/自分のアカウント/リポジトリ名</code>になったら、フォークが完了している。ローカルにクローンしよう。「Code」ボタンの「Clone」からリモートリポジトリをコピーできる。プロトコルがHTTPSではなくSSHになっていることを確認すること。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
-<span class="bu">cd</span> github
-<span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2021_a.git
-<span class="bu">cd</span> pullreq_2021_a</code></pre></div>
-<h3 id="step-3-ブランチの作成">Step 3: ブランチの作成</h3>
-<p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>1234568</code>である時、以下のコマンドを実行せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">echo</span> 12345678 <span class="kw">|</span> <span class="ex">shasum</span>
-<span class="ex">9806af3952e1380212b0998f07a6afe4e5f00428</span> *-</code></pre></div>
-<p>上記のSHA-1ハッシュは各自異なるため、以下は適宜読み替えること。</p>
-<p>表示された上位7桁<code>9806af3</code>をブランチ名として、ブランチを作ろう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c 9806af3</code></pre></div>
-<h3 id="step-4-ファイルの追加とプッシュ">Step 4: ファイルの追加とプッシュ</h3>
-<p>先ほどのSHA-1ハッシュをファイル名として、ファイルを作ろう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">echo</span> Hello <span class="op">&gt;</span> 9806af3952e1380212b0998f07a6afe4e5f00428</code></pre></div>
-<p>できたファイルを<code>git add</code>、<code>git commit</code>しよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add 9806af3952e1380212b0998f07a6afe4e5f00428
-<span class="fu">git</span> commit -m <span class="st">&quot;adds a file&quot;</span></code></pre></div>
-<p>最後に修正をプッシュしよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push origin 9806af3</code></pre></div>
-<p><code>git push origin</code>の後にブランチ名を入れるのを忘れないこと。</p>
-<h3 id="レポート課題-プルリクエストの作成">レポート課題: プルリクエストの作成</h3>
-<p>GitHubのフォークしたページを見ると、上部に「Compare &amp; pull requst」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create a pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。</p>
-<h2 id="課題2-mnistの学習済みモデルをウェブで試す">課題2: MNISTの学習済みモデルをウェブで試す</h2>
+<h2 id="課題1-mnistの学習済みモデルをウェブで試す">課題1: MNISTの学習済みモデルをウェブで試す</h2>
 <p>MNISTは有名は手書き数字のデータセットだ。これを学習させたモデルをブラウザで読み込み、実際に数字を描いてみてちゃんと認識できるか確認してみよう。</p>
-<h3 id="step-1-リポジトリのfork-1">Step 1: リポジトリのfork</h3>
+<h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
 <p>GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
 <p><a href="https://github.com/appi-github/pages-sample" class="uri">https://github.com/appi-github/pages-sample</a></p>
 <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、<code>pages-sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
@@ -108,7 +74,74 @@
 <p>学習済みモデルは、28x28ピクセルの画像を学習しているため、入力された画像を、まずは28x28ピクセルに変換する必要がある。それが右側の「Input Image」である。この「Input Image」を学習済みニューラルネットワークに入力し、これが何の数字であるかを推定している。本来は前処理をして渡すのだが、それを省いているために認識精度がかなり低くなっているはずだ。いろいろ数字を入力し、どの数字の認識が悪いか試してみよ。</p>
 <h3 id="レポート課題">レポート課題</h3>
 <p>最も「これはないだろう」という判定画面(誰が見ても6なのに4と判定してしまった等)を選び、そのスクリーンショットをレポートとして提出せよ。また、どのような数字が誤判定しやすいか、またそれはなぜかを考察せよ。</p>
-<h2 id="課題3-簡単なゲーム作成">課題3: 簡単なゲーム作成</h2>
+<h2 id="課題2-簡単なゲーム作成">課題2: 簡単なゲーム作成</h2>
+<p>Git/GitHubを使った演習の最後に、簡単なブラウザゲームを作ってみよう。</p>
+<h3 id="step-1-リポジトリのfork-1">Step 1: リポジトリのfork</h3>
+<p>GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
+<p><a href="https://github.com/appi-github/tyrano_sample" class="uri">https://github.com/appi-github/tyrano_sample</a></p>
+<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、<code>tyrano_sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
+<h3 id="step-2-pagesの設定-1">Step 2: Pagesの設定</h3>
+<p>先ほどと同様な手順で、GitHub Pagesを公開しよう。</p>
+<ul>
+<li>上のタブの「Settings」を選ぶ。</li>
+<li>左のメニューの「Pages」を選ぶ。</li>
+<li>「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、<code>main</code>を選ぶ。</li>
+<li>「<code>/root</code>」というボタンが現れるので、クリックして「<code>/docs</code>」を選んで「Save」ボタンを押す。</li>
+</ul>
+<pre class="txt"><code>Your site is ready to be published at https://アカウント名..github.io/tyrano_sample/</code></pre>
+<p>という表示が現れるので、しばらく待ってからアクセスしてみよう。「走るか寝るかするメロス」という画面が表示されたら成功だ。</p>
+<h3 id="step-3-リポジトリのクローン">Step 3: リポジトリのクローン</h3>
+<p>GitHubの自分のアカウントの<code>tyrano_sample</code>をクローンしよう。<a href="https://github.com/" class="uri">https://github.com/</a>を開き、Repositoriesから「tyrano_sample」を選ぶ。「Code」ボタンの「Clone」から、リモートリポジトリのURLをコピーしよう。その後、Git Bashでクローンする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone git@github.com:github-watanabe/tyrano_sample.git</code></pre></div>
+<p>クローンできたら、VS Codeで開く。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> tyrano_sample
+<span class="ex">code</span> .</code></pre></div>
+<h3 id="step-4-live-serverのインストール">Step 4: Live Serverのインストール</h3>
+<p>VS Codeの左の「拡張機能」マークをクリックするか、Ctrl+Shift+Xにより拡張機能を開き、「Live Server」を探してインストールする。インストールに成功すると、右下に「Go Live」という表示がされるはずだ。</p>
+<p>VS Codeのエクスプローラーから<code>docs/data/index.html</code>を開き、右下の「Go Live」をクリックする。ブラウザが開いて「走るか寝るかするメロス」がプレイできれば成功だ。URLは<code>http://127.0.0.1:5500/docs/index.html</code>となっているであろう。このタブがデバッグで使うので閉じないこと。</p>
+<h3 id="step-5-シナリオファイルの修正">Step 5: シナリオファイルの修正</h3>
+<p>VS Codeのエクスプローラーから<code>docs/data/scenario/first.ks</code>を開く。冒頭が以下のようになっているはずだ。</p>
+<pre class="txt"><code>*start
+
+[title name=&quot;走るか寝るかするメロス&quot;]
+[hidemenubutton]
+[wait time=200]
+[freeimage layer=&quot;base&quot;]</code></pre>
+<p>この、<code>[title name=&quot;走るか寝るかするメロス&quot;]</code>を書き換えて保存し、先ほどのゲーム画面を開こう。リロードしてタイトルが変わっていれば成功だ。</p>
+<p>以下、シナリオファイルを修正し、オリジナルのゲームを作ってみよ。原則として、入力された文字がそのまま画面に表示されるが、「タグ」と呼ばれる機能でゲームを制御する。例えば、</p>
+<pre class="txt"><code>「走るか寝るかするメロス」[l][r]</code></pre>
+<p>の<code>[l]</code>はマウスの入力待ち、<code>[r]</code>は改行をする命令だ。</p>
+<p>選択肢は</p>
+<pre class="txt"><code>[link target=*tag_sleep] →寝る [endlink][r]
+[link target=*tag_run] →走る [endlink][r]
+[s]</code></pre>
+<p>のように作る。<code>[link]</code>と<code>[endlink]</code>で囲まれたテキストをクリックすると、<code>target=</code>で指定されたラベルにジャンプする。例えば「→寝る」をクリックすると<code>*tag_sleep</code>のある場所にジャンプする。その先はこうなっている。</p>
+<pre class="txt"><code>*tag_sleep
+
+[cm]
+
+[bg storage=sleep.jpg time=500]
+
+メロスは死んだように深く眠った。[l][r]
+勇者は、ひどく赤面した。[r]
+
+【 BAD END 】[l][cm]
+
+[jump target=*start]</code></pre>
+<p><code>[cm]</code>はテキストをクリアする命令だ。<code>[bg]</code>は背景画像を指定する。<code>bgimage</code>というディレクトリにある画像を<code>storage=filename</code>で指定することで表示する。<code>time</code>は表示するまでの時間(ミリ秒)だ。</p>
+<p>最後に<code>[jump target=*start]</code>で<code>*start</code>ラベル、つまりゲームの最初に戻っている。</p>
+<p>その他のタグについては公式サイトの<a href="https://tyrano.jp/tag/">タグリファレンス</a>を参照のこと。</p>
+<h3 id="レポート課題-1">レポート課題</h3>
+<p>オリジナルのゲームを作成し、自分のリポジトリにプッシュしたのち、ブラウザで動作確認したらそのURLをレポートとして提出せよ。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li>公序良俗に反するような内容にしてはならない</li>
+<li>(たとえ友人であっても)特定個人を揶揄するような内容にしてはならない。有名人も題材としない</li>
+<li>画像を用いる場合は、ライセンスとして問題ないものを利用する(例えば<a href="https://www.pexels.com/ja-jp/">Pexels</a>の画像を利用するなど)。</li>
+<li>面白い作品は別の場所で紹介する可能性があるため、紹介されたくな場合はその旨レポートに明記すること</li>
+</ul>
           </article>
   </body>
 

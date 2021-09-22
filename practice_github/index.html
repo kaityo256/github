@@ -273,6 +273,39 @@ Hello Kanban</code></pre></div>
 <p>2番のIssueが閉じられると同時に、自動でカードが「In progress」から「Done」に移動したはずだ。</p>
 <h3 id="レポート課題-3">レポート課題</h3>
 <p>Projectの「カンバン」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。</p>
+<h2 id="課題5-プルリクエストを作ってみる">課題5: プルリクエストを作ってみる</h2>
+<p>GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。</p>
+<h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
+<p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。</p>
+<ul>
+<li><p>A班の場合 <a href="https://github.com/appi-github/pullreq_2021_a" class="uri">https://github.com/appi-github/pullreq_2021_a</a></p></li>
+<li><p>B班の場合 <a href="https://github.com/appi-github/pullreq_2021_b" class="uri">https://github.com/appi-github/pullreq_2021_b</a></p></li>
+</ul>
+<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2021_a</code>として説明するが、B班は適宜<code>pullreq_2021_b</code>に読み替えること。</p>
+<h3 id="step-2-リポジトリのクローン">Step 2: リポジトリのクローン</h3>
+<p>ブラウザのURLが<code>https://github.com/自分のアカウント/リポジトリ名</code>になったら、フォークが完了している。ローカルにクローンしよう。「Code」ボタンの「Clone」からリモートリポジトリをコピーできる。プロトコルがHTTPSではなくSSHになっていることを確認すること。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2021_a.git
+<span class="bu">cd</span> pullreq_2021_a</code></pre></div>
+<h3 id="step-3-ブランチの作成-1">Step 3: ブランチの作成</h3>
+<p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>1234568</code>である時、以下のコマンドを実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">echo</span> 12345678 <span class="kw">|</span> <span class="ex">shasum</span>
+<span class="ex">9806af3952e1380212b0998f07a6afe4e5f00428</span> *-</code></pre></div>
+<p>上記のSHA-1ハッシュは各自異なるため、以下は適宜読み替えること。</p>
+<p>表示された上位7桁<code>9806af3</code>をブランチ名として、ブランチを作ろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c 9806af3</code></pre></div>
+<h3 id="step-4-ファイルの追加とプッシュ">Step 4: ファイルの追加とプッシュ</h3>
+<p>先ほどのSHA-1ハッシュをファイル名として、ファイルを作ろう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">echo</span> Hello <span class="op">&gt;</span> 9806af3952e1380212b0998f07a6afe4e5f00428</code></pre></div>
+<p>できたファイルを<code>git add</code>、<code>git commit</code>しよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add 9806af3952e1380212b0998f07a6afe4e5f00428
+<span class="fu">git</span> commit -m <span class="st">&quot;adds a file&quot;</span></code></pre></div>
+<p>最後に修正をプッシュしよう。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> push origin 9806af3</code></pre></div>
+<p><code>git push origin</code>の後にブランチ名を入れるのを忘れないこと。</p>
+<h3 id="レポート課題-プルリクエストの作成">レポート課題: プルリクエストの作成</h3>
+<p>GitHubのフォークしたページを見ると、上部に「Compare &amp; pull requst」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create a pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。</p>
           </article>
   </body>
 
