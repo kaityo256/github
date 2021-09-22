@@ -6,7 +6,7 @@
 * コマンドラインでのGitの操作を一通り確認する
 * VSCodeからのGitを操作できることを確認する
 
-## 課題1: Gitの基本操作
+## 課題: Gitの基本操作
 
 ### Step 1: 初期設定
 
@@ -30,7 +30,7 @@ git config --global user.email "メールアドレス"
 
 ```sh
 git config --global core.editor vim
-git config --global core.autocrlf true
+git config --global core.autocrlf false
 git config --global init.defaultBranch main
 ```
 
@@ -54,7 +54,7 @@ cat .gitconfig
         email = 先ほど設定したメールアドレス
 [core]
         editor = vim
-        autocrlf = true
+        autocrlf = false
 [alias]
         st = status -s
 ```

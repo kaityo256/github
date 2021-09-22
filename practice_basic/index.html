@@ -52,7 +52,7 @@
 <li>コマンドラインでのGitの操作を一通り確認する</li>
 <li>VSCodeからのGitを操作できることを確認する</li>
 </ul>
-<h2 id="課題1-gitの基本操作">課題1: Gitの基本操作</h2>
+<h2 id="課題-gitの基本操作">課題: Gitの基本操作</h2>
 <h3 id="step-1-初期設定">Step 1: 初期設定</h3>
 <p>Git Bash (以下、ターミナルと呼ぶ)を開き、以下を実行せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global user.name <span class="st">&quot;ユーザー名&quot;</span>
@@ -67,7 +67,7 @@
 <p>以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
 <p>また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global core.editor vim
-<span class="fu">git</span> config --global core.autocrlf true
+<span class="fu">git</span> config --global core.autocrlf false
 <span class="fu">git</span> config --global init.defaultBranch main</code></pre></div>
 <p>次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></code></pre></div>
@@ -79,7 +79,7 @@
         email = 先ほど設定したメールアドレス
 [core]
         editor = vim
-        autocrlf = true
+        autocrlf = false
 [alias]
         st = status -s</code></pre>
 <h3 id="step-2-リポジトリの作成git-init">Step 2: リポジトリの作成(<code>git init</code>)</h3>
