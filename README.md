@@ -131,6 +131,8 @@
 * MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
 
+## [おわりに](postface/README.md)
+
 ## [参考文献](references/README.md)
 
 ## ライセンス
