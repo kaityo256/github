@@ -57,9 +57,13 @@
 <h2 id="課題1-git-amendによるコミット修正">課題1: git amendによるコミット修正</h2>
 <p>コミットメッセージでうっかりタイポしてしまった。恥ずかしいので修正しよう。</p>
 <h3 id="step-1-リポジトリのクローン">Step 1: リポジトリのクローン</h3>
-<p>サンプル用のリポジトリをクローンせよ。</p>
+<p>最初に、作業用のディレクトリ<code>github</code>を作ろう。Git Bashで、以下を実行せよ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="fu">mkdir</span> github</code></pre></div>
+<p>以下の演習は、全てのこの<code>github</code>ディレクトリ以下で作業する。</p>
+<p>次にサンプル用のリポジトリをクローンせよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
-<span class="fu">git</span> clone git clone https://github.com/appi-github/amend-sample.git
+<span class="fu">git</span> clone https://github.com/appi-github/amend-sample.git
 <span class="bu">cd</span> amend-sample</code></pre></div>
 <h3 id="step-2-歴史の確認">Step 2: 歴史の確認</h3>
 <p>履歴を確認し、最新のコミットメッセージに打ち間違いがあることを確認せよ。</p>
@@ -69,7 +73,7 @@
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch original_main</code></pre></div>
 <h3 id="step-4-コミットの修正">Step 4: コミットの修正</h3>
 <p>コミットメッセージを修正しよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -amend -m <span class="st">&quot;updates README.md&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit --amend -m <span class="st">&quot;updates README.md&quot;</span></code></pre></div>
 <h3 id="step-5-歴史の修正を確認">Step 5: 歴史の修正を確認</h3>
 <p>歴史が修正されたことを確認しよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline</code></pre></div>
@@ -80,7 +84,8 @@
 <p>ある詩人が、ロバの上で詩を作っていたが、「僧は推す、月下の門」とするか、「僧は敲く、月下の門」とするか迷って、都の長官、韓愈の列に突っ込んでしまった。<code>git merge</code>でどちらにするか決断して上げよう。</p>
 <h3 id="step-1-リポジトリのクローン-1">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
 <span class="fu">git</span> clone https://github.com/appi-github/merge-sample.git
 <span class="bu">cd</span> merge-sample</code></pre></div>
 <h3 id="step-2-ブランチの準備">Step 2: ブランチの準備</h3>
@@ -185,7 +190,8 @@ pick f1ecd8d Ice cream was gone.</code></pre>
 <h2 id="課題4-git-rebaseによる衝突の解決">課題4: git rebaseによる衝突の解決</h2>
 <h3 id="step-1-リポジトリのクローン-3">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
 <span class="fu">git</span> clone https://github.com/appi-github/rebase-conflict-sample
 <span class="bu">cd</span> rebase-conflict-sample</code></pre></div>
 <h3 id="step-2-ブランチの準備-1">Step 2: ブランチの準備</h3>
@@ -222,7 +228,8 @@ pick f1ecd8d Ice cream was gone.</code></pre>
 <p>数の偶奇を判定するスクリプト<code>evenodd.sh</code>を開発していたが、いつの間にか全ての数字に<code>even</code>と答えるようになってしまった。<code>git bisect</code>による二分探索でどこでバグが入ったか調べよう。</p>
 <h3 id="step-1-リポジトリのクローン-4">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
 <span class="fu">git</span> clone https://github.com/appi-github/bisect-sample.git
 <span class="bu">cd</span> bisect-sample</code></pre></div>
 <h3 id="step-2-バグの確認">Step 2: バグの確認</h3>

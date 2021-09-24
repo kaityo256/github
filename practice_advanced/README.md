@@ -14,11 +14,20 @@
 
 ### Step 1: リポジトリのクローン
 
-サンプル用のリポジトリをクローンせよ。
+最初に、作業用のディレクトリ`github`を作ろう。Git Bashで、以下を実行せよ。
+
+```sh
+cd
+mkdir github
+```
+
+以下の演習は、全てのこの`github`ディレクトリ以下で作業する。
+
+次にサンプル用のリポジトリをクローンせよ。
 
 ```sh
 cd github
-git clone git clone https://github.com/appi-github/amend-sample.git
+git clone https://github.com/appi-github/amend-sample.git
 cd amend-sample
 ```
 
@@ -43,7 +52,7 @@ git branch original_main
 コミットメッセージを修正しよう。
 
 ```sh
-git commit -amend -m "updates README.md"
+git commit --amend -m "updates README.md"
 ```
 
 ### Step 5: 歴史の修正を確認
@@ -71,6 +80,7 @@ git log --all --graph --oneline
 サンプル用のリポジトリをクローンせよ。
 
 ```sh
+cd
 cd github
 git clone https://github.com/appi-github/merge-sample.git
 cd merge-sample
@@ -276,6 +286,7 @@ git log --oneline
 サンプル用のリポジトリをクローンせよ。
 
 ```sh
+cd
 cd github
 git clone https://github.com/appi-github/rebase-conflict-sample
 cd rebase-conflict-sample
@@ -365,6 +376,7 @@ git log --oneline --graph
 サンプル用のリポジトリをクローンせよ。
 
 ```sh
+cd
 cd github
 git clone https://github.com/appi-github/bisect-sample.git
 cd bisect-sample

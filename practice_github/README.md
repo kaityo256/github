@@ -109,13 +109,12 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
     * Public/Private: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
     * Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」と「Choose a license」をチェックしよう。「Choose a license」をクリックすると選択肢が現れるが、ここでは「MIT License」を選んでおこう。
 * 以上の設定を終了したら「Create repository」ボタンを押す。
-* リポジトリの画面に移るので、右上の「Code」をクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。
+* リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。
 
-次に、ローカルマシンで`github`というディレクトリを作り、その下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。
+次に、ローカルマシンで`github`ディレクトリの下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。
 
 ```sh
 cd
-mkdir github
 cd github
 git clone git@github.com:アカウント名/test.git
 ```
@@ -253,7 +252,7 @@ GitHubを使う場合、
 ### Step 1: Issueの作成
 
 * 先ほど作った`test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Repositories」の「アカウント名/test」を選べばよい。
-* 上のタブから「Issues」をクリックし、「New Issue」ボタンを押す。
+* 「Code」「Issues」「Pull requests」「Actions」「Projects」などのメニューが並んだタブから「Issues」を選び、「New Issue」ボタンを押す。画面の最上部の「Issues」と間違えないこと。
 * Titleに「READMEの修正」と書く
 * コメント(Leave a commentとあるところ)に「内容を追加」と書く。
 * Labelsとして「enhancement」を選ぶ。
@@ -349,7 +348,7 @@ Issueのコメントには、他のissueを参照したり、チェックボッ�
 
 ここで「`#`」と数字の間には空白をいれず、「`#1`」の後には半角空白を入れるのをわすれないこと。また、`- [ ]`の間には半角空白を入れる。入力をしたら「Preview」タブを見て、チェックボックスができているか、別のissueにリンクされているか確認すること。
 
-このissueをprojectと関連付けよう。右の「Labels」の紫下にある「Projects」を開き、先ほど作った「カンバン」を選ぼう。
+このissueをprojectと関連付けよう。右の「Labels」の下にある「Projects」を開き、先ほど作った「カンバン」を選ぼう。
 
 以上の準備が済んだら「Submit new issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。
 
@@ -410,7 +409,7 @@ git push
 
 Projectの「カンバン」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。
 
-## 課題5: プルリクエストを作ってみる
+## 発展課題: プルリクエストを作ってみる
 
 GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。
 

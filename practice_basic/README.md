@@ -57,6 +57,8 @@ cat .gitconfig
         autocrlf = false
 [alias]
         st = status -s
+[init]
+        defaultBranch = main        
 ```
 
 ### Step 2: リポジトリの作成(`git init`)
@@ -284,7 +286,7 @@ git commit -m "adds new line"
 
 修正がリポジトリに登録され、ワーキングツリーがきれい(clean)な状態となった。
 
-### Step 5: 自動ステージング(`git add -a`)
+### Step 5: 自動ステージング(`git commit -a`)
 
 Gitでは原則として
 
@@ -397,19 +399,29 @@ Git from VSCode
 
 ![vscode_add](fig/vscode_add.png)
 
-すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。
+すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。うまく表示されない場合はエクスプローラーから「エクスプローラーを最新表示する(Refresh)」をクリックし、最新表示としよう。
 
-これは
+そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。
+
+これはGit Bashで
 
 ```sh
 git add README.md
 ```
 
+を実行したことに対応する。
+
 この状態で「メッセージ」のところにコミットメッセージを書いて、上の「チェックマーク」をクリックすると、コミットできる。例えばメッセージとして「commit from VSCode」と書いてコミットしてみよう。
 
 ![vscode_add](fig/vscode_commit.png)
 
-これでコミットができた。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。
+これでコミットができた。これは、Git Bashで
+
+```sh
+git commit -m "commit from VSCode"
+```
+
+を実行したことに対応する。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。
 
 ```sh
 $ git log --oneline

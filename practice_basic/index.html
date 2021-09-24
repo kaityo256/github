@@ -81,7 +81,9 @@
         editor = vim
         autocrlf = false
 [alias]
-        st = status -s</code></pre>
+        st = status -s
+[init]
+        defaultBranch = main        </code></pre>
 <h3 id="step-2-リポジトリの作成git-init">Step 2: リポジトリの作成(<code>git init</code>)</h3>
 <p>それではいよいよGitの操作を一通り確認する。</p>
 <p>まずは適当なテスト用のディレクトリを作成し、その中で作業しよう。この講義用に<code>git</code>というディレクトリを作成し、さらにその中に<code>test</code>というディレクトリを作ろう。</p>
@@ -192,7 +194,7 @@ Hello Git!</code></pre></div>
 <p>この状態でコミットしよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;adds new line&quot;</span></code></pre></div>
 <p>修正がリポジトリに登録され、ワーキングツリーがきれい(clean)な状態となった。</p>
-<h3 id="step-5-自動ステージングgit-add--a">Step 5: 自動ステージング(<code>git add -a</code>)</h3>
+<h3 id="step-5-自動ステージングgit-commit--a">Step 5: 自動ステージング(<code>git commit -a</code>)</h3>
 <p>Gitでは原則として</p>
 <ul>
 <li>ファイルを修正する</li>
@@ -266,15 +268,19 @@ Git from VSCode</code></pre></div>
 <img src="fig/vscode_add.png" alt="vscode_add" />
 <p class="caption">vscode_add</p>
 </div>
-<p>すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。</p>
-<p>これは</p>
+<p>すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。うまく表示されない場合はエクスプローラーから「エクスプローラーを最新表示する(Refresh)」をクリックし、最新表示としよう。</p>
+<p>そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。</p>
+<p>これはGit Bashで</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md</code></pre></div>
+<p>を実行したことに対応する。</p>
 <p>この状態で「メッセージ」のところにコミットメッセージを書いて、上の「チェックマーク」をクリックすると、コミットできる。例えばメッセージとして「commit from VSCode」と書いてコミットしてみよう。</p>
 <div class="figure">
 <img src="fig/vscode_commit.png" alt="vscode_add" />
 <p class="caption">vscode_add</p>
 </div>
-<p>これでコミットができた。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。</p>
+<p>これでコミットができた。これは、Git Bashで</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;commit from VSCode&quot;</span></code></pre></div>
+<p>を実行したことに対応する。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
 <span class="ex">0c18b48</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">commit</span> from VSCode
 <span class="ex">be7533f</span> modifies README.md
