@@ -77,10 +77,11 @@
 <p>SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bashのホームディレクトリで以下のコマンドを実行せよ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">ssh-keygen</span>
 <span class="ex">Generating</span> public/private rsa key pair.pat
-<span class="ex">Enter</span> file in which to save the key (/c/Users/watanabe/.ssh/id_rsa)<span class="bu">:</span> <span class="co"># ←ここではそのままリターン</span>
+<span class="ex">Enter</span> file in which to save the key (/c/Users/watanabe/.ssh/id_rsa)<span class="bu">:</span> 
+<span class="co"># ↑ ここではそのままリターン</span>
 <span class="ex">Created</span> directory <span class="st">&#39;/c/Users/watanabe/.ssh&#39;</span>.
-<span class="ex">Enter</span> passphrase (empty for no passphrase)<span class="bu">:</span> <span class="co"># ここでパスフレーズを入力</span>
-<span class="ex">Enter</span> same passphrase again:                # 同じパスフレーズを入力</code></pre></div>
+<span class="ex">Enter</span> passphrase (empty for no passphrase)<span class="bu">:</span> <span class="co">##  ここでパスフレーズを入力</span>
+<span class="ex">Enter</span> same passphrase again:                ##  同じパスフレーズを入力</code></pre></div>
 <p>パスフレーズを二度入力した後、</p>
 <pre class="txt"><code>Your identification has been saved in /path/to/.ssh/id_rsa
 Your public key has been saved in /path/to/.ssh/id_rsa.pub</code></pre>

@@ -1,0 +1,9 @@
+\renewenvironment{Shaded}{\begin{snugshade} \large }{\end{snugshade}}
+\definecolor{shadecolor}{RGB}{235,235,235}
+\renewenvironment{verbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{shadecolor}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}

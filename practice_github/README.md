@@ -47,10 +47,12 @@ SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bash
 ```sh
 $ ssh-keygen
 Generating public/private rsa key pair.pat
-Enter file in which to save the key (/c/Users/watanabe/.ssh/id_rsa): # ←ここではそのままリターン
+Enter file in which to save the key (/c/Users/watanabe/.ssh/id_rsa): 
+# ↑ ここではそのままリターン
 Created directory '/c/Users/watanabe/.ssh'.
 Enter passphrase (empty for no passphrase): # ここでパスフレーズを入力
 Enter same passphrase again:                # 同じパスフレーズを入力
+
 ```
 
 パスフレーズを二度入力した後、
