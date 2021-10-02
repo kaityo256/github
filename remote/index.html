@@ -59,7 +59,7 @@
 <p>Git管理下にあるプロジェクトには、ワーキングツリー、インデックス、リポジトリの三つの要素がある。ワーキングツリーは今作業中のファイル、インデックスは「いまコミットをしたら歴史に追加されるスナップショット」を表し、リポジトリはブランチやタグを含めた歴史を保存している。しかしリモートリポジトリはワーキングツリーやインデックスを管理する必要がない。そこで、歴史とタグ情報だけを管理するリポジトリとして <strong>ベアリポジトリ(bare repository)</strong> というものが用意されている。リモートリポジトリはこのベアリポジトリとなっている。ベアリポジトリは<code>project.git</code>と、「プロジェクト名+<code>.git</code>」という名前にする。Gitの管理情報は、<code>.git</code>というディレクトリに格納されているが、ベアリポジトリはその<code>.git</code>の中身だけを含むリポジトリであることに由来する。<code>git init</code>時に<code>--bare</code>オプションをつけるとベアリポジトリを作ることができる。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init --bare project.git</code></pre></div>
 <p>しかし、リモートサーバとしてGitHubを使うならば、ベアリポジトリを直接作成することはないであろう。ここでは、リモートリポジトリは「プロジェクト名+<code>.git</code>」という名前にする、ということだけ覚えておけば良い。</p>
-<h3 id="認証と権限">認証と権限</h3>
+<h3 id="認証とプロトコル">認証とプロトコル</h3>
 <p>ほとんどの場合、リモートリポジトリはネットワークの向こう側に用意する。したがって、なんらかの手段で通信し、かつ認証をしなければならない。まず、「リポジトリがインターネットのどこにあるか」を指定する必要がある。この、インターネット上の住所と言える文字列を <strong>Uniform Resource Locator (URL)</strong> と呼ぶ。例えばGoogle検索をする際、ブラウザで<code>https://www.google.com/</code>にアクセスしているが、この文字列がURLである。</p>
 <p>GitHubにアクセスする場合、通信手段(プロトコル)として大きく分けてSSHとHTTPSの二つが存在する。認証とは、「確かに自分がそこにアクセスする権限がある」ことを証明する手段であり、SSHでは公開鍵認証を、HTTPSでは個人アクセストークン(Personal Access Token, PAT)により認証をする。本講義ではSSHによる公開鍵認証を用いて、PATは用いない。SSH公開鍵認証については実習で触れる。</p>
 <p>GitHubのリポジトリには、パブリックなリポジトリとプライベートなリポジトリがある。パブリックなリポジトリは、誰でも閲覧可能だが、プライベートなリポジトリは作者と、作者が許可した人(コラボレータ)しかアクセスできない。また、ローカルの修正をリモートに反映させるには適切な認証と権限が必要となる。</p>
@@ -228,7 +228,7 @@ $ <span class="fu">git</span> remote -v
 <li><code>git fetch</code>によりリモートの更新をダウンロード</li>
 <li><code>git merge</code>によりリモートの更新を取り込む</li>
 <li><code>git switch -c newbranch</code>により新たに<code>newbranch</code>ブランチを切って作業開始</li>
-<li>作業修了したら(好みに応じて<code>newbranch</code>ブランチから<code>main</code>にリベースしてから)<code>main</code>から<code>newbranch</code>をマージする</li>
+<li>作業終了したら(好みに応じて<code>newbranch</code>ブランチから<code>main</code>にリベースしてから)<code>main</code>から<code>newbranch</code>をマージする</li>
 <li><code>git push</code>する</li>
 </ol>
 <p>リモートリポジトリとはリモート追跡ブランチを使って情報を同期する。ローカルにある<code>origin/main</code>ブランチは、リモート<code>origin</code>の<code>main</code>ブランチをリモート追跡するブランチであり、また多くの場合においてローカルの<code>main</code>ブランチの上流ブランチでもある。</p>
