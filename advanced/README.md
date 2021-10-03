@@ -163,7 +163,7 @@ Switched to a new branch 'newbranch'
 GitHubを使っていて、リモートリポジトリのアドレスを間違えることがよくある。例えば、GitHubで新しいリポジトリを作り、そこに既存のリポジトリをプッシュしようとして、
 
 ```sh
-git remote add origin https://github.com/kaityo256/somerepository.git
+git remote add origin https://github.com/appi-github/somerepository.git
 git branch -M main
 git push -u origin main
 ```
@@ -171,7 +171,7 @@ git push -u origin main
 を実行してusernameを聞かれ、「あっ！SSHのつもりがHTTPSを選んじゃった」と気が付いた時だ。ここで、改めて
 
 ```sh
-git remote add origin git@github.com:kaityo256/somerepository.git
+git remote add origin git@github.com:appi-github/somerepository.git
 ```
 
 と、SSHで再登録しようとしても、「error: remote origin already exists.」とつれない返事が返ってくる。この時、まず`origin`として登録されたリモートを削除してから再登録すれば良い。
@@ -183,7 +183,7 @@ git remote remove origin
 これで、リモートリポジトリ`origin`は削除されたので、改めてSSHプロトコルで再登録すれば良い。
 
 ```sh
-git remote add origin git@github.com:kaityo256/somerepository.git
+git remote add origin git@github.com:appi-github/somerepository.git
 ```
 
 ### メインブランチで作業を開始してしまった(`git stash`)
