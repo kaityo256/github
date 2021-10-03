@@ -100,7 +100,7 @@ $ git restore -W -S test.txt # 両方一度に取り消し
 
 ### `git checkout`は使わない
 
-`git switch`と`git restore`はGitのバージョン2.23.0から追加された機能であり、それまでは`git checkout`がその役目を担っていた。
+`git switch`と`git restore`はGitのバージョン2.23.0から追加された機能であり、それまでは`git checkout`や`git reset`がその役目を担っていた。
 
 例えば以下は同じ意味だ。
 
@@ -109,11 +109,11 @@ git checkout feature
 git switch feature
 ```
 
-また、ファイルの修正も`git checkout`でできる。以下は同じ意味だ。
+また、ステージングされていないファイルの修正も`git checkout`でできる。以下は同じ意味だ。
 
 ```sh
-git checkout -- test.txt
-git restore --staged test.txt
+git checkout test.txt
+git restore test.txt
 ```
 
 もともと、`git checkout`に役目が多すぎたためにコマンドが分けられた背景がある。現在、`git checkout`を使う必要はほとんどない。また、`git switch`と異なり、`git checkout`は直接コミットハッシュを指定することができる。
