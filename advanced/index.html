@@ -97,13 +97,13 @@
 
 $ <span class="fu">git</span> restore -W -S test.txt <span class="co"># 両方一度に取り消し</span></code></pre></div>
 <h3 id="git-checkoutは使わない"><code>git checkout</code>は使わない</h3>
-<p><code>git switch</code>と<code>git restore</code>はGitのバージョン2.23.0から追加された機能であり、それまでは<code>git checkout</code>がその役目を担っていた。</p>
+<p><code>git switch</code>と<code>git restore</code>はGitのバージョン2.23.0から追加された機能であり、それまでは<code>git checkout</code>や<code>git reset</code>がその役目を担っていた。</p>
 <p>例えば以下は同じ意味だ。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> checkout feature
 <span class="fu">git</span> switch feature</code></pre></div>
-<p>また、ファイルの修正も<code>git checkout</code>でできる。以下は同じ意味だ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> checkout -- test.txt
-<span class="fu">git</span> restore --staged test.txt</code></pre></div>
+<p>また、ステージングされていないファイルの修正も<code>git checkout</code>でできる。以下は同じ意味だ。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> checkout test.txt
+<span class="fu">git</span> restore test.txt</code></pre></div>
 <p>もともと、<code>git checkout</code>に役目が多すぎたためにコマンドが分けられた背景がある。現在、<code>git checkout</code>を使う必要はほとんどない。また、<code>git switch</code>と異なり、<code>git checkout</code>は直接コミットハッシュを指定することができる。</p>
 <p>例えば、いまカレントブランチが<code>main</code>であり、コミット<code>9b662ef</code>を指している状態であるとしよう。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
@@ -134,15 +134,15 @@ $ <span class="fu">git</span> restore -W -S test.txt <span class="co"># 両方�
 <p>したがって、<code>git checkout</code>の代わりに<code>git switch</code>を使った方が良い。同様な理由でファイルの修正を元に戻すのも<code>git restore</code>を使った方が良い。古い本やサイトには、まだ<code>git checkout</code>を使う方法が説明されていたりするので注意が必要だ。</p>
 <h3 id="リモートを間違えて登録したgit-remote-remove">リモートを間違えて登録した(<code>git remote remove</code>)</h3>
 <p>GitHubを使っていて、リモートリポジトリのアドレスを間違えることがよくある。例えば、GitHubで新しいリポジトリを作り、そこに既存のリポジトリをプッシュしようとして、</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin https://github.com/kaityo256/somerepository.git
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin https://github.com/appi-github/somerepository.git
 <span class="fu">git</span> branch -M main
 <span class="fu">git</span> push -u origin main</code></pre></div>
 <p>を実行してusernameを聞かれ、「あっ！SSHのつもりがHTTPSを選んじゃった」と気が付いた時だ。ここで、改めて</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:kaityo256/somerepository.git</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:appi-github/somerepository.git</code></pre></div>
 <p>と、SSHで再登録しようとしても、「error: remote origin already exists.」とつれない返事が返ってくる。この時、まず<code>origin</code>として登録されたリモートを削除してから再登録すれば良い。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote remove origin</code></pre></div>
 <p>これで、リモートリポジトリ<code>origin</code>は削除されたので、改めてSSHプロトコルで再登録すれば良い。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:kaityo256/somerepository.git</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> remote add origin git@github.com:appi-github/somerepository.git</code></pre></div>
 <h3 id="メインブランチで作業を開始してしまったgit-stash">メインブランチで作業を開始してしまった(<code>git stash</code>)</h3>
 <p>Gitでは原則としてメインブランチでは作業せず、必ずフィーチャーブランチを切って作業する。ところが、ファイルを修正した後で「あっ！メインブランチで作業してた！」と気が付いたとしよう。そんな時は<code>git stash</code>を使う。<code>git stash</code>はコミットを作らずに変更を退避するコマンドだ。</p>
 <p>今、<code>main</code>ブランチにいるまま<code>test.txt</code>を結構修正してしまった状態にある。</p>
