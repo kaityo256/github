@@ -182,7 +182,8 @@ $ <span class="fu">git</span> stash apply pop
 <p>あまり積むと後で見てわからなくなるので、原則として<code>git stash</code>は<code>git stash pop</code>と対で利用すると良い。</p>
 <h3 id="プッシュしようとしたらリジェクトされた">プッシュしようとしたらリジェクトされた</h3>
 <p>あなたは家で作業をして、一段落したのでコミット、プッシュしてから寝ようとしたら、無情にも<code>rejected</code>というメッセージが出て拒否された。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">To</span> /URL/to/test.git
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> push
+<span class="ex">To</span> /URL/to/repository.git
  ! [<span class="ex">rejected</span>]        main -<span class="op">&gt;</span> main (fetch first)
 <span class="ex">error</span>: failed to push some refs to <span class="st">&#39;/URL/to/test.git&#39;</span>
 <span class="ex">hint</span>: Updates were rejected because the remote contains work that you do

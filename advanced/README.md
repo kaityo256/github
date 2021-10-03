@@ -249,7 +249,8 @@ Dropped refs/stash@{0} (171f9ddd0c02ed7e7ed9105aa9ef30f3553aa742)
 あなたは家で作業をして、一段落したのでコミット、プッシュしてから寝ようとしたら、無情にも`rejected`というメッセージが出て拒否された。
 
 ```sh
-To /URL/to/test.git
+$ git push
+To /URL/to/repository.git
  ! [rejected]        main -> main (fetch first)
 error: failed to push some refs to '/URL/to/test.git'
 hint: Updates were rejected because the remote contains work that you do
