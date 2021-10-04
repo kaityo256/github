@@ -82,7 +82,7 @@
     * この部分はいつ誰が書いた？(`git blame`)
     * このバグが入ったのはいつだ？(`git bisect`)
 
-### [Gitの仕組み](internals/README.md)
+### [Gitの中身](internals/README.md)
 
 * `.git`ディレクトリの中身
 * Gitのオブジェクト
