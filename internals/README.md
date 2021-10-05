@@ -126,7 +126,7 @@ content = "Hello Git" # ファイルの中身
 # ヘッダ付与
 store = f"blob {len(content)}\0{content}".encode("utf-8")
 
-data = zlib.compress(store) # 圧縮
+data = zlib.compress(store, level=1) # 圧縮
 print(bytes.hex(data))      # 中身の表示
 ```
 
@@ -134,7 +134,7 @@ print(bytes.hex(data))      # 中身の表示
 
 ```sh
 $ python3 test.py
-789c4bcac94f52b064f048cdc9c95770cf2c01002b750531
+78014bcac94f52b064f048cdc9c95770cf2c01002b750531
 ```
 
 先ほど作成したblobオブジェクトの中身もダンプしてみよう。
