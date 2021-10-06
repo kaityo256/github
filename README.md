@@ -13,12 +13,14 @@
 
 ### [バージョン管理とは](vcs/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-vcs)
 * バージョン管理システムとは
 * バージョン管理システムの歴史
 * プログラミングができる人、できない人
 
 ### [Gitの仕組みと用語](term/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-term)
 * プロジェクト
 * リポジトリとワーキングツリー
 * コミット
@@ -28,6 +30,7 @@
 
 ### [コマンドラインの使い方](command/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-cli)
 * シェルとコマンドライン
 * Unixコマンド
 * Vimの使い方
@@ -35,6 +38,7 @@
 
 ### [Gitの基本的な使い方](basics/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-basics)
 * 初期設定
 * Gitの一連の操作
 * `git init`
@@ -48,6 +52,7 @@
 
 ### [ブランチ操作](branch/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-branch)
 * なぜブランチを分けるか
 * ブランチの基本
 * マージ
@@ -55,6 +60,7 @@
 
 ### [リモートリポジトリの操作](remote/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-remote)
 * リモートリポジトリとは
 * ベアリポジトリ
 * クローン
