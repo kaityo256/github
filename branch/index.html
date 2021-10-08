@@ -148,6 +148,11 @@
 <p class="caption">no_ff.png</p>
 </div>
 <p>この場合、新たにコミットが作られ、<code>main</code>はそこに移動する。この時、新たに作られたコミットには二つの親コミットができる。一つはもともと<code>main</code>が指していたコミットで、そのコミットとの差分は<code>feature</code>ブランチに至るまでの差分を全てまとめたものとなっている。もう一つの親は<code>feature</code>が指しているコミットだが、スナップショットは同じなので差分はない。</p>
+<div class="figure">
+<img src="fig/ff_compare.png" alt="ff_compare" />
+<p class="caption">ff_compare</p>
+</div>
+<p>fast-forwardマージすると歴史が一本になって見やすいが、どこから分岐したかの情報が失われ、マージを取り消しづらい。一方、fast-forwardマージできる場合でもマージコミットを作ると、歴史が分岐、合流するものの、<code>feature</code>ブランチで開発された機能がどこから分岐したものかの情報が残り、マージ前に簡単に戻ることができる。どちらのメリット/デメリットを重視するかは開発チームによるが、そういう違いがある、ということだけ覚えておくと良い。</p>
 <h3 id="ブランチの削除">ブランチの削除</h3>
 <p>マージが終わり、不要となったブランチは<code>git branch -d ブランチ名</code>で削除できる。あくまでもラベルが削除されるだけであり、それが指していたコミットはそのまま残る。例えば、既にマージ済みの<code>feature</code>ブランチを削除した場合、そのブランチがどのコミットを指していたかが表示される。</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> branch -d feature
