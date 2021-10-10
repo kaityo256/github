@@ -74,6 +74,7 @@
 
 ### [Gitの使い方(応用編)](advanced/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-advanced)
 * Gitトラブルシューティング
     * コミットメッセージを間違えた(`git commit --amend`)
     * 修正を取り消したい(`git restore`)
@@ -90,6 +91,7 @@
 
 ### [Gitの中身](internals/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-internals)
 * `.git`ディレクトリの中身
 * Gitのオブジェクト
     * blobオブジェクト

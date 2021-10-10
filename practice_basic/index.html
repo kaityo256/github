@@ -100,17 +100,15 @@
 <span class="fu">mkdir</span> test
 <span class="bu">cd</span> test</code></pre></div>
 <p>とすれば良い。</p>
-<p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。このディレクトリでVSCodeを起動する。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">code</span> .</code></pre></div>
-<p><code>code</code>の後、空白を一つあけてピリオドを入力するのを忘れないこと。</p>
-<p>VSCodeが開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
+<p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。そして、このディレクトリをVSCodeで開こう。左下の「ここに入力して検索」に「vscode」と入力すると、候補として「Visual Studio Code」が表示されるので選ぶ。なお、初回起動時に言語パックをインストールするか聞かれる場合がある。その場合はインストールして再起動すること。VSCodeが起動したら「ファイル」メニューから「フォルダーを開く」を選び、先ほど作成したディレクトリを選ぼう。フォルダーを開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
 <div class="figure">
 <img src="fig/vscode_newfile.png" alt="fig" />
 <p class="caption">fig</p>
 </div>
 <p><code>README.md</code>ファイルが開かれたら、</p>
 <div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span></code></pre></div>
-<p>とだけ入力し、保存しよう。改行を入れるのを忘れないこと。これで、以下のようなディレクトリ構成になったはずだ。</p>
+<p>とだけ入力し、保存しよう。改行を入れるのを忘れないこと。この際、右下に「CRLF」と表示されている場合は、そこをクリックして「改行コードを選択」画面を出し、「LF」を選ぶこと。</p>
+<p>これで、以下のようなディレクトリ構成になったはずだ。</p>
 <pre class="txt"><code>git
 └── test
     └── README.md</code></pre>
