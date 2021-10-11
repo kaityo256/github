@@ -285,7 +285,7 @@ git push # 問題なく実行できる
 通常、ブランチがコミットを指し、`HEAD`がブランチを指すことで「カレントブランチ」を表現している。例えば適当なリポジトリで`git log --oneline`を実行すると、
 
 ```sh
-$ git lone --online
+$ git log --online
 fe81057 (HEAD -> main) updates from test2
 4692a78 initial commit
 ```

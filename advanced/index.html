@@ -200,7 +200,7 @@ $ <span class="fu">git</span> stash apply pop
 <p>家と大学など、複数の場所で開発を進めることはよくあるであろう。その時、一方でpushを忘れてしまったり、fetch/mergeするのを忘れてコミットしてしまったりすると、<code>git push</code>ができずエラーが起きる。その場合は、慌てずに<code>git fetch</code>、<code>git merge origin/main</code>してから<code>git push</code>すれば良い。</p>
 <h3 id="頭が取れたdetached-head">頭が取れた(<code>detached HEAD</code>)</h3>
 <p>通常、ブランチがコミットを指し、<code>HEAD</code>がブランチを指すことで「カレントブランチ」を表現している。例えば適当なリポジトリで<code>git log --oneline</code>を実行すると、</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> lone --online
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --online
 <span class="ex">fe81057</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">updates</span> from test2
 <span class="ex">4692a78</span> initial commit</code></pre></div>
 <p>などと表示される。これは、<code>HEAD</code>が<code>main</code>ブランチを指しており(カレントブランチが<code>main</code>であり)、<code>main</code>ブランチは<code>fe81057</code>というコミットを指している状態だ。これにより、<code>HEAD</code>は<code>main</code>を経由してコミットを指している。</p>
