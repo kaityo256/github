@@ -330,10 +330,6 @@ git status
 
 VSCodeで衝突状態にあるファイル(`text1.txt`)を修正し、衝突を解決せよ。
 
-```sh
-code .
-```
-
 `text1.txt`を開くと衝突箇所が表示されているので、`Accept Both Changes`をクリックするだけで良い。
 
 ### Step 7: 解決をGitに伝える
