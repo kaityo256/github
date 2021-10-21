@@ -110,6 +110,7 @@
 
 ### [Gitの操作(基本編)](practice_basic/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-basic)
 * 初期設定
 * リポジトリの作成(`git init`)
 * インデックスへの追加(`git add`)
@@ -120,6 +121,7 @@
 
 ### [Gitの操作(応用編)](practice_advanced/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
 * `git amend`によりコミットが変更されることを確認する
 * `git merge`の衝突を解決する
 * `git rebase`により歴史を改変する
