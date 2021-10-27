@@ -46,7 +46,7 @@ SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bash
 
 ```sh
 $ ssh-keygen
-Generating public/private rsa key pair.pat
+Generating public/private rsa key pair.
 Enter file in which to save the key (/path/to/.ssh/id_rsa):  # (1)
 Created directory '/c/Users/watanabe/.ssh'.
 Enter passphrase (empty for no passphrase): # (2)
@@ -101,7 +101,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 
 と表示されたら、鍵の登録に成功している。
 
-### Step 4: リポジトリの作成とクローン
+### Step 5: リポジトリの作成とクローン
 
 では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。
 
@@ -125,7 +125,7 @@ git clone git@github.com:アカウント名/test.git
 
 先ほどURLをコピーしていたので、`git clone`まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。
 
-### Step 5: ローカルの修正とpush
+### Step 6: ローカルの修正とpush
 
 手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。
 
@@ -397,7 +397,7 @@ git switch main
 git merge doc/2/README
 ```
 
-### Step 4: 修正のプッシュとカードの移動
+### Step 5: 修正のプッシュとカードの移動
 
 マージが終了したらブラウザで先ほどの「カンバン」の画面を見よう。まだカードは「In progress」にある。
 
