@@ -121,6 +121,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 cd
 cd github
 git clone git@github.com:アカウント名/test.git
+cd test
 ```
 
 先ほどURLをコピーしていたので、`git clone`まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。
@@ -129,12 +130,7 @@ git clone git@github.com:アカウント名/test.git
 
 手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。
 
-まず、クローンしたリポジトリの`README.md`を修正しよう。先ほどクローンされた`test`に移動し、VSCodeで`README.md`を開こう。
-
-```sh
-cd test
-code README.md
-```
+まず、クローンしたリポジトリの`README.md`を修正しよう。VSCodeの「フォルダを開く」によって、先ほどクローンされた`test`ディレクトリを開き、`README.md`を開こう(Vimを使える人はVimで開いても良い)。
 
 すると、以下のような内容が表示されるはずだ。
 
@@ -143,7 +139,7 @@ code README.md
 test repository
 ```
 
-これを、以下のように内容を修正し、保存せよ。
+これを、以下のように「Hello Github」と一行追加し、保存せよ。
 
 ```sh
 # test
