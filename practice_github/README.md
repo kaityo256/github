@@ -190,11 +190,7 @@ mkdir test2
 cd test2
 ```
 
-ここでまた`README.md`ファイルを作る。
-
-```sh
-code README.md
-```
+ここでまた`README.md`ファイルを作る。VSCodeで「フォルダーを開く」から`github/test2`ディレクトリを開き、ファイルの追加ボタンを押して`README.md`を新規作成する。
 
 内容は何でも良いが、例えば以下の内容を入力して保存しよう。
 
