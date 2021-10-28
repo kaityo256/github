@@ -47,24 +47,24 @@ SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bash
 ```sh
 $ ssh-keygen
 Generating public/private rsa key pair.
-Enter file in which to save the key (/path/to/.ssh/id_rsa):  # (1)
+Enter file in which to save the key (/z//.ssh/id_rsa):  # (1)
 Created directory '/c/Users/watanabe/.ssh'.
 Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 最初に、秘密鍵を保存するためのファイル名を聞かれる。通常はそのままで良いのだが、ここが`z//`とスラッシュが二度続いている場合は`z/`とスラッシュを一つに書き直すこと。
-* (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**
+* (1) 最初に、秘密鍵を保存するためのファイル名を聞かれる。`/z/.ssh/id_rsa`と入力してエンターキーを押す。
+* (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
 * (3) 先ほどの入力したものと同じパスフレーズを入力する。
 
 パスフレーズを二度入力した後、
 
 ```txt
-Your identification has been saved in /path/to/.ssh/id_rsa
-Your public key has been saved in /path/to/.ssh/id_rsa.pub
+Your identification has been saved in /z/.ssh/id_rsa
+Your public key has been saved in /z/.ssh/id_rsa.pub
 ```
 
-といったメッセージが表示されたら成功である(`path/to`は環境によって異なることを表しており、その通りに表示されるわけではない。以下同様)。`id_rsa`が秘密鍵、`id_rsa.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
+といったメッセージが表示されたら成功である。`id_rsa`が秘密鍵、`id_rsa.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
 ### Step 3: SSH公開鍵の登録
 
