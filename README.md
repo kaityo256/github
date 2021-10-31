@@ -2,7 +2,7 @@
 
 ## この講義ノートについて
 
-これは、大学の学部生向けのGit/GitHubを用いたソフトウェア開発演習のための講義ノートになる予定である。
+これは、理工学部の三年学部生向けのGit/GitHubを用いたソフトウェア開発演習のための講義ノートである。概ね一般的な記述となっているが、一部に大学のPC室特有の記述があるので、他大の方が利用される際は注意されたい。4回の座学、4回の実習の、計8回の講義/演習で学ぶ構成となっている。
 
 * [GitHubリポジトリ](https://github.com/kaityo256/github)
 * [HTML版](https://kaityo256.github.io/github/)
@@ -71,6 +71,15 @@
     * `git remote`
     * `git pull`
     * プッシュしたブランチをリベースしない
+
+### GitHubの使い方
+
+* SSH公開鍵認証
+* Issueの使い方
+* Projectの使い方
+* GitHub Pagesの使い方
+* GitHub Actionsとは
+* フォークとプルリク
 
 ### [Gitの使い方(応用編)](advanced/README.md)
 
