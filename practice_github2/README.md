@@ -68,7 +68,7 @@ GitHubにログインした状態で、以下のサイトにアクセスせよ�
 * 「`/root`」というボタンが現れるので、クリックして「`/docs`」を選んで「Save」ボタンを押す。
 
 ```txt
-Your site is ready to be published at https://アカウント名..github.io/tyrano_sample/
+Your site is ready to be published at https://アカウント名.github.io/tyrano_sample/
 ```
 
 という表示が現れるので、しばらく待ってからアクセスしてみよう。「走るか寝るかするメロス」という画面が表示されたら成功だ。
@@ -80,21 +80,16 @@ GitHubの自分のアカウントの`tyrano_sample`をクローンしよう。[h
 ```sh
 cd
 cd github
-git clone git@github.com:github-watanabe/tyrano_sample.git
+git clone git@github.com:アカウント名/tyrano_sample.git
 ```
 
-クローンできたら、VS Codeで開く。
-
-```sh
-cd tyrano_sample
-code .
-```
+クローンできたら、VS Codeを開き、「フォルダーを開く」から、先ほどクローンしたディレクトリ(`z/github/tyrano_sample`)を開く。
 
 ### Step 4: Live Serverのインストール
 
 VS Codeの左の「拡張機能」マークをクリックするか、Ctrl+Shift+Xにより拡張機能を開き、「Live Server」を探してインストールする。インストールに成功すると、右下に「Go Live」という表示がされるはずだ。
 
-VS Codeのエクスプローラーから`docs/data/index.html`を開き、右下の「Go Live」をクリックする。ブラウザが開いて「走るか寝るかするメロス」がプレイできれば成功だ。URLは`http://127.0.0.1:5500/docs/index.html`となっているであろう。このタブをデバッグで使うので閉じないこと。
+VS Codeのエクスプローラーから`docs/index.html`を開き、右下の「Go Live」をクリックする。ブラウザが開いて「走るか寝るかするメロス」がプレイできれば成功だ。URLは`http://127.0.0.1:5500/docs/index.html`となっているであろう。このタブをデバッグで使うので閉じないこと。
 
 ### Step 5: シナリオファイルの修正
 
