@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                <title>README</title>
+                <title></title>
     <style type="text/css">
       p {
         padding-left: 1em;
@@ -58,106 +58,106 @@
 <p>コミットメッセージでうっかりタイポしてしまった。恥ずかしいので修正しよう。</p>
 <h3 id="step-1-リポジトリのクローン">Step 1: リポジトリのクローン</h3>
 <p>最初に、作業用のディレクトリ<code>github</code>を作ろう。Git Bashで、以下を実行せよ。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="bu">cd</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="fu">mkdir</span> github</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="fu">mkdir</span> github</code></pre></div>
 <p>以下の演習は、全てのこの<code>github</code>ディレクトリ以下で作業する。</p>
 <p>次にサンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="fu">git</span> clone https://github.com/appi-github/amend-sample.git</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="bu">cd</span> amend-sample</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/amend-sample.git
+<span class="bu">cd</span> amend-sample</code></pre></div>
 <h3 id="step-2-歴史の確認">Step 2: 歴史の確認</h3>
 <p>履歴を確認し、最新のコミットメッセージに打ち間違いがあることを確認せよ。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">git</span> log --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline</code></pre></div>
 <h3 id="step-3-コミットの保存">Step 3: コミットの保存</h3>
 <p>修正する前に、現在の最新のコミットに別名をつけておこう。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">git</span> branch original_main</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch original_main</code></pre></div>
 <h3 id="step-4-コミットの修正">Step 4: コミットの修正</h3>
 <p>コミットメッセージを修正しよう。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" title="1"><span class="fu">git</span> commit --amend -m <span class="st">&quot;updates README.md&quot;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit --amend -m <span class="st">&quot;updates README.md&quot;</span></code></pre></div>
 <h3 id="step-5-歴史の修正を確認">Step 5: 歴史の修正を確認</h3>
 <p>歴史が修正されたことを確認しよう。</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="fu">git</span> log --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline</code></pre></div>
 <h3 id="レポート課題">レポート課題</h3>
 <p><code>git commit --amend</code>はコミットハッシュを変更する。先ほど、変更前のコミットに別名をつけておいたので、そこで歴史が分岐したことを確認しよう。以下のコマンドを実行した結果をレポートとして提出せよ。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="fu">git</span> log --all --graph --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題2-git-mergeによる衝突の解決">課題2: git mergeによる衝突の解決</h2>
 <p>ある詩人が、ロバの上で詩を作っていたが、「僧は推す、月下の門」とするか、「僧は敲く、月下の門」とするか迷って、都の長官、韓愈の列に突っ込んでしまった。<code>git merge</code>でどちらにするか決断して上げよう。</p>
 <h3 id="step-1-リポジトリのクローン-1">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" title="1"><span class="bu">cd</span></a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="fu">git</span> clone https://github.com/appi-github/merge-sample.git</a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="bu">cd</span> merge-sample</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/merge-sample.git
+<span class="bu">cd</span> merge-sample</code></pre></div>
 <h3 id="step-2-ブランチの準備">Step 2: ブランチの準備</h3>
 <p><code>origin/knock</code>が存在することを確認せよ。</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="fu">git</span> branch -vva</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -vva</code></pre></div>
 <p><code>origin/knock</code>から<code>knock</code>ブランチを作成せよ。</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="fu">git</span> branch knock origin/knock</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch knock origin/knock</code></pre></div>
 <h3 id="step-3-差分確認">Step 3: 差分確認</h3>
 <p><code>main</code>ブランチと、<code>knock</code>ブランチの差分を確認せよ。</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1"><span class="fu">git</span> diff knock</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> diff knock</code></pre></div>
 <h3 id="step-4-マージとマージの中止">Step 4: マージと、マージの中止</h3>
 <p><code>main</code>ブランチから、<code>knock</code>ブランチをマージせよ。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">git</span> merge knock</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge knock</code></pre></div>
 <p><code>poetry.txt</code>で衝突が起きたはずだ。中身を確認せよ。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb13-1" title="1"><span class="fu">cat</span> poetry.txt</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> poetry.txt</code></pre></div>
 <p>一度マージを中止して元に戻ることを確認しよう。</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1"><span class="fu">git</span> merge --abort</a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="fu">cat</span> poetry.txt</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge --abort
+<span class="fu">cat</span> poetry.txt</code></pre></div>
 <h3 id="step-5-マージと衝突の解決">Step 5: マージと衝突の解決</h3>
 <p>次は衝突を解決し、マージを実行しよう。</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" title="1"><span class="fu">git</span> merge knock</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> merge knock</code></pre></div>
 <p>衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。その後、</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" title="1"><span class="fu">git</span> add poetry.txt</a>
-<a class="sourceLine" id="cb16-2" title="2"><span class="fu">git</span> commit -m <span class="st">&quot;knock&quot;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add poetry.txt
+<span class="fu">git</span> commit -m <span class="st">&quot;knock&quot;</span></code></pre></div>
 <p>を実行し、マージを完了させよ。</p>
 <h3 id="レポート課題-1">レポート課題</h3>
 <p>以下のコマンドでマージが完了した状態の歴史を表示し、それをレポートとして提出せよ。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="fu">git</span> log --all --graph --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h2 id="課題3-git-rebaseによる歴史改変">課題3: git rebaseによる歴史改変</h2>
 <p>Bobは、姉であるAliceの大事なアイスを食べてしまった。このままでは大目玉だ。<code>git rebase</code>により歴史を改変し、Bobにアリバイを作ってあげよう。</p>
 <h3 id="step-1-リポジトリのクローン-2">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1"><span class="bu">cd</span> </a>
-<a class="sourceLine" id="cb18-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb18-3" title="3"><span class="fu">git</span> clone https://github.com/appi-github/rebase-history-sample.git</a>
-<a class="sourceLine" id="cb18-4" title="4"><span class="bu">cd</span> rebase-history-sample</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> 
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/rebase-history-sample.git
+<span class="bu">cd</span> rebase-history-sample</code></pre></div>
 <h3 id="step-2-歴史の確認-1">Step 2: 歴史の確認</h3>
 <p>現在の歴史を確認しよう。</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb19-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb19-2" title="2"><span class="ex">b6f729a</span> (HEAD -<span class="op">&gt;</span> main, origin/main, origin/HEAD) <span class="ex">Bob</span> headed off to school.</a>
-<a class="sourceLine" id="cb19-3" title="3"><span class="ex">f1ecd8d</span> Ice cream was gone.</a>
-<a class="sourceLine" id="cb19-4" title="4"><span class="ex">de96bad</span> The ice cream was still there.</a>
-<a class="sourceLine" id="cb19-5" title="5"><span class="ex">9e6dca2</span> (origin/start) <span class="ex">The</span> two woke up.</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">b6f729a</span> (HEAD -<span class="op">&gt;</span> main, origin/main, origin/HEAD) <span class="ex">Bob</span> headed off to school.
+<span class="ex">f1ecd8d</span> Ice cream was gone.
+<span class="ex">de96bad</span> The ice cream was still there.
+<span class="ex">9e6dca2</span> (origin/start) <span class="ex">The</span> two woke up.</code></pre></div>
 <p>時間は「下から上」に流れている。したがって、現在の歴史は</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>AliceとBobが目を覚ます</li>
 <li>Aliceがアイスを確認する</li>
 <li>Aliceがアイスが無くなっていることに気づく</li>
 <li>Bobが学校へ行く</li>
 </ol>
 <p>となっている。<code>alice.txt</code>と<code>bob.txt</code>には、それぞれの行動が記されている。差分を見てみよう。</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb20-1" title="1"><span class="fu">git</span> diff HEAD^</a>
-<a class="sourceLine" id="cb20-2" title="2"><span class="fu">git</span> diff HEAD^ HEAD^^</a>
-<a class="sourceLine" id="cb20-3" title="3"><span class="fu">git</span> diff HEAD^^ HEAD^^^</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> diff HEAD^
+<span class="fu">git</span> diff HEAD^ HEAD^^
+<span class="fu">git</span> diff HEAD^^ HEAD^^^</code></pre></div>
 <p>上記は歴史を一つずつさかのぼっている。「ボブが学校へ行く」「Aliceがアイスが無くなっていることに気づく」「Aliceがアイスを確認する」という順番になっている。</p>
 <p>さて、このままではBobがAliceのアイスを食べたことがバレてしまい、大目玉をくらう。<code>git rebase</code>で歴史を改変してアリバイを作ってあげよう。</p>
 <h3 id="step-3-ブランチの作成">Step 3: ブランチの作成</h3>
 <p>二人が起きた時点にブランチを作る。</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb21-1" title="1"><span class="fu">git</span> branch start origin/start</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch start origin/start</code></pre></div>
 <h3 id="step-4-コミットの入れ替え">Step 4: コミットの入れ替え</h3>
 <p><code>main</code>ブランチから<code>start</code>ブランチに対してリベースをする。</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb22-1" title="1"><span class="fu">git</span> rebase -i start</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase -i start</code></pre></div>
 <p>こんな画面が表示されたはずだ。</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb23-1" title="1">pick de96bad The ice cream was still there.</a>
-<a class="sourceLine" id="cb23-2" title="2">pick f1ecd8d Ice cream was gone.</a>
-<a class="sourceLine" id="cb23-3" title="3">pick b6f729a Bob headed off to school.</a></code></pre></div>
+<pre class="txt"><code>pick de96bad The ice cream was still there.
+pick f1ecd8d Ice cream was gone.
+pick b6f729a Bob headed off to school.</code></pre>
 <p>これを順序を入れ替えて以下の状態にせよ。</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb24-1" title="1">pick b6f729a Bob headed off to school.</a>
-<a class="sourceLine" id="cb24-2" title="2">pick de96bad The ice cream was still there.</a>
-<a class="sourceLine" id="cb24-3" title="3">pick f1ecd8d Ice cream was gone.</a></code></pre></div>
+<pre class="txt"><code>pick b6f729a Bob headed off to school.
+pick de96bad The ice cream was still there.
+pick f1ecd8d Ice cream was gone.</code></pre>
 <p>Vimで入れ替えるには、以下の手順を取る。</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>「j」と「k」でカーソルを上下に移動し、「Bob headed off to school.」の行に合わせる</li>
 <li>「dd」と入力し、3行目を切り取る</li>
 <li>「k」を数回入力し、カーソルを一番上に移動する</li>
@@ -166,13 +166,13 @@
 </ol>
 <h3 id="step-5-改変された歴史の確認">Step 5: 改変された歴史の確認</h3>
 <p>歴史が無事に改変されたか確認しよう。</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb25-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb25-2" title="2"><span class="ex">469ce60</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">Ice</span> cream was gone.</a>
-<a class="sourceLine" id="cb25-3" title="3"><span class="ex">65552f7</span> The ice cream was still there.</a>
-<a class="sourceLine" id="cb25-4" title="4"><span class="ex">650e6bd</span> Bob headed off to school.</a>
-<a class="sourceLine" id="cb25-5" title="5"><span class="ex">9e6dca2</span> (origin/start, start) <span class="ex">The</span> two woke up.</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
+<span class="ex">469ce60</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">Ice</span> cream was gone.
+<span class="ex">65552f7</span> The ice cream was still there.
+<span class="ex">650e6bd</span> Bob headed off to school.
+<span class="ex">9e6dca2</span> (origin/start, start) <span class="ex">The</span> two woke up.</code></pre></div>
 <p>歴史は以下のように改変された。</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>AliceとBobが目を覚ます</li>
 <li>Bobが学校へ行く</li>
 <li>Aliceがアイスを確認する</li>
@@ -180,112 +180,125 @@
 </ol>
 <p>Bobが学校に行った後にアイスがあることが確認されているのだから、Bobはアイスを食べることができない。すなわちアリバイが成立し、Aliceに怒られることは無くなった。</p>
 <p><code>alice.txt</code>と<code>bob.txt</code>には、それぞれの行動が記されている。差分を見てみよう。</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" title="1"><span class="fu">git</span> diff HEAD^</a>
-<a class="sourceLine" id="cb26-2" title="2"><span class="fu">git</span> diff HEAD^ HEAD^^</a>
-<a class="sourceLine" id="cb26-3" title="3"><span class="fu">git</span> diff HEAD^^ HEAD^^^</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> diff HEAD^
+<span class="fu">git</span> diff HEAD^ HEAD^^
+<span class="fu">git</span> diff HEAD^^ HEAD^^^</code></pre></div>
 <p>これで一つずつ歴史をさかのぼることができる。「アリスがアイスがないことに気づく」「アリスがアイスの存在を確認する」「ボブが学校に行く」という歴史になっていることがわかるだろう。</p>
 <h3 id="レポート課題-2">レポート課題</h3>
 <p>歴史を改変した後に、以下のコマンドを実行した結果をレポートとして提出せよ。</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb27-1" title="1"><span class="fu">git</span> log --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline</code></pre></div>
 <h2 id="課題4-git-rebaseによる衝突の解決">課題4: git rebaseによる衝突の解決</h2>
 <h3 id="step-1-リポジトリのクローン-3">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb28-1" title="1"><span class="bu">cd</span></a>
-<a class="sourceLine" id="cb28-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb28-3" title="3"><span class="fu">git</span> clone https://github.com/appi-github/rebase-conflict-sample</a>
-<a class="sourceLine" id="cb28-4" title="4"><span class="bu">cd</span> rebase-conflict-sample</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/rebase-conflict-sample
+<span class="bu">cd</span> rebase-conflict-sample</code></pre></div>
 <h3 id="step-2-ブランチの準備-1">Step 2: ブランチの準備</h3>
 <p><code>origin/branch</code>から<code>branch</code>を作成せよ。</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb29-1" title="1"><span class="fu">git</span> switch -c branch origin/branch</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c branch origin/branch</code></pre></div>
 <h3 id="step-3-歴史の確認">Step 3: 歴史の確認</h3>
 <p>現在の歴史が分岐していることを確認せよ。</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb30-1" title="1"><span class="fu">git</span> log --all --graph --oneline</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --all --graph --oneline</code></pre></div>
 <h3 id="step-4-リベースの実行">Step 4: リベースの実行</h3>
 <p><code>branch</code>から<code>main</code>に対してリベースを実行し、衝突が発生することを確認せよ。</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb31-1" title="1"><span class="fu">git</span> rebase main</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase main</code></pre></div>
 <h3 id="step-5-状態の確認">Step 5: 状態の確認</h3>
 <p>現在の状態を確認せよ。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb32-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status</code></pre></div>
 <p>特に、いまリベース中であること、どのコミットを処理中に衝突が起きたのか、衝突が起きたのはどのファイルかを確認すること。</p>
 <h3 id="step-6-衝突の解決">Step 6: 衝突の解決</h3>
 <p>VSCodeで衝突状態にあるファイル(<code>text1.txt</code>)を修正し、衝突を解決せよ。</p>
 <p><code>text1.txt</code>を開くと衝突箇所が表示されているので、<code>Accept Both Changes</code>をクリックするだけで良い。</p>
 <h3 id="step-7-解決をgitに伝える">Step 7: 解決をGitに伝える</h3>
 <p>解決が終わったら<code>git add</code>、<code>git commit</code>を実行し、Gitに衝突の解決を伝えよう。</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb33-1" title="1"><span class="fu">git</span> add text1.txt</a>
-<a class="sourceLine" id="cb33-2" title="2"><span class="fu">git</span> commit -m <span class="st">&quot;f2&quot;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add text1.txt
+<span class="fu">git</span> commit -m <span class="st">&quot;f2&quot;</span></code></pre></div>
 <p>コミット実行時に<code>detached HEAD</code>と表示されることに注意。</p>
 <h3 id="step-8-リベースの続行">Step 8: リベースの続行</h3>
 <p>残りのリベースプロセスを続行しよう。</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb34-1" title="1"><span class="fu">git</span> rebase --continue</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> rebase --continue</code></pre></div>
 <p>最後まで実行され、リベースが完了するはずだ。</p>
 <h3 id="レポート課題-3">レポート課題</h3>
 <p>以下のコマンドでリベースが完了した状態の歴史を表示し、それをレポートとして提出せよ。</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb35-1" title="1"><span class="fu">git</span> log --oneline --graph</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline --graph</code></pre></div>
 <p>リベース後の歴史は期待通りとなっているか？それはどこを見るとわかるか？</p>
 <h2 id="発展課題-git-bisectの確認">発展課題: git bisectの確認</h2>
 <p>数の偶奇を判定するスクリプト<code>evenodd.sh</code>を開発していたが、いつの間にか全ての数字に<code>even</code>と答えるようになってしまった。<code>git bisect</code>による二分探索でどこでバグが入ったか調べよう。</p>
 <h3 id="step-1-リポジトリのクローン-4">Step 1: リポジトリのクローン</h3>
 <p>サンプル用のリポジトリをクローンせよ。</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb36-1" title="1"><span class="bu">cd</span></a>
-<a class="sourceLine" id="cb36-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb36-3" title="3"><span class="fu">git</span> clone https://github.com/appi-github/bisect-sample.git</a>
-<a class="sourceLine" id="cb36-4" title="4"><span class="bu">cd</span> bisect-sample</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone https://github.com/appi-github/bisect-sample.git
+<span class="bu">cd</span> bisect-sample</code></pre></div>
 <h3 id="step-2-バグの確認">Step 2: バグの確認</h3>
 <p><code>evenodd.sh</code>は、本来であれば入力された数値の偶奇を判定するコードであったが、いつのまにか全ての数字に<code>even</code>と答えるようになった。適当な数字を与えて実行し、確認せよ。</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb37-1" title="1"><span class="ex">./evenodd.sh</span> 1</a>
-<a class="sourceLine" id="cb37-2" title="2"><span class="ex">./evenodd.sh</span> 2</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./evenodd.sh</span> 1
+<span class="ex">./evenodd.sh</span> 2</code></pre></div>
 <h3 id="step-3-ブランチの準備">Step 3: ブランチの準備</h3>
 <p><code>origin/root</code>から<code>root</code>を作成し、カレントブランチを<code>root</code>にせよ。</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb38-1" title="1"><span class="fu">git</span> switch -c root origin/root</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch -c root origin/root</code></pre></div>
 <h3 id="step-4-バグっていないことを確認">Step 4: バグっていないことを確認</h3>
 <p>先ほどと同様に<code>evenodd.sh</code>を実行し、正しく実行されることを確認せよ。確認後、<code>main</code>ブランチに戻っておくこと。</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb39-1" title="1"><span class="fu">git</span> switch main</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch main</code></pre></div>
 <h3 id="step-5-git-bisectの実行">Step 5: <code>git bisect</code>の実行</h3>
 <p>少なくとも<code>root</code>ブランチでは正常に動作し、<code>main</code>ブランチでは問題があることがわかった。そこで、<code>git bisect</code>により「問題が初めておきたコミット」を発見しよう。以下を実行し、二分探索モードに入る。</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb40-1" title="1"><span class="fu">git</span> bisect start main root</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect start main root</code></pre></div>
 <h3 id="step-6-状態の確認">Step 6: 状態の確認</h3>
 <p>現在の状態を確認せよ。</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb41-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status</code></pre></div>
 <p>特に、頭がとれた(<code>detached HEAD</code>)状態であること、二分探索モードであること、どうすればこのモードを抜けることができるか等について確認すること。</p>
 <h3 id="step-7-goodbad判定">Step 7: good/bad判定</h3>
 <p>いま、Gitは適当なコミットが指すスナップショットをワーキングツリーとして展開している。この状態にバグがあるのか、それともないのかをGitに教えよう。</p>
 <p>以下のコマンドを実行し、正しい結果が得られるか確認せよ。</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb42-1" title="1"><span class="ex">./evenodd.sh</span> 1</a>
-<a class="sourceLine" id="cb42-2" title="2"><span class="ex">./evenodd.sh</span> 2</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./evenodd.sh</span> 1
+<span class="ex">./evenodd.sh</span> 2</code></pre></div>
 <p>正しい結果が帰ってきたら、</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb43-1" title="1"><span class="fu">git</span> bisect good</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect good</code></pre></div>
 <p>を実行せよ。間違っていたら</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb44-1" title="1"><span class="fu">git</span> bisect bad</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect bad</code></pre></div>
 <p>を実行せよ。そのたびにGitは次の候補を持ってくるので、終了するまで上記の操作を繰り返すこと。Gitが「初めて問題が起きたらコミット」を見つけたら<code>コミットハッシュ is the first bad commit</code>という表示がなされるはずだ。</p>
 <h3 id="step-8-ブランチの付与と二分探索モードの終了">Step 8: ブランチの付与と二分探索モードの終了</h3>
 <p>このコミットにブランチをつけておこう。</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb45-1" title="1"><span class="fu">git</span> branch bug 先ほど見つけたコミットハッシュ</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch bug 先ほど見つけたコミットハッシュ</code></pre></div>
 <p>これでバグが入ったコミットに印をつけることができた。二分探索モードを抜けよう。</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb46-1" title="1"><span class="fu">git</span> bisect reset</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect reset</code></pre></div>
 <h3 id="step-9-自動チェックの確認">Step 9: 自動チェックの確認</h3>
 <p>いちいちバグの有無を人力で確認し、<code>git bisect good/bad</code>を入力するのは面倒だ。「成功/失敗」を判定するスクリプトを使って、二分探索を自動化しよう。そのようなスクリプト<code>test.sh</code>が用意されている。</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb47-1" title="1"><span class="co">#!/bin/bash</span></a>
-<a class="sourceLine" id="cb47-2" title="2"></a>
-<a class="sourceLine" id="cb47-3" title="3"><span class="kw">if</span><span class="bu"> [</span> <span class="kw">`</span><span class="ex">./evenodd.sh</span> 1<span class="kw">`</span> <span class="ot">!=</span> <span class="st">&#39;odd&#39;</span><span class="bu"> ]</span>; <span class="kw">then</span></a>
-<a class="sourceLine" id="cb47-4" title="4">  <span class="bu">exit</span> 1</a>
-<a class="sourceLine" id="cb47-5" title="5"><span class="kw">fi</span></a>
-<a class="sourceLine" id="cb47-6" title="6"></a>
-<a class="sourceLine" id="cb47-7" title="7"><span class="kw">if</span><span class="bu"> [</span> <span class="kw">`</span><span class="ex">./evenodd.sh</span> 2<span class="kw">`</span> <span class="ot">!=</span> <span class="st">&#39;even&#39;</span><span class="bu"> ]</span>; <span class="kw">then</span></a>
-<a class="sourceLine" id="cb47-8" title="8">  <span class="bu">exit</span> 1</a>
-<a class="sourceLine" id="cb47-9" title="9"><span class="kw">fi</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
+
+<span class="kw">if</span><span class="bu"> [</span> <span class="kw">`</span><span class="ex">./evenodd.sh</span> 1<span class="kw">`</span> <span class="ot">!=</span> <span class="st">&#39;odd&#39;</span><span class="bu"> ]</span>; <span class="kw">then</span>
+  <span class="bu">exit</span> 1
+<span class="kw">fi</span>
+
+<span class="kw">if</span><span class="bu"> [</span> <span class="kw">`</span><span class="ex">./evenodd.sh</span> 2<span class="kw">`</span> <span class="ot">!=</span> <span class="st">&#39;even&#39;</span><span class="bu"> ]</span>; <span class="kw">then</span>
+  <span class="bu">exit</span> 1
+<span class="kw">fi</span></code></pre></div>
 <p>これは<code>evenodd.sh</code>に1と2を食わせて、<code>odd</code>と<code>even</code>が表示されるか確認し、どちらも正しければ成功(終了ステータス0)、そうでなければ失敗(終了ステータス1)を返すスクリプトだ。これを使って二分探索を自動化するには、<code>git bisect run</code>を用いる。</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb48-1" title="1"><span class="fu">git</span> bisect start main root</a>
-<a class="sourceLine" id="cb48-2" title="2"><span class="fu">git</span> bisect run ./test.sh</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect start main root
+<span class="fu">git</span> bisect run ./test.sh</code></pre></div>
 <p>やはり<code>コミットハッシュ is the first bad commit</code>というメッセージが表示されるはずなので、それが先ほど<code>bug</code>というブランチをつけたコミットと同じものであることを確認しよう。</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb49-1" title="1"><span class="fu">git</span> branch -v</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> branch -v</code></pre></div>
 <p>終わったら二分探索モードを抜けよう。</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb50-1" title="1"><span class="fu">git</span> bisect reset</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> bisect reset</code></pre></div>
 <h3 id="レポート課題-4">レポート課題</h3>
 <p>いま、<code>main</code>ブランチにいるはずだが、先ほどバグの入ったコミットにつけたブランチに入ろう。</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb51-1" title="1"><span class="fu">git</span> switch bug</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> switch bug</code></pre></div>
 <p>いま、「初めてバグが入ったコミット」にいるはずなのだから、「このコミット」と「一つ前のコミット」の差分を見れば、バグが入った原因がわかるはずだ。以下を実行し、出力された内容をレポートとして提出せよ。</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb52-1" title="1"><span class="fu">git</span> diff HEAD^</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> diff HEAD^</code></pre></div>
+<h2 id="余談osの系譜とドラマ">余談：OSの系譜とドラマ</h2>
+<p>WordやPowerPointなど、普段使うアプリケーションは、オペレーティング・システムの上で動作している。オペレーティング・システム(OS)は、基本ソフトとも呼ばれ、ハードウェアとアプリケーションの間で動作する。その存在を意識することは少ないが、PCやスマホ、タブレットなどのデバイスの使い勝手を大きく左右する重要なソフトウェアである。普段よく目にするOSは、PCならWindowsかmacOS、スマホならAndroidかiOSであろう。WindowsはMicrosoft、macOSやiOSはApple、AndroidはGoogleが開発している。OSは日々進化しており、どんどん新しい機能が追加されていく。その進化に乗り遅れたOSは市場から淘汰されてしまうため、その裏には様々なドラマがある。そのうちWindows 95とmacOSの話を紹介したい。</p>
+<p>1980年代、MS-DOS、そしてWindows 3.1というOSにより大きなシェアを獲得したMicrosoftは、二つのOSの開発を進めていた。一つはコンシューマ向けの「使いやすい」OS、もう一つはサーバ向けの「信頼性の高い」OSだ。後者はWindows NTとして完成するが、その時の筆舌に尽くしがたい「デスマーチ」の様子が「闘うプログラマー」に記述があるので興味のある人は読んで見ると良いであろう。さて、もう一つの「家庭用」のOS開発プロジェクトは「カイロ」という名前で進められていたが、進捗が悪かった。そこで、「シカゴ」という別プロジェクトが走り出す。情報科学で博士号を取ったような人ばかりで構成された「カイロ」と、職人プログラマを寄せ集めたような「シカゴ」、どちらがMicrosoftの次世代OSを担うか、ビル・ゲイツの前で「裁判」が行われる。「カイロ」は400ページに渡る資料を用意し、いかに「シカゴ」がダメかを論じたのに対して、「シカゴ」チームはただ一枚のCD-ROMを取り出し、開発中のOSを実演してみせた。両方の言い分を聞いたビル・ゲイツは即座にカイロのキャンセルを決断。その時にCD-ROMに入っていたOSは、後に大ブームを巻き起こすことになるWindows 95のベータ版であった。負けた「カイロ」を率いていたリーダー、ジム・オールチンは、後にWindows Vistaの開発を率いることになり、そこにも面白いストーリーがあるのだが、ここでは割愛しよう。</p>
+<p>macOS開発のドラマも面白い。1984年、Appleはグラフィックを重視するコンピュータ、Macintoshを発売する。MS-DOS等、他のOSがコマンドラインインタフェースを採用することがほとんどであった当時、マウスで直感的に操作できるグラフィカルなシェルを搭載したOSは画期的であり、GUIという概念の普及に大きく貢献した。OSは「System」と呼ばれ、ハードと一体で開発されていた。Systemは優れたOSであったが、長く開発が続けられるうちに設計が古くなり、不安定になっていった。Microsoftと同様に、1980年代後半から次世代OSの必要性を痛感していたAppleは「コープランド(copland)」というプロジェクトを立ち上げ、新しいOSの開発をすすめる。しかし、必要と思われる機能を際限なく仕様に追加していった結果、プロジェクトは収集がつかなくなり、AppleはOSの自社開発を断念、外部から調達することを決断する。次世代Mac OSの候補は二つ、かつてAppleで開発責任者を務めたジャン＝ルイ・ガセー独立し、設立したBe社が開発したBeOSと、Appleの創業者でありながら、自らが引き抜いたCEOにAppleを追い出されたスティーブ・ジョブズが設立したNeXT社が開発したOPENSTEPである。ガセーは勝利を確信していたフシがあり、プレゼンに力を入れなかったが、ジョブズは完璧なプレゼンを行い、結果、次世代OSの座を獲得したのはOPENSTEPとなり、ジョブズはAppleに返り咲く。ジョブズがAppleを去ったのは、ガセーによる密告が原因という話もあり、そのあたりの「ドラマ」も興味深い。</p>
+<p>MicrosoftはしばらくWindows 95系列とWindows NT系列を両方開発していたが、両者はWindows XPにて統合され、Windows 95系列はWindows Meを最後に開発を終えた。MacのOSは、当初Macintosh搭載のSystemとしてスタートしたが、Mac OS 9を最後にOPENSTEP由来のMacOS Xに移行し、役目を終えた。中身は完全に変わったが、どちらも「Windows」「Mac」として開発、発売が続いている。OSはソフトウェアであり、ソフトウェアは人が開発するものである以上、人の数だけドラマがある。いまもどこかで次世代OSの開発が進められているのだろう。そこにはどんなドラマが待っているだろうか。</p>
+<ul>
+<li>参考文献
+<ul>
+<li><a href="https://www.amazon.co.jp/dp/4822247570">闘うプログラマー</a></li>
+<li><a href="https://www.huffingtonpost.jp/satoshi-nakajima/bill-gates-microsoft_b_10351956.html">米マイクロソフト本社で目の当たりにしたビル・ゲイツの決断力</a></li>
+<li><a href="https://www.amazon.co.jp/dp/4797306157">アップル薄氷の500日</a></li>
+</ul></li>
+</ul>
           </article>
   </body>
 

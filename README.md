@@ -34,7 +34,6 @@
 * シェルとコマンドライン
 * Unixコマンド
 * Vimの使い方
-* 余談：OSの系譜とドラマ
 
 ### [Gitの基本的な使い方](basics/README.md)
 
@@ -48,7 +47,6 @@
 * `git log`
 * `git config`
 * `.gitignore`
-* 余談：データベース"ふっとばし"スペシャリスト
 
 ### [ブランチ操作](branch/README.md)
 
@@ -127,26 +125,31 @@
 * 自動ステージング(`git commit -a`)
 * 歴史の確認(`git log`)
 * VSCodeからの操作
+* 余談：データベース"ふっとばし"スペシャリスト
 
 ### [Gitの操作(応用編)](practice_advanced/README.md)
 
-* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-basic)
 * `git amend`によりコミットが変更されることを確認する
 * `git merge`の衝突を解決する
 * `git rebase`により歴史を改変する
 * `git rebase`の衝突を解決する
 * `git bisect`を使ってみる
+* 余談：OSの系譜とドラマ
 
 ### [GitHubの操作(基本編)](practice_github/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
 * GitHubアカウントを作成とSSH接続
 * ローカルのリポジトリをGitHubに登録
 * Issue管理
 * Projectの利用
 * プルリクエストを作ってみる
+* 余談：天空の城のセキュリティ
 
 ### [GitHubの操作(応用編)](practice_github2/README.md)
 
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
 * MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
 
