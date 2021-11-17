@@ -139,7 +139,7 @@
 
 ### [GitHubの操作(基本編)](practice_github/README.md)
 
-* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-basic)
 * GitHubアカウントを作成とSSH接続
 * ローカルのリポジトリをGitHubに登録
 * Issue管理
@@ -149,7 +149,7 @@
 
 ### [GitHubの操作(応用編)](practice_github2/README.md)
 
-* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-advanced)
+* [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-advanced)
 * MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
 
