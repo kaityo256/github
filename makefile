@@ -31,5 +31,19 @@ copy-pdf: $(ASSIGNMENT)
 	cp practice_github_basic/assignment.pdf assignment03.pdf
 	cp practice_github_advanced/assignment.pdf assignment04.pdf
 
+copy-pptx:
+	cp vcs/fig/slide.pptx github_lec01.pptx
+	cp term/fig/slide.pptx github_lec02.pptx
+	cp command/fig/slide.pptx github_lec03.pptx
+	cp basics/fig/slide.pptx github_lec04.pptx
+	cp branch/fig/slide.pptx github_lec05.pptx
+	cp remote/fig/slide.pptx github_lec06.pptx
+	cp advanced/fig/slide.pptx github_lec07.pptx
+	cp internals/fig/slide.pptx github_lec08.pptx
+	cp practice_basic/fig/slide.pptx github_exe01.pptx
+	cp practice_advanced/fig/slide.pptx github_exe02.pptx
+	cp practice_github_basic/fig/slide.pptx github_exe03.pptx
+	cp practice_github_advanced/fig/slide.pptx github_exe04.pptx
+
 clean:
 	rm -f $(TARGET) index.html
