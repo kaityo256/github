@@ -137,7 +137,7 @@
 * `git bisect`を使ってみる
 * 余談：OSの系譜とドラマ
 
-### [GitHubの操作(基本編)](practice_github/README.md)
+### [GitHubの操作(基本編)](practice_github_basic/README.md)
 
 * [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-basic)
 * GitHubアカウントを作成とSSH接続
@@ -147,7 +147,7 @@
 * プルリクエストを作ってみる
 * 余談：天空の城のセキュリティ
 
-### [GitHubの操作(応用編)](practice_github2/README.md)
+### [GitHubの操作(応用編)](practice_github_advanced/README.md)
 
 * [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-advanced)
 * MNISTの学習済みモデルをウェブで試す
