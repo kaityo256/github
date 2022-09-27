@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                <title></title>
+                <title>term/README.md</title>
     <style type="text/css">
       p {
         padding-left: 1em;
@@ -51,103 +51,87 @@
 <p>まずはGitで使われる用語を一通り学ぶ。コミットやブランチなど、バージョン管理システムでは共通の単語が使われることが多いが、ツールによって意味合いやニュアンスがかなり異なるので注意が必要だ。Gitの用語はそれを実現するGitのコマンドと一緒に学ぶことが多いが、ここではコマンドは後回しにして、Gitでどういう状態が実現されており、それを何と呼ぶのかを見てみよう。</p>
 <h2 id="プロジェクト">プロジェクト</h2>
 <p>例えばなにかのプログラムを開発する場合、ソースコードだけでなく、ドキュメントやインプットファイル、設定ファイルも一緒に管理したいことが多いだろう。卒業論文を書く場合であれば、論文本体だけではなく、概要や図表、参考文献リストなどもまとめて管理したい。こういった、管理したいファイルやフォルダの集まりを <strong>プロジェクト(project)</strong> と呼ぶことにしよう。なお、これは説明の便利のために導入したもので、特にGitの用語というわけではない。</p>
-<div class="figure">
-<img src="fig/project.png" alt="プロジェクトの例" />
-<p class="caption">プロジェクトの例</p>
-</div>
+<figure>
+<img src="fig/project.png" alt="プロジェクトの例" /><figcaption>プロジェクトの例</figcaption>
+</figure>
 <p>プロジェクトは、いくつかのファイル、フォルダから構成されているであろう。例えば卒論であれば、卒論本体、図、参考文献などをまとめて管理したくなる。それらを一つのフォルダにいれておくとごちゃごちゃするので、サブフォルダに分けて整理することも多いだろう。例えば卒論本体は<code>doc</code>フォルダ、画像は<code>fig</code>フォルダ、参考文献は<code>ref</code>フォルダ、といった具合だ。以後、プロジェクトに必要なファイルやフォルダをすべて含むトップレベルフォルダ(図では<code>grad</code>フォルダ)を、プロジェクトと同一視する場合がある。</p>
 <h2 id="リポジトリとワーキングツリー">リポジトリとワーキングツリー</h2>
-<div class="figure">
-<img src="fig/repository.png" alt="リポジトリ" />
-<p class="caption">リポジトリ</p>
-</div>
+<figure>
+<img src="fig/repository.png" alt="リポジトリ" /><figcaption>リポジトリ</figcaption>
+</figure>
 <p>では早速Gitの用語を見ていこう。Gitはファイルの状態や履歴を管理するが、それらの状態を保存する場所が必要だ。その場所を<strong>リポジトリ(repository)</strong> と呼ぶ。リポジトリの実体はプロジェクトの中の<code>.git</code>というフォルダである。</p>
-<p>現在、自分が作業中のファイルやディレクトリを<strong>ワーキングツリー(working tree)</strong> と呼ぶ<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>。ワーキングツリーはリポジトリの管理下にあるファイルやフォルダである。Git管理下にあるプロジェクトは、リポジトリとワーキングツリーから構成される。</p>
-<div class="figure">
-<img src="fig/remote_local.png" alt="ローカルリポジトリとリモートリポジトリ" />
-<p class="caption">ローカルリポジトリとリモートリポジトリ</p>
-</div>
+<p>現在、自分が作業中のファイルやディレクトリを<strong>ワーキングツリー(working tree)</strong> と呼ぶ<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。ワーキングツリーはリポジトリの管理下にあるファイルやフォルダである。Git管理下にあるプロジェクトは、リポジトリとワーキングツリーから構成される。</p>
+<figure>
+<img src="fig/remote_local.png" alt="ローカルリポジトリとリモートリポジトリ" /><figcaption>ローカルリポジトリとリモートリポジトリ</figcaption>
+</figure>
 <p>自分の手元のPCにあるリポジトリを<strong>ローカルリポジトリ(local repository)</strong> 、サーバ上にあるリポジトリを<strong>リモートリポジトリ(remote repository)</strong> と呼ぶ。</p>
 <p>ワーキングツリーを持たないリポジトリを<strong>ベアリポジトリ(bare repository)</strong> 、ワーキングツリーを持つリポジトリを<strong>ノンベアリポジトリ(non-bare repository)</strong> と呼ぶ。一般的には、ローカルリポジトリはノンベアリポジトリとして、リモートリポジトリはベアリポジトリとして運用する。</p>
 <h2 id="コミット">コミット</h2>
 <p>Gitが管理するファイルを修正すると、リポジトリにある状態(Gitが覚えている状態)と差が生じる。現在の状態をGitに覚えてもらうために登録することを <strong>コミット(commit)</strong> と呼ぶ。コミットのタイミングと、エディタなどでの保存のタイミングは異なる。例えばワードで「変更履歴の記録」をオンにすると、全ての変更履歴が保存される。しかし、Gitではコミットしたタイミングでのみ履歴の保存が行われる。コミットすると、その時点でのプロジェクトの状態がまるごと保存される。ある時点でのプロジェクトの状態をまとめて <strong>スナップショット(snapshot)</strong> と呼ぶ。</p>
 <p>Gitではこの「歴史」を「丸」と「線」で表現することが多い。丸が「ある時点のプロジェクト全体の状態」、すなわちスナップショットであり、線が二つのスナップショットの間の関係、すなわち親子関係を表している。コミットすることで、歴史に丸が追加され、一つ前の丸と線で結ばれる。</p>
-<div class="figure">
-<img src="fig/commit.png" alt="コミット" />
-<p class="caption">コミット</p>
-</div>
+<figure>
+<img src="fig/commit.png" alt="コミット" /><figcaption>コミット</figcaption>
+</figure>
 <p>Gitでは「コミット」という言葉を2つの意味で使う。一つは動詞であり、新たに「玉」を追加して歴史を伸ばすことを意味する。もう一つは名詞であり、この歴史の中の「玉」、つまりある時点でのすなわちスナップショットそのものを指す。</p>
-<div class="figure">
-<img src="fig/use_history.png" alt="歴史があるとできること" />
-<p class="caption">歴史があるとできること</p>
-</div>
-<p>歴史の「玉」、すなわちコミットはゲームでいうところのセーブファイルのようなものであり、いつでもその状態に戻ることができる。例えばあなたがプログラムを書いていて、いつのまにか正しく動作しなくなっていたことに気が付いたとする。あなたは確か三日前には動いていたのを思い出し、ワーキングツリーを三日前のコミットに切り替える。すると、すぐにプロジェクトが三日前の状態になるので、本当に三日前には動いてたるかどうかをすぐに確認できる。Gitでは、この切り替えが非常に高速であるため、気軽に過去と現在を行ったり来たりできる。動いていることが確認できたら、三日前と現在でどこが違うか、差分を表示したい。Gitはこれも簡単にできる。どのファイルのどの部分が三日前と異なるかが表示されるので、それを見れば問題点の特定も容易であろう。</p>
+<figure>
+<img src="fig/use_history.png" alt="歴史があるとできること" /><figcaption>歴史があるとできること</figcaption>
+</figure>
+<p>歴史の「玉」、すなわちコミットはゲームでいうところのセーブファイルのようなものであり、いつでもその状態に戻ることができる。例えばあなたがプログラムを書いていて、いつのまにか正しく動作しなくなっていたことに気が付いたとする。あなたは確か三日前には動いていたのを思い出し、ワーキングツリーを三日前のコミットに切り替える。すると、すぐにプロジェクトが三日前の状態になるので、本当に三日前には動いてたかどうかをすぐに確認できる。Gitでは、この切り替えが非常に高速であるため、気軽に過去と現在を行ったり来たりできる。動いていることが確認できたら、三日前と現在でどこが違うか、差分を表示したい。Gitはこれも簡単にできる。どのファイルのどの部分が三日前と異なるかが表示されるので、それを見れば問題点の特定も容易であろう。</p>
 <h2 id="インデックスとステージング">インデックスとステージング</h2>
 <p>Gitには、三種類の「場所」が存在する。現在自分が編集しているファイルが存在するワーキングツリー、ファイルの編集履歴などを保存するリポジトリ、そしてその間にある <strong>インデックス(index)</strong> だ。</p>
 <p>Gitでは、修正をリポジトリに登録する(コミットする)前に、インデックスに修正するファイルを登録する必要がある。これを<strong>ステージ(stage)</strong>、もしくは<strong>ステージング(staging)</strong> と言う。そのため、インデックスのことを <strong>ステージングエリア(staging area)</strong> とも呼ぶ。</p>
-<div class="figure">
-<img src="fig/staging.png" alt="staging" />
-<p class="caption">staging</p>
-</div>
+<figure>
+<img src="fig/staging.png" alt="staging" /><figcaption>staging</figcaption>
+</figure>
 <p>ステージングとは、特にウェブサービスなどの分野で使われる用語だ。例えば、あなたはオンラインショッピングサイトを運用しているとしよう。オンラインショッピングは、ユーザが買い物をするクライアントシステムや、決済や商品管理を行うバックエンド側のシステムから構成されている。さて、クライアント側の認証システムにセキュリティホールが見つかり、早急に対応が必要になったとしよう。このセキュリティホール対策で、どんな影響が出るか全く分からないので、いきなり本番環境に適用するのは怖い。しかし、ローカルで動作検証を行うにも限界がある。そこで、なるべく本番環境と同じ環境だが、ユーザからは見えない場所を作っておき、そこに修正を適用して、動作を確認しよう。そこで問題がなければ、そのまま本番環境に適用すればよい。このように、ローカルと本番環境の間に挟む、リハーサルを行う環境をステージング環境と呼ぶ。ステージング環境を用意することで、本番環境で思わぬ事故が起きる確率を減らすことができる。</p>
 <p>Gitでなぜステージングが必要かは追って説明することにして、とにかくGitはステージングを採用しており、修正したいファイルを指定してインデックスに登録してから、インデックスの内容をまとめてスナップショットとしてコミットする、という手順を踏む。</p>
 <p>いま、Git管理されていないプロジェクトがあったとしよう。初期化することでリポジトリが作られるが、その中身は空であり、まだなにも歴史を持っていない。</p>
-<div class="figure">
-<img src="fig/staging_commit.png" alt="staging and commit" />
-<p class="caption">staging and commit</p>
-</div>
+<figure>
+<img src="fig/staging_commit.png" alt="staging and commit" /><figcaption>staging and commit</figcaption>
+</figure>
 <p>最初にすることは、どのファイルをGitで管理するか教えることだ。そのためにファイルを選んでステージングする。ステージングされたファイルはインデックスへと登録される。必要なファイルをインデックスに登録し終えたら、コミットをする。インデックスに登録されたファイルが「スナップショット」としてリポジトリに登録され、歴史が生まれる。</p>
 <p>リポジトリにコミットが登録されたことで、Gitはファイルの修正を追うことができるようになった。先ほど登録した状態から、ファイルを修正したとしよう。この修正をリポジトリに登録したい。そのために、また修正したファイルをインデックスに登録する(ステージングする)。そして、コミットすることでリポジトリに登録する。以後、この作業を繰り返すことで歴史を作っていくのがGitでの作業である。</p>
 <h2 id="headとブランチ">HEADとブランチ</h2>
 <p>Gitが管理するのはコミットがつながった歴史である。この歴史は枝分かれすることがある。例えばゲームをやっていて、シナリオが分岐する重要なイベントの手間で保存し、両方のシナリオをプレイする、といった経験はあるだろう。さて、バージョン管理システムは歴史を管理するシステムであるが、その扱い方のポリシーには大きな違いがある。Subversionは歴史は一本道であり、原則として歴史の改変を許さない。一方Gitは、歴史は枝分かれすることが普通であり、好きなように歴史を改変する。その歴史操作の手段として使うのがブランチである。</p>
-<div class="figure">
-<img src="fig/branch.png" alt="ブランチ" />
-<p class="caption">ブランチ</p>
-</div>
-<p>Gitにおけるブランチとはコミットの別名であり、コミットについたラベルだと思えば良い。プロジェクトをGitで初期化した場合、デフォルトで<code>main</code>というブランチが用意される<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>。最初のコミットから歴史が始まるが、そのコミットに<code>main</code>というラベルがはりつく。以後、コミットする度に、歴史が増え、<code>main</code>というラベルが移動していく。</p>
+<figure>
+<img src="fig/branch.png" alt="ブランチ" /><figcaption>ブランチ</figcaption>
+</figure>
+<p>Gitにおけるブランチとはコミットの別名であり、コミットについたラベルだと思えば良い。プロジェクトをGitで初期化した場合、デフォルトで<code>main</code>というブランチが用意される<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。最初のコミットから歴史が始まるが、そのコミットに<code>main</code>というラベルがはりつく。以後、コミットする度に、歴史が増え、<code>main</code>というラベルが移動していく。</p>
 <p>ブランチはコミットについたラベルであり、自由に作ることができる。ブランチが複数あると、「今自分がどのブランチを見ているのか」という情報が必要だ。それを指すのが「HEAD」である。Gitはデフォルトで<code>main</code>ブランチが作られ、「HEAD」は<code>main</code>を指している。ブランチは、その時に自分が見ているコミット、つまり「HEADが指しているブランチが指しているコミット」に貼りつく。したがって、<code>main</code>ブランチで作業している時に新たなブランチ<code>branch</code>を作ると、<code>main</code>が指すのと同じコミットを<code>branch</code>が指す。</p>
-<div class="figure">
-<img src="fig/head.png" alt="HEADとブランチ" />
-<p class="caption">HEADとブランチ</p>
-</div>
+<figure>
+<img src="fig/head.png" alt="HEADとブランチ" /><figcaption>HEADとブランチ</figcaption>
+</figure>
 <p>さて、ブランチの切り替えとは、「HEADが指すブランチ」を変えることだ。いま、<code>main</code>ブランチから<code>branch</code>ブランチに切り替えよう。すると、「HEAD」が指す先が<code>main</code>から<code>branch</code>に変わる。この状態で何かファイルを修正し、コミットしよう。コミットすると歴史が増えるが、この時「いま見ているブランチ(今回の例では<code>branch</code>)」の指す先が新たに増えたコミットに移動するが、それ以外のブランチは取り残される。</p>
-<div class="figure">
-<img src="fig/branch2.png" alt="HEADとブランチ" />
-<p class="caption">HEADとブランチ</p>
-</div>
+<figure>
+<img src="fig/branch2.png" alt="HEADとブランチ" /><figcaption>HEADとブランチ</figcaption>
+</figure>
 <p>さて、<code>branch</code>が先の歴史を指している状態で、<code>main</code>ブランチに戻ろう。HEADが<code>main</code>を指した状態となる。ここで何か修正し、コミットしよう。すると、新たに作られたコミットは、<code>main</code>が指していたコミットにぶら下がるので、ここで歴史が分岐する。</p>
 <p>Gitでは、開発において積極的に歴史を分岐させるが、その意味については後述する。</p>
-<div class="figure">
-<img src="fig/detached_head.png" alt="detached HEAD" />
-<p class="caption">detached HEAD</p>
-</div>
+<figure>
+<img src="fig/detached_head.png" alt="detached HEAD" /><figcaption>detached HEAD</figcaption>
+</figure>
 <p>なお、通常HEADはブランチを経由してコミットを指しているが、操作によってはHEADが直接コミットを指す場合がある。これを「detached HEAD状態」と呼ぶ。detachedとは切り離された、外れている、という意味であり、HEADがブランチから外れていることを意味している。Gitを操作しているとたまにこの状態となるが、その時に慌てないように「detached HEAD状態とはHEADがブランチではなく直接コミットを指している状態である」とだけ覚えておこう。コミットなどの操作は(間接的にせよ直接的にせよ)HEADが指すコミットに対して行われるため、HEADが外れた状態でもコミットなどの操作は可能だ。なぜdetached HEAD状態になるのか、その状態の問題点や、解消の仕方などは後述する。</p>
 <h2 id="マージ">マージ</h2>
-<p>Gitでは、原則として<code>main</code>ブランチで作業しない。自分がこれから行う作業に対応したブランチを用意し(ブランチを切る、と呼ぶことが多い)、そのブランチ上で作業を行う。作業が一段落したら、ブランチで作業した内容を<code>main</code>ブランチに取り込みたくなる。このように、片方のブランチの修正をもう一つのブランチに取り込むことを <strong>マージ(merge)</strong> と呼ぶ。マージには二種類存在する。一つがFast-Forwardマージ、もう一つがNon Fast-Forwardマージだ<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>。</p>
-<div class="figure">
-<img src="fig/ff1.png" alt="ff1" />
-<p class="caption">ff1</p>
-</div>
+<p>Gitでは、原則として<code>main</code>ブランチで作業しない。自分がこれから行う作業に対応したブランチを用意し(ブランチを切る、と呼ぶことが多い)、そのブランチ上で作業を行う。作業が一段落したら、ブランチで作業した内容を<code>main</code>ブランチに取り込みたくなる。このように、片方のブランチの修正をもう一つのブランチに取り込むことを <strong>マージ(merge)</strong> と呼ぶ。マージには二種類存在する。一つがFast-Forwardマージ、もう一つがNon Fast-Forwardマージだ<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<figure>
+<img src="fig/ff1.png" alt="ff1" /><figcaption>ff1</figcaption>
+</figure>
 <p>まず、「修正を取り込む」ということの意味を考えてみよう。例えば、<code>main</code>ブランチから分岐した<code>branch</code>に、ファイルを追加してコミットしたとしよう。すると上図の左のような状態となる。<code>main</code>と<code>branch</code>の指すコミットは、それぞれの状態のスナップショットを保存しているとのと同時に<code>main</code>の指すブランチにファイルを追加したら<code>branch</code>の状態になる、と解釈することもできる。</p>
-<div class="figure">
-<img src="fig/ff2.png" alt="ff2" />
-<p class="caption">ff2</p>
-</div>
+<figure>
+<img src="fig/ff2.png" alt="ff2" /><figcaption>ff2</figcaption>
+</figure>
 <p>この時、コミットとコミットをつなぐ線は、その二つのコミットの差分(修正)であると解釈できる。Gitの歴史は線でつながった丸で表現されるが、丸が表すスナップショットに、線が表す修正を適用すると、次のスナップショットになる。こうして、それぞれのコミットは一つ前のコミットに「線」が表す修正を「適用」した結果生まれるスナップショットであると理解できる。線が表す修正を次々と適用していけば、線でつながったコミットを再現することができる。</p>
-<div class="figure">
-<img src="fig/ff_merge.png" alt="Fast Forwardマージ" />
-<p class="caption">Fast Forwardマージ</p>
-</div>
+<figure>
+<img src="fig/ff_merge.png" alt="Fast Forwardマージ" /><figcaption>Fast Forwardマージ</figcaption>
+</figure>
 <p>さて、修正を取り込みたいブランチ(<code>main</code>とする)が、現在作業中のブランチ(<code>branch</code>とする)の直接の祖先であり、かつそこから歴史が分岐していない場合を考えよう。<code>main</code>の指すコミットに、「線」が表す修正を適用していった先に目的の状態(<code>branch</code>が指すコミット)がある。であるから、<code>main</code>の指すコミットに、積みあがった修正を全て適用したら、<code>branch</code>の指すコミットと同じものができあがるはずだ。したがって、<code>branch</code>の修正を取り込む(マージする)には、単に<code>branch</code>の指すコミットまで<code>main</code>を動かせば良い。これをFast-Forward(早送り)マージと呼ぶ。</p>
-<div class="figure">
-<img src="fig/merge.png" alt="マージ" />
-<p class="caption">マージ</p>
-</div>
+<figure>
+<img src="fig/merge.png" alt="マージ" /><figcaption>マージ</figcaption>
+</figure>
 <p>もし、修正を取り込もうとしているブランチが指すコミットが、現在作業中のブランチが指すコミットの直接の祖先でなかった場合、Fast-Forwardマージはできない。例えば<code>main</code>から分岐した<code>branch</code>の修正を<code>main</code>に取り込もうとした時、<code>main</code>にコミットが増えていると、<code>main</code>が指すコミットが<code>branch</code>の直接の祖先ではなくなる。その場合、両方のブランチの共通の祖先からの修正を両方から取り込んで、二つのコミットを親とする新たなコミットを作る。これをNon Fast-Forwardマージ、もしくは単にマージと呼び、この時作られたコミットをマージコミットと呼ぶ。二つのブランチで同じファイルの同じ場所を修正していた場合、Gitは自動でマージすることができない。これを <strong>衝突(conflict)</strong> と呼ぶ。衝突の対処については後で説明する。</p>
-<div class="figure">
-<img src="fig/no-ff.png" alt="no-ff マージ" />
-<p class="caption">no-ff マージ</p>
-</div>
+<figure>
+<img src="fig/no-ff.png" alt="no-ff マージ" /><figcaption>no-ff マージ</figcaption>
+</figure>
 <p>マージしたい二つのブランチのうち、片方が指すコミットがもう片方の直接の祖先である場合はFast-Forwardマージが可能だが、あえてFast-Forwardせずに、マージコミットを作ってマージすることもできる。Fast-Forwardマージをすると、マージ元のブランチがもともとどのコミットから分岐したか、という情報が失われてしまうが、マージコミットを作ると、その情報が残り、例えば間違って実施したマージを取り消しやすい等のメリットがある。</p>
 <h2 id="まとめ">まとめ</h2>
 <ul>
@@ -169,14 +153,14 @@
 <li>Fast-Forwardマージできる場合でも、マージコミットを作ることができる</li>
 </ul></li>
 </ul>
-<div class="footnotes">
+<section class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>英語ではworking treeと呼ぶのが一般的だが、日本語では「ワークツリー(work tree)」という呼び方もされる。<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>以前は<code>master</code>という名前であったが、近年では<code>master/slave</code>といった用語が不適切だという意見が広がっており、<code>master</code>という言葉を避ける傾向にある。GitHubやGitLabはデフォルトブランチを<code>master</code>から<code>main</code>とし、Gitもバージョン2.28からデフォルトブランチを変更する機能がついた。<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>Fast-Fowardマージについては「早送りマージ」と呼ばれることもあるが、あまり一般的でない。また、Non Fast-Forwardマージについては一般的な訳語が無いようだ。<a href="#fnref3">↩</a></p></li>
+<li id="fn1"><p>英語ではworking treeと呼ぶのが一般的だが、日本語では「ワークツリー(work tree)」という呼び方もされる。<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>以前は<code>master</code>という名前であったが、近年では<code>master/slave</code>といった用語が不適切だという意見が広がっており、<code>master</code>という言葉を避ける傾向にある。GitHubやGitLabはデフォルトブランチを<code>master</code>から<code>main</code>とし、Gitもバージョン2.28からデフォルトブランチを変更する機能がついた。<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Fast-Fowardマージについては「早送りマージ」と呼ばれることもあるが、あまり一般的でない。また、Non Fast-Forwardマージについては一般的な訳語が無いようだ。<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
-</div>
+</section>
           </article>
   </body>
 

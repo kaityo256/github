@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                <title></title>
+                <title>practice_basic/README.md</title>
     <style type="text/css">
       p {
         padding-left: 1em;
@@ -55,8 +55,8 @@
 <h2 id="課題-gitの基本操作">課題: Gitの基本操作</h2>
 <h3 id="step-1-初期設定">Step 1: 初期設定</h3>
 <p>Git Bash (以下、ターミナルと呼ぶ)を開き、以下を実行せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global user.name <span class="st">&quot;ユーザー名&quot;</span>
-<span class="fu">git</span> config --global user.email <span class="st">&quot;メールアドレス&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">git</span> config --global user.name <span class="st">&quot;ユーザー名&quot;</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="fu">git</span> config --global user.email <span class="st">&quot;メールアドレス&quot;</span></a></code></pre></div>
 <p>この名前とメールアドレスは後に公開されるため、イニシャルやニックネームなどでも良い。また、ここで「タブ補完」が効くことも確認しておこう。</p>
 <ul>
 <li><code>git con</code>まで入力してタブを押すと<code>git config</code>まで入力される</li>
@@ -64,133 +64,132 @@
 <li><code>us</code>まで入力してタブを押すと<code>user.</code>まで入力される</li>
 <li><code>n</code>まで入力してタブを押すと、<code>name</code>まで入力される</li>
 </ul>
-<p>以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
+<p>以上から「git con(TAB)–gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
 <p>また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global core.editor vim
-<span class="fu">git</span> config --global core.autocrlf false
-<span class="fu">git</span> config --global init.defaultBranch main</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="fu">git</span> config --global core.editor vim</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="fu">git</span> config --global core.autocrlf false</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="fu">git</span> config --global init.defaultBranch main</a></code></pre></div>
 <p>次に、よく使うコマンドの省略系(エイリアス)も登録しておこう。いろいろ便利なエイリアスがあるが、人や部署によって流儀が異なるので、今回は以下の一つだけを設定しよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></a></code></pre></div>
 <p>以上を実行後、ターミナルで<code>.gitconfig</code>を表示し、先ほど設定した内容が書き込まれていることを確認せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">cat</span> .gitconfig</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">cat</span> .gitconfig</a></code></pre></div>
 <p>以下のような表示になっていれば成功である。</p>
-<pre class="txt"><code>[user]
-        name = 先ほど設定したユーザー名
-        email = 先ほど設定したメールアドレス
-[core]
-        editor = vim
-        autocrlf = false
-[alias]
-        st = status -s
-[init]
-        defaultBranch = main        </code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb5-1" title="1">[user]</a>
+<a class="sourceLine" id="cb5-2" title="2">        name = 先ほど設定したユーザー名</a>
+<a class="sourceLine" id="cb5-3" title="3">        email = 先ほど設定したメールアドレス</a>
+<a class="sourceLine" id="cb5-4" title="4">[core]</a>
+<a class="sourceLine" id="cb5-5" title="5">        editor = vim</a>
+<a class="sourceLine" id="cb5-6" title="6">        autocrlf = false</a>
+<a class="sourceLine" id="cb5-7" title="7">[alias]</a>
+<a class="sourceLine" id="cb5-8" title="8">        st = status -s</a>
+<a class="sourceLine" id="cb5-9" title="9">[init]</a>
+<a class="sourceLine" id="cb5-10" title="10">        defaultBranch = main        </a></code></pre></div>
 <h3 id="step-2-リポジトリの作成git-init">Step 2: リポジトリの作成(<code>git init</code>)</h3>
 <p>それではいよいよGitの操作を一通り確認する。</p>
 <p>まずは適当なテスト用のディレクトリを作成し、その中で作業しよう。この講義用に<code>git</code>というディレクトリを作成し、さらにその中に<code>test</code>というディレクトリを作ろう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
-<span class="fu">mkdir</span> git
-<span class="bu">cd</span> git
-<span class="fu">mkdir</span> test
-<span class="bu">cd</span> test</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="bu">cd</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="fu">mkdir</span> git</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="bu">cd</span> git</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="fu">mkdir</span> test</a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="bu">cd</span> test</a></code></pre></div>
 <p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。</p>
 <p>なお、以下の操作でどうにもならなくなったら、<code>test</code>ディレクトリを全て消して最初からやりなおすこと。ターミナルからやり直すには</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
-<span class="bu">cd</span> git
-<span class="fu">rm</span> -rf test
-<span class="fu">mkdir</span> test
-<span class="bu">cd</span> test</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="bu">cd</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="bu">cd</span> git</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="fu">rm</span> -rf test</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="fu">mkdir</span> test</a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="bu">cd</span> test</a></code></pre></div>
 <p>とすれば良い。</p>
 <p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。そして、このディレクトリをVSCodeで開こう。左下の「ここに入力して検索」に「vscode」と入力すると、候補として「Visual Studio Code」が表示されるので選ぶ。なお、初回起動時に言語パックをインストールするか聞かれる場合がある。その場合はインストールして再起動すること。VSCodeが起動したら「ファイル」メニューから「フォルダーを開く」を選び、先ほど作成したディレクトリを選ぼう。フォルダーを開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
-<div class="figure">
-<img src="fig/vscode_newfile.png" alt="fig" />
-<p class="caption">fig</p>
-</div>
+<figure>
+<img src="fig/vscode_newfile.png" alt="fig" /><figcaption>fig</figcaption>
+</figure>
 <p><code>README.md</code>ファイルが開かれたら、</p>
-<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb8-1" title="1"><span class="fu"># Test</span></a></code></pre></div>
 <p>とだけ入力し、保存しよう。改行を入れるのを忘れないこと。この際、右下に「CRLF」と表示されている場合は、そこをクリックして「改行コードを選択」画面を出し、「LF」を選ぶこと。</p>
 <p>これで、以下のようなディレクトリ構成になったはずだ。</p>
-<pre class="txt"><code>git
-└── test
-    └── README.md</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb9-1" title="1">git</a>
+<a class="sourceLine" id="cb9-2" title="2">└── test</a>
+<a class="sourceLine" id="cb9-3" title="3">    └── README.md</a></code></pre></div>
 <p>この状態でターミナルに戻り、リポジトリとして初期化しよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> init</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="fu">git</span> init</a></code></pre></div>
 <p>すると、<code>.git</code>というディレクトリが作成され、<code>test</code>ディレクトリがリポジトリとして初期化される。以下を実行せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">ls</span> -la</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1"><span class="fu">ls</span> -la</a></code></pre></div>
 <p><code>README.md</code>に加え、<code>.git</code>というディレクトリが作成されたことがわかるはずだ。</p>
 <p><code>git init</code>した直後は、「現在のディレクトリ<code>test</code>をGitで管理することは決まったが、まだGitはどのファイルも管理していない」、すなわち歴史が全く無い状態になる。</p>
 <p>この状態を確認してみよう。以下を実行せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
 <p>以下のような表示が得られるはずだ。</p>
-<pre class="txt"><code>On branch main
-
-No commits yet
-
-Untracked files:
-  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
-        README.md
-
-nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb13-1" title="1">On branch main</a>
+<a class="sourceLine" id="cb13-2" title="2"></a>
+<a class="sourceLine" id="cb13-3" title="3">No commits yet</a>
+<a class="sourceLine" id="cb13-4" title="4"></a>
+<a class="sourceLine" id="cb13-5" title="5">Untracked files:</a>
+<a class="sourceLine" id="cb13-6" title="6">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</a>
+<a class="sourceLine" id="cb13-7" title="7">        README.md</a>
+<a class="sourceLine" id="cb13-8" title="8"></a>
+<a class="sourceLine" id="cb13-9" title="9">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</a></code></pre></div>
 <p>ここには、</p>
 <ul>
 <li>まだ何もコミットがなく(No commits yet)</li>
 <li><code>README.md</code>という管理されていないファイルがあるので(Untracked files)</li>
-<li>もし管理したければ<code>git add</code>してね(use &quot;git add&quot; to track)</li>
+<li>もし管理したければ<code>git add</code>してね(use “git add” to track)</li>
 </ul>
 <p>と書いてある。</p>
 <p>状態を見るのにいちいちこんな長いメッセージを見せられても困るので、<code>-s</code>オプションをつけて見よう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> status -s</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1"><span class="fu">git</span> status -s</a></code></pre></div>
 <p>こんな表示がされたはずだ。</p>
-<pre class="txt"><code>?? README.md</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb15-1" title="1">?? README.md</a></code></pre></div>
 <p><code>??</code>と、<code>?</code>が二つ表示された。<code>git status -s</code>は、ファイルの状態を二つの文字であらわす。それぞれ右がワーキングツリー、左がインデックスの状態を表している。今回のケースはどちらも<code>?</code>なので、ワーキングツリーにもインデックスにも無い、すなわちGitの管理下に無い(Untracked)という意味だ。</p>
 <p>さて、いちいち<code>git status -s</code>と入力するのは面倒なので、最初に<code>git status -s</code>に<code>git st</code>という別名をつけておいた。以下を実行せよ。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" title="1"><span class="fu">git</span> st</a></code></pre></div>
 <p>正しくエイリアスが設定されていれば、<code>git status -s</code>と入力したのと同じことになる。以後こちらを使うことにしよう。</p>
 <h3 id="step-3-インデックスへの追加git-add">Step 3: インデックスへの追加(<code>git add</code>)</h3>
 <p>さて、<code>Untracked</code>な状態のファイルをGitの管理下に置こう。そのために<code>git add</code>を実行する。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="fu">git</span> add README.md</a></code></pre></div>
 <p>現在の状態を見てみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1"><span class="fu">git</span> st</a></code></pre></div>
 <p>こんな表示になるはずだ。</p>
-<pre class="txt"><code>A  README.md</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb19-1" title="1">A  README.md</a></code></pre></div>
 <p>これは「<code>README.md</code>が追加されることが予約されたよ」という意味で、インデックスに<code>README.md</code>が追加された状態になっている。</p>
 <p>は、記念すべき最初のコミットをしよう。Gitはコミットをする時に、コミットメッセージが必要となる。最初のメッセージは慣例により<code>initial commit</code>とすることが多い。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb20-1" title="1"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></a></code></pre></div>
 <p>これによりコミットが作成され、<code>README.md</code>はGitの管理下に入った。</p>
 <p>状態を見てみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> st</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb21-1" title="1"><span class="fu">git</span> st</a></code></pre></div>
 <p>何も表示されないはずである。ロングバージョンのステータスも見てみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> status
-<span class="ex">On</span> branch main
-<span class="ex">nothing</span> to commit, working tree clean</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb22-1" title="1">$ <span class="fu">git</span> status</a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="ex">On</span> branch main</a>
+<a class="sourceLine" id="cb22-3" title="3"><span class="ex">nothing</span> to commit, working tree clean</a></code></pre></div>
 <p>自分がいまmainブランチにいて、何もコミットをする必要がなく、ワーキングツリーがきれい(clean)、つまりリポジトリが記憶している最新のコミットと一致していることを意味している。</p>
 <h3 id="step-4-ファイルの修正">Step 4: ファイルの修正</h3>
 <p>次に、ファイルを修正してみよう。VSCodeで開いている<code>README.md</code>に、行を付け加えて保存しよう。</p>
-<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span>
-
-Hello Git!</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb23-1" title="1"><span class="fu"># Test</span></a>
+<a class="sourceLine" id="cb23-2" title="2"></a>
+<a class="sourceLine" id="cb23-3" title="3">Hello Git!</a></code></pre></div>
 <p>「Hello Git!」の最後の改行を忘れないように。状態を見てみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> st
- <span class="ex">M</span> README.md</code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb24-1" title="1">$ <span class="fu">git</span> st</a>
+<a class="sourceLine" id="cb24-2" title="2"> <span class="ex">M</span> README.md</a></code></pre></div>
 <p>ファイル名の前に<code>M</code>という文字がついた。これは<code>Modified</code>の頭文字であり、かつ右側に表示されていることから「ワーキングツリーとインデックスに差があるよ」という意味だ。</p>
 <p>また、この状態で<code>git diff</code>を実行してみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> diff
-<span class="fu">diff</span> --git a/README.md b/README.md
-<span class="ex">index</span> 8ae0569..6f768d9 100644
-<span class="ex">---</span> a/README.md
-<span class="ex">+++</span> b/README.md
-<span class="ex">@@</span> -1 +1,3 @@
- <span class="co"># Test</span>
-<span class="ex">+</span>
-<span class="ex">+Hello</span> Git!</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb25-1" title="1">$ <span class="fu">git</span> diff</a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="fu">diff</span> --git a/README.md b/README.md</a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="ex">index</span> 8ae0569..6f768d9 100644</a>
+<a class="sourceLine" id="cb25-4" title="4"><span class="ex">---</span> a/README.md</a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="ex">+++</span> b/README.md</a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="ex">@@</span> -1 +1,3 @@</a>
+<a class="sourceLine" id="cb25-7" title="7"> <span class="co"># Test</span></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="ex">+</span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="ex">+Hello</span> Git!</a></code></pre></div>
 <p>行頭に<code>+</code>がついた箇所が追加された行である。</p>
 <p>この修正をリポジトリに登録するためにステージングしよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" title="1"><span class="fu">git</span> add README.md</a></code></pre></div>
 <p>また状態を見てみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> st
-<span class="ex">M</span>  README.md</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb27-1" title="1">$ <span class="fu">git</span> st</a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="ex">M</span>  README.md</a></code></pre></div>
 <p>先ほどは赤字で二桁目に<code>M</code>が表示されていたのが、今回は緑字で一桁目に<code>M</code>が表示されているはずである。これは、インデックスとワーキングツリーは一致しており(二桁目に表示がない)、インデックスとリポジトリに差がある(一桁目に<code>M</code>が表示される)ということを意味している。</p>
 <p>この状態でコミットしよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;adds new line&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb28-1" title="1"><span class="fu">git</span> commit -m <span class="st">&quot;adds new line&quot;</span></a></code></pre></div>
 <p>修正がリポジトリに登録され、ワーキングツリーがきれい(clean)な状態となった。</p>
 <h3 id="step-5-自動ステージングgit-commit--a">Step 5: 自動ステージング(<code>git commit -a</code>)</h3>
 <p>Gitでは原則として</p>
@@ -202,99 +201,96 @@ Hello Git!</code></pre></div>
 <p>という作業を繰り返す。実際、多人数で開発する場合はこうして「きれいな歴史」を作る方が良いのだが、一人で開発している場合は<code>git add</code>によるステージングを省略しても良い。</p>
 <p><code>git add</code>を省略するには、コミットする時に<code>git commit -a</code>と、<code>-a</code>オプションをつける。すると、Git管理下にあり、かつ修正されたファイル全てを、ステージングを飛ばしてコミットする。その動作を確認しよう。</p>
 <p>まず、VSCodeでさらにファイルを修正しよう。README.mdに以下の行を付け加えよう。やはり最後の改行を忘れないように。</p>
-<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span>
-
-Hello Git!
-Bye Git!</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb29-1" title="1"><span class="fu"># Test</span></a>
+<a class="sourceLine" id="cb29-2" title="2"></a>
+<a class="sourceLine" id="cb29-3" title="3">Hello Git!</a>
+<a class="sourceLine" id="cb29-4" title="4">Bye Git!</a></code></pre></div>
 <p>この状態で、<code>git add</code>せずに<code>git commit</code>しようとすると、「何をコミットするか指定が無いよ(インデックスに何も無いよ)」と怒られる。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> commit -m <span class="st">&quot;modifies README.md&quot;</span>
-<span class="ex">On</span> branch main
-<span class="ex">Changes</span> not staged for commit:
-  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed<span class="kw">)</span>
-  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore &lt;file&gt;...&quot;</span> to discard changes in working directory<span class="kw">)</span>
-        <span class="ex">modified</span>:   README.md
-
-<span class="ex">no</span> changes added to commit (use <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb30-1" title="1">$ <span class="fu">git</span> commit -m <span class="st">&quot;modifies README.md&quot;</span></a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="ex">On</span> branch main</a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="ex">Changes</span> not staged for commit:</a>
+<a class="sourceLine" id="cb30-4" title="4">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed<span class="kw">)</span></a>
+<a class="sourceLine" id="cb30-5" title="5">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git restore &lt;file&gt;...&quot;</span> to discard changes in working directory<span class="kw">)</span></a>
+<a class="sourceLine" id="cb30-6" title="6">        <span class="ex">modified</span>:   README.md</a>
+<a class="sourceLine" id="cb30-7" title="7"></a>
+<a class="sourceLine" id="cb30-8" title="8"><span class="ex">no</span> changes added to commit (use <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span>)</a></code></pre></div>
 <p>上記メッセージには、まず<code>git add</code>するか、<code>git commit -a</code>しろとあるので、ここでは後者を実行しよう。オプションは<code>-m</code>とまとめて<code>-am</code>とする。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -am <span class="st">&quot;modifies README.md&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb31-1" title="1"><span class="fu">git</span> commit -am <span class="st">&quot;modifies README.md&quot;</span></a></code></pre></div>
 <p>以後、慣れるまでは場合は<code>git commit -am</code>を使うことでステージングを省略しても良い。</p>
 <h3 id="step-6-歴史の確認git-log">Step 6: 歴史の確認(<code>git log</code>)</h3>
 <p>これまでの歴史を確認して見よう。上記の通りに作業して来たなら、3つのコミットが作成されたはずだ。<code>git log</code>で歴史を振り返ってみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log
-<span class="ex">commit</span> be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -<span class="op">&gt;</span> main)
-<span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span>
-<span class="ex">Date</span>:   Mon Aug 23 23:32:48 2021 +0900
-
-    <span class="ex">modifies</span> README.md
-
-<span class="ex">commit</span> dd14099193d5ca080e37674ae474f558457d0cb7
-<span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span>
-<span class="ex">Date</span>:   Mon Aug 23 23:31:01 2021 +0900
-
-    <span class="ex">adds</span> new line
-
-<span class="ex">commit</span> 02b8501966eb17df1e2d79c7a33e61feadd678cf
-<span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span>
-<span class="ex">Date</span>:   Mon Aug 23 23:29:45 2021 +0900
-
-    <span class="ex">initial</span> commit</code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb32-1" title="1">$ <span class="fu">git</span> log</a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="ex">commit</span> be7533fe7e4f565342bc86c1e8f0f2a9f3c284ae (HEAD -<span class="op">&gt;</span> main)</a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="ex">Date</span>:   Mon Aug 23 23:32:48 2021 +0900</a>
+<a class="sourceLine" id="cb32-5" title="5"></a>
+<a class="sourceLine" id="cb32-6" title="6">    <span class="ex">modifies</span> README.md</a>
+<a class="sourceLine" id="cb32-7" title="7"></a>
+<a class="sourceLine" id="cb32-8" title="8"><span class="ex">commit</span> dd14099193d5ca080e37674ae474f558457d0cb7</a>
+<a class="sourceLine" id="cb32-9" title="9"><span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb32-10" title="10"><span class="ex">Date</span>:   Mon Aug 23 23:31:01 2021 +0900</a>
+<a class="sourceLine" id="cb32-11" title="11"></a>
+<a class="sourceLine" id="cb32-12" title="12">    <span class="ex">adds</span> new line</a>
+<a class="sourceLine" id="cb32-13" title="13"></a>
+<a class="sourceLine" id="cb32-14" title="14"><span class="ex">commit</span> 02b8501966eb17df1e2d79c7a33e61feadd678cf</a>
+<a class="sourceLine" id="cb32-15" title="15"><span class="ex">Author</span>: H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb32-16" title="16"><span class="ex">Date</span>:   Mon Aug 23 23:29:45 2021 +0900</a>
+<a class="sourceLine" id="cb32-17" title="17"></a>
+<a class="sourceLine" id="cb32-18" title="18">    <span class="ex">initial</span> commit</a></code></pre></div>
 <p>いつ、誰が、どのコミットを作ったかが表示される。それぞれのコミットハッシュは異なるものになっているはずだ。</p>
 <p>デフォルトの表示では見づらいので、一つのコミットを一行で表示しても良い。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
-<span class="ex">be7533f</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">modifies</span> README.md
-<span class="ex">dd14099</span> adds new line
-<span class="ex">02b8501</span> initial commit</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb33-1" title="1">$ <span class="fu">git</span> log --oneline</a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="ex">be7533f</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">modifies</span> README.md</a>
+<a class="sourceLine" id="cb33-3" title="3"><span class="ex">dd14099</span> adds new line</a>
+<a class="sourceLine" id="cb33-4" title="4"><span class="ex">02b8501</span> initial commit</a></code></pre></div>
 <p>個人的にはこちらの方が見やすいので、<code>l</code>を<code>log --oneline</code>のエイリアスにしてしまっても良いと思う。もしそうしたい場合は、</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> config --global alias.l <span class="st">&quot;log --oneline&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb34-1" title="1"><span class="fu">git</span> config --global alias.l <span class="st">&quot;log --oneline&quot;</span></a></code></pre></div>
 <p>を実行せよ。以後、</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> l</code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb35-1" title="1"><span class="fu">git</span> l</a></code></pre></div>
 <p>で、コンパクトなログを見ることができる。</p>
 <h3 id="step-7-vscodeからの操作">Step 7: VSCodeからの操作</h3>
 <p>Gitは、VSCodeからも操作することができる。今、<code>README.md</code>を開いているVSCodeで何か修正して、保存してみよう。例えば以下のように行を追加する。</p>
-<div class="sourceCode"><pre class="sourceCode md"><code class="sourceCode markdown"><span class="fu"># Test</span>
-
-Hello git
-Bye git
-Git from VSCode</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb36-1" title="1"><span class="fu"># Test</span></a>
+<a class="sourceLine" id="cb36-2" title="2"></a>
+<a class="sourceLine" id="cb36-3" title="3">Hello git</a>
+<a class="sourceLine" id="cb36-4" title="4">Bye git</a>
+<a class="sourceLine" id="cb36-5" title="5">Git from VSCode</a></code></pre></div>
 <p>修正を保存した状態で左を見ると、「ソース管理」アイコンに「1」という数字が表示されているはずだ。これは「Gitで管理されているファイルのうち、一つのファイルが修正されているよ」という意味だ。</p>
-<div class="figure">
-<img src="fig/vscode_giticon.png" alt="vscode_giticon" />
-<p class="caption">vscode_giticon</p>
-</div>
+<figure>
+<img src="fig/vscode_giticon.png" alt="vscode_giticon" /><figcaption>vscode_giticon</figcaption>
+</figure>
 <p>この「ソース管理アイコン」をクリックしよう。</p>
-<div class="figure">
-<img src="fig/vscode_add.png" alt="vscode_add" />
-<p class="caption">vscode_add</p>
-</div>
+<figure>
+<img src="fig/vscode_add.png" alt="vscode_add" /><figcaption>vscode_add</figcaption>
+</figure>
 <p>すると、ソース管理ウィンドウが開き、「変更」の下に「README.md」がある。うまく表示されない場合はエクスプローラーから「エクスプローラーを最新表示する(Refresh)」をクリックし、最新表示としよう。</p>
 <p>そのファイル名の右にある「+」マークをクリックしよう。README.mdが「変更」から「ステージング済みの変更」に移動したはずだ。</p>
 <p>これはGit Bashで</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> add README.md</code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb37-1" title="1"><span class="fu">git</span> add README.md</a></code></pre></div>
 <p>を実行したことに対応する。</p>
 <p>この状態で「メッセージ」のところにコミットメッセージを書いて、上の「チェックマーク」をクリックすると、コミットできる。例えばメッセージとして「commit from VSCode」と書いてコミットしてみよう。</p>
-<div class="figure">
-<img src="fig/vscode_commit.png" alt="vscode_add" />
-<p class="caption">vscode_add</p>
-</div>
+<figure>
+<img src="fig/vscode_commit.png" alt="vscode_add" /><figcaption>vscode_add</figcaption>
+</figure>
 <p>これでコミットができた。これは、Git Bashで</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> commit -m <span class="st">&quot;commit from VSCode&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb38-1" title="1"><span class="fu">git</span> commit -m <span class="st">&quot;commit from VSCode&quot;</span></a></code></pre></div>
 <p>を実行したことに対応する。ちゃんとコミットされたかどうか、ターミナルから確認してみよう。</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">$ <span class="fu">git</span> log --oneline
-<span class="ex">0c18b48</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">commit</span> from VSCode
-<span class="ex">be7533f</span> modifies README.md
-<span class="ex">dd14099</span> adds new line
-<span class="ex">02b8501</span> initial commit</code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb39-1" title="1">$ <span class="fu">git</span> log --oneline</a>
+<a class="sourceLine" id="cb39-2" title="2"><span class="ex">0c18b48</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">commit</span> from VSCode</a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="ex">be7533f</span> modifies README.md</a>
+<a class="sourceLine" id="cb39-4" title="4"><span class="ex">dd14099</span> adds new line</a>
+<a class="sourceLine" id="cb39-5" title="5"><span class="ex">02b8501</span> initial commit</a></code></pre></div>
 <p>VSCodeから作ったコミットが反映されていることがわかる。</p>
 <p>基本的にVSCodeからGitの全ての操作を行うことができるが、当面の間はコマンドラインから実行した方が良い。慣れてきたらVSCodeその他のGUIツールを使うと良いだろう。</p>
 <h3 id="レポート課題">レポート課題</h3>
 <p>上記全ての操作を行い、最後に</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">git</span> log --oneline</code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb40-1" title="1"><span class="fu">git</span> log --oneline</a></code></pre></div>
 <p>を実行した結果をレポートとして提出せよ。</p>
-<h2 id="余談データベースふっとばしスペシャリスト">余談：データベース&quot;ふっとばし&quot;スペシャリスト</h2>
+<h2 id="余談データベースふっとばしスペシャリスト">余談：データベース“ふっとばし”スペシャリスト</h2>
 <p>誰かが会社に甚大な被害をもたらす大きなミスをしたとしよう。そのリカバリ作業のため、多くの人が残業を余儀なくされた状況で、ミスをした本人が「先に帰ります」と家に帰ったらどう思うだろうか？「非常識だ」と思う人が多いのではないだろうか？しかし、実際大きなミスをした人がリカバリ作業からすぐに離脱し、それを誰も咎めなかったケースがある。GitLabのデータベース障害対応だ。</p>
 <p>GitLabは、GitHubと同様にGitのリポジトリをホスティングするサービスを運営している会社である。日本時間で2017年2月1日、そのGitLabがサービスを停止し、緊急メンテナンスに入る。原因は人為的なミスによるデータベースの喪失であった。GitLabのデータベースはプライマリ(本番)とセカンダリ(待機系)の二つを持っており、二つが同期する仕組みとなっていた。しかし当日、スパムユーザからの攻撃をうけ、データベースが過負荷状態になり、同期がうまくいかなくなっていた。データベースを管理していたエンジニアはこのトラブルに長時間対応し、疲れていたようだ。現地時間で23時、彼は不要なデータを削除してから再度同期しようとして、セカンダリデータベースのディレクトリを削除する。しかし、その数秒後、彼は操作したのがバックアップのセカンダリではなく、プライマリのデータであったことに気づく。すぐに削除を停止したが時すでに遅く、ほとんどのデータは失われてしまった。GitLabはこういう時のためにデータベースをバックアップするコマンドを定期的に実行する仕組みを導入していたが、バージョン違いによるエラーが発生しており、しばらく前からバックアップに失敗していることに気づかなかった。その他のいくつかのバックアップも機能していなかったことが判明し、バックアップはたまたま事故の6時間前にとられたスナップショットのみであった。この頼みの綱のスナップショットから復旧作業が始まったが、この時、データベースをふっとばしたエンジニアは「自分はもうsudoコマンドを実行しない方が良いだろう」と、復旧作業を別の人に依頼。そして事故から1日後、GitLabは復旧作業を完了し、全てのサービスを再開した。</p>
 <p>ここで、データベースをふっとばした張本人が、早々に復旧作業から離脱していることに注意して欲しい。私はこれは正しい判断だったと思う。自分が会社に巨額の損失を与えるような失敗をしてしまったことを想像してみよう。「自分の責任だから自分で挽回しよう」とか「ミスをした贖罪として寝ずに仕事をしよう」と考えてしまう人が多いのではないだろうか？しかし、すでに長時間作業をして疲れており、大きなミスをして動揺している状態で復旧作業に参加しても、また大きなミスをしてしまう可能性が高い。「頼みの綱」のスナップショットを失ったら、GitLabはサービスを再開できなくなってしまう。それなら復旧作業は信頼できる同僚にまかせて、自分は休んでから別の作業で復帰したほうが良い。GitLabは事故の詳細を(人為ミスであることも含めて)すぐに公表し、リカバリ作業をYouTubeのストリーミング放映、Twitterでも進捗を報告、事故の詳細も隠さずにリアルタイムに公表していった。筆者もリアルタイムで復旧作業のストリーミング映像を見たが、エンジニアが淡々と作業しており、そこに悲壮感などはなかった。GitLabが復旧を完了し、サービス再開を告げたツイートには、「よくやった」「事故対応の透明性が素晴らしい」など多くの賛辞が寄せられた。このように、ミスや問題を報告しやすい雰囲気を「心理安全性が高い」と言う。ミスをした人が先に帰っても問題視されず、自社が犯したミスを(バックアップが動作していなかったことまで含めて)包み隠さず公開したGitLabは、間違いなく心理安全性が高い会社と言えよう。</p>
-<p>なお、この事故のあとしばらくの間、データベースをふっとばしたエンジニアはGitLabの自分のページで「データベース&quot;ふっとばし&quot;スペシャリスト (Database &quot;removal&quot; specialist)」と名乗っていた。</p>
+<p>なお、この事故のあとしばらくの間、データベースをふっとばしたエンジニアはGitLabの自分のページで「データベース“ふっとばし”スペシャリスト (Database “removal” specialist)」と名乗っていた。</p>
 <ul>
 <li><a href="https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/">GitLab.com database incident</a></li>
 <li><a href="https://www.publickey1.jp/blog/17/gitlabcom56.html">GitLab.comが操作ミスで本番データベース喪失。5つあったはずのバックアップ手段は役立たず、頼みの綱は6時間前に偶然取ったスナップショット</a> 2021年8月20日閲覧</li>
