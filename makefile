@@ -28,8 +28,8 @@ index.html: index.md
 copy-pdf: $(ASSIGNMENT)
 	cp practice_basic/assignment.pdf assignment01.pdf
 	cp practice_advanced/assignment.pdf assignment02.pdf
-	cp practice_github/assignment.pdf assignment03.pdf
-	cp practice_github2/assignment.pdf assignment04.pdf
+	cp practice_github_basic/assignment.pdf assignment03.pdf
+	cp practice_github_advanced/assignment.pdf assignment04.pdf
 
 clean:
 	rm -f $(TARGET) index.html
