@@ -19,17 +19,21 @@
 ```sh
 cd
 mkdir github
+cd github
 ```
+
+プロンプトのカレントディレクトリ表示が`/z/github/`となっていることを確認せよ。
 
 以下の演習は、全てのこの`github`ディレクトリ以下で作業する。
 
 次にサンプル用のリポジトリをクローンせよ。
 
 ```sh
-cd github
 git clone https://github.com/appi-github/amend-sample.git
 cd amend-sample
 ```
+
+なお、`git clone`実行時にGitHubへのアクセス権を求められたら、URLの入力を間違えている。処理を中断し、もう一度正しいURLを入力せよ。
 
 ### Step 2: 歴史の確認
 
@@ -137,7 +141,9 @@ cat poetry.txt
 git merge knock
 ```
 
-衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。その後、
+衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。VS Codeの「フォルダーを開く」でこのディレクトリ(`/z/github/merge-sample`)を開き、その上で`poetry.txt`を開いて修正せよ。
+
+その後、
 
 ```sh
 git add poetry.txt
@@ -297,8 +303,20 @@ cd rebase-conflict-sample
 `origin/branch`から`branch`を作成せよ。
 
 ```sh
+git switch branch
+```
+
+プロンプトのカレントブランチ表示が`branch`となっていることを確認すること。
+
+本来、`git switch branch`というコマンドは、すでに存在している`branch`というブランチをカレントブランチにする、という命令だが、Gitはもし`branch`が存在せず、`origin/branch`が存在する場合、自動的に`origin/branch`から`branch`を作成し、`branch`をカレントブランチとする。
+
+明示的に`origin/branch`から`branch`を作成し、`branch`をカレントブランチとするコマンドは
+
+```sh
 git switch -c branch origin/branch
 ```
+
+であり、先程の`git switch branch`はその省略形になっている。
 
 ### Step 3: 歴史の確認
 
@@ -328,9 +346,32 @@ git status
 
 ### Step 6: 衝突の解決
 
-VSCodeで衝突状態にあるファイル(`text1.txt`)を修正し、衝突を解決せよ。
+VSCodeで衝突状態にあるファイル(`text1.txt`)を修正し、衝突を解決せよ。VS Codeの「フォルダーを開く」から`/z/github/rebase-conflict-sample`を開き、その上で`text1.txt`を開くと衝突箇所が表示されている。このような表示になっているはずだ。
 
-`text1.txt`を開くと衝突箇所が表示されているので、`Accept Both Changes`をクリックするだけで良い。
+```txt
+Text1:
+<<<<<<< HEAD
+The way to get started is to quit talking and begin doing.
+It's kind of fun to do the impossible.
+The flower that blooms in adversity is the rarest and most beautiful of all.
+=======
+If you can dream it, you can do it.
+>>>>>>> 8f1d6d2 (f2)
+```
+
+この`<<<<<<< HEAD`や`=======`、`>>>>>>> 8f1d6d2 (f2)`を削除して、以下のような文章を完成させよう。
+
+```txt
+Text1:
+The way to get started is to quit talking and begin doing.
+It's kind of fun to do the impossible.
+The flower that blooms in adversity is the rarest and most beautiful of all.
+If you can dream it, you can do it.
+```
+
+もし、「Accept Current Change | Accept Incoming Change | Accept Both Changes | Compare Changes」という表示がされていた場合は、「Accept Both Changes」をクリックすると自動的に両方の修正を取り込むことができる。
+
+修正が終わったらファイルを保存すること。
 
 ### Step 7: 解決をGitに伝える
 
@@ -392,8 +433,18 @@ cd bisect-sample
 `origin/root`から`root`を作成し、カレントブランチを`root`にせよ。
 
 ```sh
+git switch root
+```
+
+カレントブランチが`root`になっていることを確認すること。
+
+先に説明した通り、これは
+
+```sh
 git switch -c root origin/root
 ```
+
+と同じ意味となる。
 
 ### Step 4: バグっていないことを確認
 
@@ -454,6 +505,8 @@ git bisect bad
 git branch bug 先ほど見つけたコミットハッシュ
 ```
 
+なお、「先程見つけたコミットハッシュ」のところには、初めて問題が起きたコミットのコミットハッシュを入力するが、全ての桁を入力する必要はなく、冒頭の6〜7桁を入力すれば良い。
+
 これでバグが入ったコミットに印をつけることができた。二分探索モードを抜けよう。
 
 ```sh
@@ -462,7 +515,13 @@ git bisect reset
 
 ### Step 9: 自動チェックの確認
 
-いちいちバグの有無を人力で確認し、`git bisect good/bad`を入力するのは面倒だ。「成功/失敗」を判定するスクリプトを使って、二分探索を自動化しよう。そのようなスクリプト`test.sh`が用意されている。
+いちいちバグの有無を人力で確認し、`git bisect good/bad`を入力するのは面倒だ。「成功/失敗」を判定するスクリプトを使って、二分探索を自動化しよう。そのようなスクリプト`test.sh`が用意されている。`cat`で見てみよう。以下のコマンドを実行せよ。
+
+```sh
+cat test.sh
+```
+
+以下のような表示がされるはずだ(これをコマンドとして入力する必要はない)。
 
 ```sh
 #!/bin/bash
