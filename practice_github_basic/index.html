@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                <title>practice_github/README.md</title>
+                <title>practice_github_basic/README.md</title>
     <style type="text/css">
       p {
         padding-left: 1em;
@@ -286,16 +286,16 @@
 <h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
 <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。</p>
 <ul>
-<li><p>A班の場合 <a href="https://github.com/appi-github/pullreq_2021_a">https://github.com/appi-github/pullreq_2021_a</a></p></li>
-<li><p>B班の場合 <a href="https://github.com/appi-github/pullreq_2021_b">https://github.com/appi-github/pullreq_2021_b</a></p></li>
+<li><p>A班の場合 <a href="https://github.com/appi-github/pullreq_2022_a">https://github.com/appi-github/pullreq_2022_a</a></p></li>
+<li><p>B班の場合 <a href="https://github.com/appi-github/pullreq_2022_b">https://github.com/appi-github/pullreq_2022_b</a></p></li>
 </ul>
-<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2021_a</code>として説明するが、B班は適宜<code>pullreq_2021_b</code>に読み替えること。</p>
+<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2022_a</code>として説明するが、B班は適宜<code>pullreq_2022_b</code>に読み替えること。</p>
 <h3 id="step-2-リポジトリのクローン">Step 2: リポジトリのクローン</h3>
 <p>ブラウザのURLが<code>https://github.com/自分のアカウント/リポジトリ名</code>になったら、フォークが完了している。ローカルにクローンしよう。「Code」ボタンの「Clone」からリモートリポジトリをコピーできる。プロトコルがHTTPSではなくSSHになっていることを確認すること。</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb30-1" title="1"><span class="bu">cd</span></a>
 <a class="sourceLine" id="cb30-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb30-3" title="3"><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2021_a.git</a>
-<a class="sourceLine" id="cb30-4" title="4"><span class="bu">cd</span> pullreq_2021_a</a></code></pre></div>
+<a class="sourceLine" id="cb30-3" title="3"><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2022_a.git</a>
+<a class="sourceLine" id="cb30-4" title="4"><span class="bu">cd</span> pullreq_2022_a</a></code></pre></div>
 <h3 id="step-3-ブランチの作成-1">Step 3: ブランチの作成</h3>
 <p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>1234568</code>である時、以下のコマンドを実行せよ。</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb31-1" title="1"><span class="bu">echo</span> 12345678 <span class="kw">|</span> <span class="ex">shasum</span></a>

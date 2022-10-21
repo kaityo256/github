@@ -73,7 +73,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">git</span> config --global alias.st <span class="st">&quot;status -s&quot;</span></a></code></pre></div>
 <p>以上を実行後、ターミナルで<code>.gitconfig</code>を表示し、先ほど設定した内容が書き込まれていることを確認せよ。</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">cat</span> .gitconfig</a></code></pre></div>
-<p>以下のような表示になっていれば成功である。</p>
+<p>以下のような表示になっていれば成功である。なお、環境や操作により順序が入れ替わっている場合があるが、同じ内容が記述されていれば問題ない。</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb5-1" title="1">[user]</a>
 <a class="sourceLine" id="cb5-2" title="2">        name = 先ほど設定したユーザー名</a>
 <a class="sourceLine" id="cb5-3" title="3">        email = 先ほど設定したメールアドレス</a>
@@ -92,7 +92,7 @@
 <a class="sourceLine" id="cb6-3" title="3"><span class="bu">cd</span> git</a>
 <a class="sourceLine" id="cb6-4" title="4"><span class="fu">mkdir</span> test</a>
 <a class="sourceLine" id="cb6-5" title="5"><span class="bu">cd</span> test</a></code></pre></div>
-<p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。</p>
+<p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。プロンプトのカレントディレクトリの表示に<code>z/git/test</code>と黄色く表示されていることを確認せよ。以後、<code>cd</code>でディレクトリを移動したら、プロンプトからカレントディレクトリを確認する癖をつけておくこと。</p>
 <p>なお、以下の操作でどうにもならなくなったら、<code>test</code>ディレクトリを全て消して最初からやりなおすこと。ターミナルからやり直すには</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="bu">cd</span></a>
 <a class="sourceLine" id="cb7-2" title="2"><span class="bu">cd</span> git</a>
@@ -100,7 +100,7 @@
 <a class="sourceLine" id="cb7-4" title="4"><span class="fu">mkdir</span> test</a>
 <a class="sourceLine" id="cb7-5" title="5"><span class="bu">cd</span> test</a></code></pre></div>
 <p>とすれば良い。</p>
-<p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。そして、このディレクトリをVSCodeで開こう。左下の「ここに入力して検索」に「vscode」と入力すると、候補として「Visual Studio Code」が表示されるので選ぶ。なお、初回起動時に言語パックをインストールするか聞かれる場合がある。その場合はインストールして再起動すること。VSCodeが起動したら「ファイル」メニューから「フォルダーを開く」を選び、先ほど作成したディレクトリを選ぼう。フォルダーを開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
+<p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。そして、このディレクトリをVSCodeで開こう。左下の「ここに入力して検索」に「vscode」と入力すると、候補として「Visual Studio Code」が表示されるので選ぶ。なお、初回起動時に言語パックをインストールするか聞かれる場合がある。その場合はインストールして再起動すること。VSCodeが起動したら「ファイル」メニューから「フォルダーを開く(もしくは Open Folder…)」を選び、先ほど作成したディレクトリを選ぼう。フォルダーを開いたら、左のエクスローラーの「TEST」の右にある「新しいファイル」ボタンを押して、<code>README.md</code>と入力せよ。<code>README</code>まで大文字、<code>md</code>が小文字である。</p>
 <figure>
 <img src="fig/vscode_newfile.png" alt="fig" /><figcaption>fig</figcaption>
 </figure>
@@ -243,7 +243,7 @@
 <a class="sourceLine" id="cb33-2" title="2"><span class="ex">be7533f</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">modifies</span> README.md</a>
 <a class="sourceLine" id="cb33-3" title="3"><span class="ex">dd14099</span> adds new line</a>
 <a class="sourceLine" id="cb33-4" title="4"><span class="ex">02b8501</span> initial commit</a></code></pre></div>
-<p>個人的にはこちらの方が見やすいので、<code>l</code>を<code>log --oneline</code>のエイリアスにしてしまっても良いと思う。もしそうしたい場合は、</p>
+<p>個人的にはこちらの方が見やすいので、<code>l</code>(←小文字のLであり、数字の1ではないことに注意)を<code>log --oneline</code>のエイリアスにしてしまっても良いと思う。もしそうしたい場合は、</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb34-1" title="1"><span class="fu">git</span> config --global alias.l <span class="st">&quot;log --oneline&quot;</span></a></code></pre></div>
 <p>を実行せよ。以後、</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb35-1" title="1"><span class="fu">git</span> l</a></code></pre></div>

@@ -166,9 +166,11 @@
 </ul>
 <p>ということを表している。繰り返しになるが、Gitの出力するメッセージを面倒くさがらずにちゃんと理解しようとするのがGitの理解の早道だ。</p>
 <h3 id="修正をコミット">修正をコミット</h3>
-<p>次に、<code>README.md</code>を修正し、その修正をコミットしよう。Vimで修正してもよいが、VS Codeで編集しよう。Git Bashでカレントディレクトリが<code>project</code>である状態から、</p>
+<p>次に、<code>README.md</code>を修正し、その修正をコミットしよう。Vimで修正してもよいが、VS Codeで編集しよう。VS Codeの「ファイル」メニューの「フォルダーを開く」から、いまGit Bashで見ているカレントディレクトリを開こう。例えば上記の例なら「PC」→「Windows (C:)」→「ユーザー」→「自分のユーザ名(例えばwatanabe)」と進み、「project」を選択した状態で「フォルダーの選択」を選べばよい。</p>
+<p>もしくは、Git Bashでカレントディレクトリが<code>project</code>である状態から、</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="ex">code</span> .</a></code></pre></div>
-<p>を実行すると、このディレクトリをVS Codeで開くことができる。左のエクスプローラーから<code>README.md</code>を選び、以下のように行を追加する。</p>
+<p>を実行すると、このディレクトリをVS Codeで開くことができる(環境によってはできないこともあるので、その場合は「ファイル」メニューから「フォルダーを開く」で開くこと)。</p>
+<p>左のエクスプローラーから<code>README.md</code>を選び、以下のように行を追加する。</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1"><span class="ex">Hello</span></a>
 <a class="sourceLine" id="cb18-2" title="2"><span class="ex">Update</span></a></code></pre></div>
 <p>修正した状態で<code>git status</code>を実行してみよう。</p>
