@@ -294,7 +294,7 @@ git log --oneline
 ```sh
 cd
 cd github
-git clone https://github.com/appi-github/rebase-conflict-sample
+git clone https://github.com/appi-github/rebase-conflict-sample.git
 cd rebase-conflict-sample
 ```
 
