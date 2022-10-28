@@ -26,7 +26,7 @@
 
 「Learn Git and GitHub without any code!」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。
 
-### Step 2: SSH公開鍵の確認と作成
+### Step 2: SSH公開鍵の確認
 
 SSH公開鍵を作成する。Git Bashを起動せよ。
 
@@ -34,13 +34,15 @@ SSH公開鍵を作成する。Git Bashを起動せよ。
 ls .ssh
 ```
 
-を実行し、`id_rsa.pub`と`id_rsa`が表示された場合は既に公開鍵が作られている。これらの鍵を自分で作った記憶があり、かつ秘密鍵にパスフレーズが設定されているのならこのステップをスキップして良い。パスフレーズの確認は以下のコマンドでできる。
+を実行し、`id_rsa.pub`と`id_rsa`が表示された場合は既に公開鍵が作られている。これらの鍵を自分で作った記憶があり、かつ秘密鍵にパスフレーズが設定されているのなら次のStep 3をスキップして良い。パスフレーズの確認は以下のコマンドでできる。
 
 ```sh
 ssh-keygen -yf .ssh/id_rsa
 ```
 
-実行後、パスフレーズが聞かれ、入力したら`ssh-rsa AAAAB...`という長い文字列が表示されたらそのまま使ってよいので、次のステップに進む。もしパスフレーズを入力せずに文字列が表示されたり、パスフレーズを忘れてしまった場合は以下の手順で作り直す。
+実行後、パスフレーズが聞かれ、入力したら`ssh-rsa AAAAB...`という長い文字列が表示されたらそのまま使ってよいので、次のステップに進む。もしパスフレーズを入力せずに文字列が表示されたり、パスフレーズを忘れてしまった場合はStep 3の手順で作り直す。
+
+### Step 3: SSH公開鍵の作成
 
 SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bashのホームディレクトリで以下のコマンドを実行せよ。
 
@@ -53,7 +55,7 @@ Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 最初に、秘密鍵を保存するためのファイル名を聞かれる。`/z/.ssh/id_rsa`と入力してエンターキーを押す。
+* (1) 最初に、秘密鍵を保存するためのファイル名を聞かれる。通常ならそのままエンターキーを入力すれば良いのだが、PC室のネットワークのドライブの設定の関係から`/z//`とスラッシュが二つ入っているのを修正する必要がある。`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
 * (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
 * (3) 先ほどの入力したものと同じパスフレーズを入力する。
 
@@ -66,7 +68,7 @@ Your public key has been saved in /z/.ssh/id_rsa.pub
 
 といったメッセージが表示されたら成功である。`id_rsa`が秘密鍵、`id_rsa.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
-### Step 3: SSH公開鍵の登録
+### Step 4: SSH公開鍵の登録
 
 GitHubに公開鍵を登録する。
 
@@ -83,7 +85,7 @@ cat .ssh/id_rsa.pub
 
 `This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.`というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。
 
-### Step 4: 鍵の登録の確認
+### Step 5: 鍵の登録の確認
 
 正しく鍵が登録されたか見てみよう。Git Bashで、以下を実行せよ。
 
@@ -101,7 +103,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 
 と表示されたら、鍵の登録に成功している。
 
-### Step 5: リポジトリの作成とクローン
+### Step 6: リポジトリの作成とクローン
 
 では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。
 
@@ -111,7 +113,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
     * Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここではtestとしておく。
     * Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
     * Public/Private: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
-    * Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」と「Choose a license」をチェックしよう。「Choose a license」をクリックすると選択肢が現れるが、ここでは「MIT License」を選んでおこう。
+    * Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」にチェックを入れ、「Choose a license」のプルダウンメニューから「MIT License」を選んでおこう。「Add .gitignore」は「None」のままで良い。
 * 以上の設定を終了したら「Create repository」ボタンを押す。
 * リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。
 
@@ -126,7 +128,7 @@ cd test
 
 先ほどURLをコピーしていたので、`git clone`まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。
 
-### Step 6: ローカルの修正とpush
+### Step 7: ローカルの修正とpush
 
 手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。
 
@@ -322,20 +324,21 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 ### Step 1: Projectの作成
 
-* GitHubの`test`リポジトリの上のタブから「Project」を選び、「Create a project」をクリックする。
-* 「Project board name」は「カンバン」と入力
-* 「Description 」も「カンバン」と入力
-* 「Project template」は「Automated Kanban」を選ぶ
+まずはBoard(Kanban)方式のプロジェクトを作成し、リポジトリに関連付けよう。以下の作業を実施せよ。
 
-以上の設定の後「Create project」を実行する。デフォルトで「To do (未完了)」「In progress (作業中)」「Done (完了)」の三つのカラムがある。「To do」にいくつか項目があるが、これは「カード」と呼ばれる。「カンバン」とは、「看板」のことで、トヨタの生産管理法「カンバン方式」に由来する。
+1. GitHubの`test`リポジトリの上のタブから「Project」を選び、「Add project」をクリックする。
+1. 「Go to you profile to create a new project」をクリック
+1. 「Welcome to project」画面が現れたら「Jump right in」ボタンをクリック
+1. 「Create your first GitHub project」画面で「New project」をクリック。
+1. 「Select a template」画面で「Board」を選び、「Create」ボタンを押す。
+1. Projectが作成されるが、名前が「ユーザ名’s untitled project」となっているので、「Kanban」に修正
+1. 「test」リポジトリに戻り、「Project」の「Add project」をクリック、先ほど作成した「Kanban」を選ぶ
 
-既に「To do」に3つカードがあるため、それぞれのカードの右上の「...」から「Archive」を選んで、三つとも片づけておこう。
+これにより「test」リポジトリに「Kanban」プロジェクトが関連付けられた。
 
 ### Step 2: Issueの作成とProjectへの関連付け
 
-上のタブから「Issues」をクリックし、「New Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。ラベルは先ほどと異なるもので試したいので「documentation」を選ぶ
-
-Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。
+上のタブから「Issues」をクリックし、「New Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。
 
 ```md
 - [ ] 修正1 (#1 に追加)
@@ -344,7 +347,9 @@ Issueのコメントには、他のissueを参照したり、チェックボッ�
 
 ここで「`#`」と数字の間には空白をいれず、「`#1`」の後には半角空白を入れるのをわすれないこと。また、`- [ ]`の間には半角空白を入れる。入力をしたら「Preview」タブを見て、チェックボックスができているか、別のissueにリンクされているか確認すること。
 
-このissueをprojectと関連付けよう。右の「Labels」の下にある「Projects」を開き、先ほど作った「カンバン」を選ぼう。
+ラベルは先ほどと異なるもので試したいので「documentation」を選ぶ。
+
+このissueをprojectと関連付けよう。右の「Labels」の下にある「Projects」を開き、先ほど作った「Kanban」を選ぼう。
 
 以上の準備が済んだら「Submit new issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。
 
@@ -356,9 +361,9 @@ Git Bashに戻り、ブランチを作成しよう。今回はラベルが`docum
 git switch -c doc/2/README
 ```
 
-ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの`test`リポジトリの「Projects」タブから「カンバン」を選ぶ。
+ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの`test`リポジトリの「Projects」タブから「Kanban」を選ぶ。
 
-すると、「To do」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「カンバン」で、状態が「In progress」になっていることがわかる。
+すると、「No Status」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「Kanban」で、状態が「In progress」になっていることがわかる。
 
 状態とブランチの関係はプロジェクトやチームによって異なるが、例えば「ブランチを作ったらIn progressにする」というルールにしておくと、逆に「In progressになっていれば、ブランチがあるはず」とわかって便利だ。
 
@@ -391,7 +396,7 @@ git merge doc/2/README
 
 ### Step 5: 修正のプッシュとカードの移動
 
-マージが終了したらブラウザで先ほどの「カンバン」の画面を見よう。まだカードは「In progress」にある。
+マージが終了したらブラウザで先ほどの「Kanban」の画面を見よう。まだカードは「In progress」にある。
 
 この状態でGit Bashから`git push`しよう。
 
@@ -403,7 +408,7 @@ git push
 
 ### レポート課題
 
-Projectの「カンバン」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。
+Projectの「Kanban」で、「READMEの修正」のカードが「Done」にある状態のスクリーンショットをレポートとして提出せよ。
 
 ## 発展課題: プルリクエストを作ってみる
 
