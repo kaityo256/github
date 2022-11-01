@@ -50,14 +50,14 @@ SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bash
 $ ssh-keygen
 Generating public/private rsa key pair.
 Enter file in which to save the key (/z//.ssh/id_rsa):  # (1)
-Created directory '/c/Users/watanabe/.ssh'.
+Created directory '/z/.ssh'.
 Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 最初に、秘密鍵を保存するためのファイル名を聞かれる。通常ならそのままエンターキーを入力すれば良いのだが、PC室のネットワークのドライブの設定の関係から`/z//`とスラッシュが二つ入っているのを修正する必要がある。`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
+* (1) 秘密鍵を保存する場所を入力する。`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
 * (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
-* (3) 先ほどの入力したものと同じパスフレーズを入力する。
+* (3) 先ほどの入力したものと同じパスフレーズを再度入力する。
 
 パスフレーズを二度入力した後、
 
