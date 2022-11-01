@@ -79,18 +79,18 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1">$ <span class="fu">ssh-keygen</span></a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="ex">Generating</span> public/private rsa key pair.</a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="ex">Enter</span> file in which to save the key (/z//.ssh/id_rsa)<span class="bu">:</span>  <span class="co"># (1)</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="ex">Created</span> directory <span class="st">&#39;/c/Users/watanabe/.ssh&#39;</span>.</a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="ex">Created</span> directory <span class="st">&#39;/z/.ssh&#39;</span>.</a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="ex">Enter</span> passphrase (empty for no passphrase)<span class="bu">:</span> <span class="co"># (2)</span></a>
 <a class="sourceLine" id="cb3-6" title="6"><span class="ex">Enter</span> same passphrase again:                <span class="co"># (3)</span></a></code></pre></div>
 <ul>
 <li><ol type="1">
-<li>最初に、秘密鍵を保存するためのファイル名を聞かれる。通常ならそのままエンターキーを入力すれば良いのだが、PC室のネットワークのドライブの設定の関係から<code>/z//</code>とスラッシュが二つ入っているのを修正する必要がある。<code>/z/.ssh/id_rsa</code>と入力してエンターキーを押すこと。</li>
+<li>秘密鍵を保存する場所を入力する。<code>/z/.ssh/id_rsa</code>と入力してエンターキーを押すこと。</li>
 </ol></li>
 <li><ol start="2" type="1">
 <li>ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、<strong>必ずパスフレーズを入力すること</strong>。ここではキーを入力しても画面には何も表示されないので注意。</li>
 </ol></li>
 <li><ol start="3" type="1">
-<li>先ほどの入力したものと同じパスフレーズを入力する。</li>
+<li>先ほどの入力したものと同じパスフレーズを再度入力する。</li>
 </ol></li>
 </ul>
 <p>パスフレーズを二度入力した後、</p>
