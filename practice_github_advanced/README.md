@@ -15,26 +15,29 @@ GitHubにログインした状態で、以下のサイトにアクセスせよ�
 
 [https://github.com/appi-github/pages-sample](https://github.com/appi-github/pages-sample)
 
-このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、`pages-sample`がforkされ、自分のアカウントのリポジトリとしてコピーされる。
+このサイトの右上に「Fork」というボタンがあるので、それを押す。すると「Create a new fork」という画面になるので設定はデフォルトのまま「Create Fork」ボタンを押す。すると、`pages-sample`がforkされ、自分のアカウントのリポジトリとしてコピーされる。
 
 ### Step 2: Pagesの設定
 
-GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。
+GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。自分のアカウントの`pages-sample`リポジトリで、以下の作業を実行せよ。
 
 * 上のタブの「Settings」を選ぶ。
-* 左のメニューの「Pages」を選ぶ。
-* 「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、`main`を選ぶ。
+* 左のメニューから「Pages」を選ぶ。
+* 「GitHub Pages」という画面になるので、「Source」は「Deploy from a branch」のまま、「Branch」が「None」となっているのでボタンをクリックし、`main`を選ぶ。
 * 「`/root`」というボタンが現れるので、クリックして「`/docs`」を選んで「Save」ボタンを押す。
 
-すると、
+そのまま数分待ってから、その画面をリロードしよう。
+
+準備ができていれば
 
 ```txt
-Your site is ready to be published at https://アカウント名.github.io/pages-sample/
+Your site is live at https://ユーザ名.github.io/pages-sample/
 ```
 
-という表示がされる。実際に公開するまでしばらくかかるため、数分まってからクリックしてアクセスしよう。もし「404」と表示されたら、またしばらく待ってからリロードすること。「MNIST Check」という画面が出たら成功だ。
+という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すと、GitHubのリポジトリをウェブサイトとして公開したサイトが表示される。
 
-先ほどの設定は、`main`ブランチにあるスナップショットの、`/docs`をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は`/docs`以下に`index.html`が置いてあるので、それが表示されている。
+
+先ほどの設定は、`main`ブランチにあるスナップショットの、`/docs`をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は`/docs`以下に`index.html`が置いてあるので、それが表示される。
 
 ### Step 3: 数字認識を確認
 
@@ -63,15 +66,19 @@ GitHubにログインした状態で、以下のサイトにアクセスせよ�
 先ほどと同様な手順で、GitHub Pagesを公開しよう。
 
 * 上のタブの「Settings」を選ぶ。
-* 左のメニューの「Pages」を選ぶ。
-* 「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、`main`を選ぶ。
+* 左のメニューから「Pages」を選ぶ。
+* 「GitHub Pages」という画面になるので、「Source」は「Deploy from a branch」のまま、「Branch」が「None」となっているのでボタンをクリックし、`main`を選ぶ。
 * 「`/root`」というボタンが現れるので、クリックして「`/docs`」を選んで「Save」ボタンを押す。
 
+そのまま数分待ってから、その画面をリロードしよう。
+
+準備ができていれば
+
 ```txt
-Your site is ready to be published at https://アカウント名.github.io/tyrano_sample/
+Your site is live at https://ユーザ名.github.io/tyrano-sample/
 ```
 
-という表示が現れるので、しばらく待ってからアクセスしてみよう。「走るか寝るかするメロス」という画面が表示されたら成功だ。
+という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すこと。「走るか寝るかするメロス」という画面が表示されたら成功だ。
 
 ### Step 3: リポジトリのクローン
 

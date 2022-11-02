@@ -56,19 +56,20 @@
 <h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
 <p>GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
 <p><a href="https://github.com/appi-github/pages-sample">https://github.com/appi-github/pages-sample</a></p>
-<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、<code>pages-sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
+<p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると「Create a new fork」という画面になるので設定はデフォルトのまま「Create Fork」ボタンを押す。すると、<code>pages-sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
 <h3 id="step-2-pagesの設定">Step 2: Pagesの設定</h3>
-<p>GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。</p>
+<p>GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。自分のアカウントの<code>pages-sample</code>リポジトリで、以下の作業を実行せよ。</p>
 <ul>
 <li>上のタブの「Settings」を選ぶ。</li>
-<li>左のメニューの「Pages」を選ぶ。</li>
-<li>「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、<code>main</code>を選ぶ。</li>
+<li>左のメニューから「Pages」を選ぶ。</li>
+<li>「GitHub Pages」という画面になるので、「Source」は「Deploy from a branch」のまま、「Branch」が「None」となっているのでボタンをクリックし、<code>main</code>を選ぶ。</li>
 <li>「<code>/root</code>」というボタンが現れるので、クリックして「<code>/docs</code>」を選んで「Save」ボタンを押す。</li>
 </ul>
-<p>すると、</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb1-1" title="1">Your site is ready to be published at https://アカウント名.github.io/pages-sample/</a></code></pre></div>
-<p>という表示がされる。実際に公開するまでしばらくかかるため、数分まってからクリックしてアクセスしよう。もし「404」と表示されたら、またしばらく待ってからリロードすること。「MNIST Check」という画面が出たら成功だ。</p>
-<p>先ほどの設定は、<code>main</code>ブランチにあるスナップショットの、<code>/docs</code>をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は<code>/docs</code>以下に<code>index.html</code>が置いてあるので、それが表示されている。</p>
+<p>そのまま数分待ってから、その画面をリロードしよう。</p>
+<p>準備ができていれば</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb1-1" title="1">Your site is live at https://ユーザ名.github.io/pages-sample/</a></code></pre></div>
+<p>という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すと、GitHubのリポジトリをウェブサイトとして公開したサイトが表示される。</p>
+<p>先ほどの設定は、<code>main</code>ブランチにあるスナップショットの、<code>/docs</code>をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は<code>/docs</code>以下に<code>index.html</code>が置いてあるので、それが表示される。</p>
 <h3 id="step-3-数字認識を確認">Step 3: 数字認識を確認</h3>
 <p>画面には二つの黒い領域がある。左の「Please draw here」とある方にマウスで数字を入力してみよ。右側の「Input Image」が更新され、「Your figure is … 1!」などというメッセージが表示されるはずだ。</p>
 <p>学習済みモデルは、28x28ピクセルの画像を学習しているため、入力された画像を、まずは28x28ピクセルに変換する必要がある。それが右側の「Input Image」である。この「Input Image」を学習済みニューラルネットワークに入力し、これが何の数字であるかを推定している。本来は前処理をして渡すのだが、それを省いているために認識精度がかなり低くなっているはずだ。いろいろ数字を入力し、どの数字の認識が悪いか試してみよ。</p>
@@ -84,12 +85,14 @@
 <p>先ほどと同様な手順で、GitHub Pagesを公開しよう。</p>
 <ul>
 <li>上のタブの「Settings」を選ぶ。</li>
-<li>左のメニューの「Pages」を選ぶ。</li>
-<li>「GitHub Pages」という画面になるので「Source」として「None」となっているボタンをクリックし、<code>main</code>を選ぶ。</li>
+<li>左のメニューから「Pages」を選ぶ。</li>
+<li>「GitHub Pages」という画面になるので、「Source」は「Deploy from a branch」のまま、「Branch」が「None」となっているのでボタンをクリックし、<code>main</code>を選ぶ。</li>
 <li>「<code>/root</code>」というボタンが現れるので、クリックして「<code>/docs</code>」を選んで「Save」ボタンを押す。</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb2-1" title="1">Your site is ready to be published at https://アカウント名.github.io/tyrano_sample/</a></code></pre></div>
-<p>という表示が現れるので、しばらく待ってからアクセスしてみよう。「走るか寝るかするメロス」という画面が表示されたら成功だ。</p>
+<p>そのまま数分待ってから、その画面をリロードしよう。</p>
+<p>準備ができていれば</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb2-1" title="1">Your site is live at https://ユーザ名.github.io/tyrano-sample/</a></code></pre></div>
+<p>という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すこと。「走るか寝るかするメロス」という画面が表示されたら成功だ。</p>
 <h3 id="step-3-リポジトリのクローン">Step 3: リポジトリのクローン</h3>
 <p>GitHubの自分のアカウントの<code>tyrano_sample</code>をクローンしよう。<a href="https://github.com/">https://github.com/</a>を開き、Repositoriesから「tyrano_sample」を選ぶ。「Code」ボタンの「Clone」から、リモートリポジトリのURLをコピーしよう。その後、Git Bashでクローンする。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="bu">cd</span></a>
