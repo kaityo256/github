@@ -97,8 +97,9 @@
 <p>GitHubの自分のアカウントの<code>tyrano_sample</code>をクローンしよう。<a href="https://github.com/">https://github.com/</a>を開き、Repositoriesから「tyrano_sample」を選ぶ。「Code」ボタンの「Clone」から、リモートリポジトリのURLをコピーしよう。その後、Git Bashでクローンする。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="bu">cd</span></a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="fu">git</span> clone git@github.com:アカウント名/tyrano_sample.git</a></code></pre></div>
-<p>クローンできたら、VS Codeを開き、「フォルダーを開く」から、先ほどクローンしたディレクトリ(<code>z/github/tyrano_sample</code>)を開く。</p>
+<a class="sourceLine" id="cb3-3" title="3"><span class="fu">git</span> clone git@github.com:アカウント名/tyrano_sample.git</a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="bu">cd</span> tyrano_sample</a></code></pre></div>
+<p>クローンできたら、VS Codeを開き、「フォルダーを開く」から、先ほどクローンしたディレクトリ(<code>/z/github/tyrano_sample</code>)を開く。</p>
 <h3 id="step-4-live-serverのインストール">Step 4: Live Serverのインストール</h3>
 <p>VS Codeの左の「拡張機能」マークをクリックするか、Ctrl+Shift+Xにより拡張機能を開き、「Live Server」を探してインストールする。インストールに成功すると、右下に「Go Live」という表示がされるはずだ。</p>
 <p>VS Codeのエクスプローラーから<code>docs/index.html</code>を開き、右下の「Go Live」をクリックする。ブラウザが開いて「走るか寝るかするメロス」がプレイできれば成功だ。URLは<code>http://127.0.0.1:5500/docs/index.html</code>となっているであろう。このタブをデバッグで使うので閉じないこと。</p>
@@ -136,12 +137,18 @@
 <p>その他のタグについては公式サイトの<a href="https://tyrano.jp/tag/">タグリファレンス</a>を参照のこと。</p>
 <h3 id="レポート課題-1">レポート課題</h3>
 <p>オリジナルのゲームを作成し、自分のリポジトリにプッシュしたのち、ブラウザで動作確認したらそのURLをレポートとして提出せよ。ローカルテスト用のURL(<code>http://127.0.0.1</code>)ではなく、<code>https://アカウント名.github.io/tyrano_sample</code>の方を提出すること。</p>
-<p><strong>注意：</strong></p>
+<p><strong>レポート提出についての注意：</strong></p>
 <ul>
-<li>公序良俗に反するような内容にしてはならない</li>
-<li>(たとえ友人であっても)特定個人を揶揄するような内容にしてはならない。有名人も題材としない</li>
-<li>画像を用いる場合は、ライセンスとして問題ないものを利用する(例えば<a href="https://www.pexels.com/ja-jp/">Pexels</a>の画像を利用するなど)。</li>
-<li>面白い作品は別の場所で紹介する可能性があるため、紹介されたくない場合はその旨をレポートに明記すること</li>
+<li>レポート提出前に必ず<code>https://アカウント名.github.io/tyrano_sample</code>のURLで動作確認を行うこと。</li>
+<li>最後に<code>git push</code>してから実際に反映されるまで数分かかる。</li>
+<li><code>git push</code>する前に、必ず<code>git status</code>を実行し、<code>git add</code>忘れ、<code>git commit</code>忘れを確認すること。画像がGitリポジトリに追加されていない場合、ローカルでは問題なく動作するが、リモートでは画像が表示されない。</li>
+</ul>
+<p><strong>ゲーム内容についての注意：</strong></p>
+<ul>
+<li>公序良俗に反するような内容にしてはならない。</li>
+<li>(たとえ友人であっても)特定個人を揶揄するような内容にしてはならない。有名人も題材としない。</li>
+<li>画像を用いる場合は、ライセンスとして問題ないものを利用する(例えば「<a href="https://www.irasutoya.com/">いらすとや</a>」や「<a href="https://www.pexels.com/ja-jp/">Pexels</a>」の画像を利用するなど)。</li>
+<li>面白い作品は別の場所で紹介する可能性があるため、紹介されたくない場合はその旨をレポートに明記すること。</li>
 </ul>
 <h2 id="余談ceoからのメッセージ">余談：CEOからのメッセージ</h2>
 <p>何かベンチャー企業を立ち上げた時、その目標の一つは株式公開となるだろう。未上場企業が新規に株式を証券取引所に上場し、投資家に株式を取得させることを「新規株式公開 (Initial Public Offering)」、略してIPOと呼ぶ。アメリカでIPOを行うためには、米国証券取引委員会(SEC)にForm S-1と呼ばれる証券登録届出書を提出する必要がある。このForm S-1には、事業者の財務諸表など、投資家が株式を購入するのに必要な事項が記述されている。さて、このForm S-1を提出する際、CEOが「この企業を作った時の思い」を手紙にしたためて添付するのが慣習となっている。</p>
@@ -149,8 +156,8 @@
 <blockquote>
 <p>強力な企業を作るため、Facebookを優れた人材が世界に大きな影響を与え、他の優れた人材から学ぶことができる最高の場所にするために、私たちは努力しています。私たちは、「the Hacker Way」と呼ぶ独自の文化とマネジメントアプローチを培ってきました。(中略)常に前に進むために、社内の壁には「完璧を目指す前にまず終わらせろ(Done is better than perfect)」という言葉が掲げられています。(中略)Facebookのオフィスでは「コードは議論に勝つ (Code wins arguments)」という、ハッカーの信条を良く耳にします。ハッカー文化は、完全にオープンで、かつ実力主義です。ハッカーたちは、アイディアを求めてロビー活動を行う人や、多くの人を部下に持つような人ではなく、最高のアイディアと実装が常に勝つべきだと信じています。</p>
 </blockquote>
-<p>Facebookのハッカー文化を象徴する言葉として良く耳にする「完璧を目指す前にまず終わらせろ(Done is better than perfect)」「コードは議論に勝つ (Code wins arguments)」の記載がある。これ以外にも、Facebookが目指す世界について熱く語られている。当時27歳であったマーク・ザッカーバーグの興奮が伝わってくるようだ。</p>
-<p>手紙の最後は、Facebookが目指す「Five core values」について語られている。その最後のvalue、「Build Social Value」を紹介しておこう。</p>
+<p>Facebookのハッカー文化を象徴する言葉として良く耳にする「完璧を目指す前にまず終わらせろ(Done is better than perfect)」「コードは議論に勝つ (Code wins arguments)」の記載がある。これ以外にも、Facebookが目指す世界について熱く語られている。当時27歳であったマーク・ザッカーバーグの興奮が伝わってくる文章なので、一読をお勧めする。<a href="http://techse7en.com/matome/188/">有志による日本語訳</a>も公開されている。</p>
+<p>手紙の最後は、Facebookが目指す「Five core values」について語られている。その最後のcore value、「Build Social Value」を紹介しておこう。</p>
 <blockquote>
 <p>繰り返しになりますが、Facebookは、会社を構築するためだけでなく、世界をよりオープンでつながりのあるものにするために存在しています。私たちFacebookのメンバー全員が、世界にとって真の価値を生み出すために日々努力してまいります。</p>
 </blockquote>
