@@ -26,25 +26,9 @@
 
 「Learn Git and GitHub without any code!」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。
 
-### Step 2: SSH公開鍵の確認
+### Step 2: SSH公開鍵の作成
 
-SSH公開鍵を作成する。Git Bashを起動せよ。
-
-```sh
-ls .ssh
-```
-
-を実行し、`id_rsa.pub`と`id_rsa`が表示された場合は既に公開鍵が作られている。これらの鍵を自分で作った記憶があり、かつ秘密鍵にパスフレーズが設定されているのなら次のStep 3をスキップして良い。パスフレーズの確認は以下のコマンドでできる。
-
-```sh
-ssh-keygen -yf .ssh/id_rsa
-```
-
-実行後、パスフレーズが聞かれ、入力したら`ssh-rsa AAAAB...`という長い文字列が表示されたらそのまま使ってよいので、次のステップに進む。もしパスフレーズを入力せずに文字列が表示されたり、パスフレーズを忘れてしまった場合はStep 3の手順で作り直す。
-
-### Step 3: SSH公開鍵の作成
-
-SSH公開鍵がなかった場合は、以下の手順で作成する。Git Bashのホームディレクトリで以下のコマンドを実行せよ。
+SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git Bashのホームディレクトリで以下のコマンドを実行せよ。
 
 ```sh
 $ ssh-keygen
@@ -68,7 +52,7 @@ Your public key has been saved in /z/.ssh/id_rsa.pub
 
 といったメッセージが表示されたら成功である。`id_rsa`が秘密鍵、`id_rsa.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
-### Step 4: SSH公開鍵の登録
+### Step 3: SSH公開鍵の登録
 
 GitHubに公開鍵を登録する。
 
@@ -85,7 +69,7 @@ cat .ssh/id_rsa.pub
 
 `This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.`というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。
 
-### Step 5: 鍵の登録の確認
+### Step 4: 鍵の登録の確認
 
 正しく鍵が登録されたか見てみよう。Git Bashで、以下を実行せよ。
 
@@ -103,7 +87,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 
 と表示されたら、鍵の登録に成功している。
 
-### Step 6: リポジトリの作成とクローン
+### Step 5: リポジトリの作成とクローン
 
 では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。
 
@@ -128,7 +112,7 @@ cd test
 
 先ほどURLをコピーしていたので、`git clone`まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。
 
-### Step 7: ローカルの修正とpush
+### Step 6: ローカルの修正とpush
 
 手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。
 
