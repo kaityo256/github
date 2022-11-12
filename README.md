@@ -70,15 +70,6 @@
     * `git pull`
     * プッシュしたブランチをリベースしない
 
-### GitHubの使い方
-
-* SSH公開鍵認証
-* Issueの使い方
-* Projectの使い方
-* GitHub Pagesの使い方
-* GitHub Actionsとは
-* フォークとプルリク
-
 ### [Gitの使い方(応用編)](advanced/README.md)
 
 * [講義スライド](https://speakerdeck.com/kaityo256/github-advanced)
