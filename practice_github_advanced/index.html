@@ -55,7 +55,7 @@
 <p>MNISTは有名は手書き数字のデータセットだ。これを学習させたモデルをブラウザで読み込み、実際に数字を描いてみてちゃんと認識できるか確認してみよう。</p>
 <h3 id="step-1-リポジトリのfork">Step 1: リポジトリのfork</h3>
 <p>GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
-<p><a href="https://github.com/appi-github/pages-sample">https://github.com/appi-github/pages-sample</a></p>
+<p><a href="https://github.com/appi-github/pages-sample" class="uri">https://github.com/appi-github/pages-sample</a></p>
 <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると「Create a new fork」という画面になるので設定はデフォルトのまま「Create Fork」ボタンを押す。すると、<code>pages-sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
 <h3 id="step-2-pagesの設定">Step 2: Pagesの設定</h3>
 <p>GitHubでは、リポジトリの任意のブランチの、任意のディレクトリをホームページとしてウェブに公開することができる。自分のアカウントの<code>pages-sample</code>リポジトリで、以下の作業を実行せよ。</p>
@@ -67,11 +67,11 @@
 </ul>
 <p>そのまま数分待ってから、その画面をリロードしよう。</p>
 <p>準備ができていれば</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb1-1" title="1">Your site is live at https://ユーザ名.github.io/pages-sample/</a></code></pre></div>
+<pre class="txt"><code>Your site is live at https://ユーザ名.github.io/pages-sample/</code></pre>
 <p>という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すと、GitHubのリポジトリをウェブサイトとして公開したサイトが表示される。</p>
 <p>先ほどの設定は、<code>main</code>ブランチにあるスナップショットの、<code>/docs</code>をルートディレクトリとしてウェブサイトを公開せよ、という意味だ。今回は<code>/docs</code>以下に<code>index.html</code>が置いてあるので、それが表示される。</p>
 <h3 id="step-3-数字認識を確認">Step 3: 数字認識を確認</h3>
-<p>画面には二つの黒い領域がある。左の「Please draw here」とある方にマウスで数字を入力してみよ。右側の「Input Image」が更新され、「Your figure is … 1!」などというメッセージが表示されるはずだ。</p>
+<p>画面には二つの黒い領域がある。左の「Please draw here」とある方にマウスで数字を入力してみよ。右側の「Input Image」が更新され、「Your figure is ... 1!」などというメッセージが表示されるはずだ。</p>
 <p>学習済みモデルは、28x28ピクセルの画像を学習しているため、入力された画像を、まずは28x28ピクセルに変換する必要がある。それが右側の「Input Image」である。この「Input Image」を学習済みニューラルネットワークに入力し、これが何の数字であるかを推定している。本来は前処理をして渡すのだが、それを省いているために認識精度がかなり低くなっているはずだ。いろいろ数字を入力し、どの数字の認識が悪いか試してみよ。</p>
 <h3 id="レポート課題">レポート課題</h3>
 <p>最も「これはないだろう」という判定画面(誰が見ても6なのに4と判定してしまった等)を選び、そのスクリーンショットをレポートとして提出せよ。また、どのような数字が誤判定しやすいか、またそれはなぜかを考察せよ。</p>
@@ -79,7 +79,7 @@
 <p>Git/GitHubを使った演習の最後に、簡単なブラウザゲームを作ってみよう。</p>
 <h3 id="step-1-リポジトリのfork-1">Step 1: リポジトリのfork</h3>
 <p>GitHubにログインした状態で、以下のサイトにアクセスせよ。</p>
-<p><a href="https://github.com/appi-github/tyrano_sample">https://github.com/appi-github/tyrano_sample</a></p>
+<p><a href="https://github.com/appi-github/tyrano_sample" class="uri">https://github.com/appi-github/tyrano_sample</a></p>
 <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると、<code>tyrano_sample</code>がforkされ、自分のアカウントのリポジトリとしてコピーされる。</p>
 <h3 id="step-2-pagesの設定-1">Step 2: Pagesの設定</h3>
 <p>先ほどと同様な手順で、GitHub Pagesを公開しよう。</p>
@@ -91,63 +91,81 @@
 </ul>
 <p>そのまま数分待ってから、その画面をリロードしよう。</p>
 <p>準備ができていれば</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb2-1" title="1">Your site is live at https://ユーザ名.github.io/tyrano-sample/</a></code></pre></div>
+<pre class="txt"><code>Your site is live at https://ユーザ名.github.io/tyrano-sample/</code></pre>
 <p>という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すこと。「走るか寝るかするメロス」という画面が表示されたら成功だ。</p>
 <h3 id="step-3-リポジトリのクローン">Step 3: リポジトリのクローン</h3>
-<p>GitHubの自分のアカウントの<code>tyrano_sample</code>をクローンしよう。<a href="https://github.com/">https://github.com/</a>を開き、Repositoriesから「tyrano_sample」を選ぶ。「Code」ボタンの「Clone」から、リモートリポジトリのURLをコピーしよう。その後、Git Bashでクローンする。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="bu">cd</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="bu">cd</span> github</a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="fu">git</span> clone git@github.com:アカウント名/tyrano_sample.git</a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="bu">cd</span> tyrano_sample</a></code></pre></div>
+<p>GitHubの自分のアカウントの<code>tyrano_sample</code>をクローンしよう。<a href="https://github.com/" class="uri">https://github.com/</a>を開き、Repositoriesから「tyrano_sample」を選ぶ。「Code」ボタンの「Clone」から、リモートリポジトリのURLをコピーしよう。その後、Git Bashでクローンする。</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span>
+<span class="bu">cd</span> github
+<span class="fu">git</span> clone git@github.com:アカウント名/tyrano_sample.git
+<span class="bu">cd</span> tyrano_sample</code></pre></div>
 <p>クローンできたら、VS Codeを開き、「フォルダーを開く」から、先ほどクローンしたディレクトリ(<code>/z/github/tyrano_sample</code>)を開く。</p>
 <h3 id="step-4-live-serverのインストール">Step 4: Live Serverのインストール</h3>
 <p>VS Codeの左の「拡張機能」マークをクリックするか、Ctrl+Shift+Xにより拡張機能を開き、「Live Server」を探してインストールする。インストールに成功すると、右下に「Go Live」という表示がされるはずだ。</p>
 <p>VS Codeのエクスプローラーから<code>docs/index.html</code>を開き、右下の「Go Live」をクリックする。ブラウザが開いて「走るか寝るかするメロス」がプレイできれば成功だ。URLは<code>http://127.0.0.1:5500/docs/index.html</code>となっているであろう。このタブをデバッグで使うので閉じないこと。</p>
 <h3 id="step-5-シナリオファイルの修正">Step 5: シナリオファイルの修正</h3>
 <p>VS Codeのエクスプローラーから<code>docs/data/scenario/first.ks</code>を開く。冒頭が以下のようになっているはずだ。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb4-1" title="1">*start</a>
-<a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3">[title name=&quot;走るか寝るかするメロス&quot;]</a>
-<a class="sourceLine" id="cb4-4" title="4">[hidemenubutton]</a>
-<a class="sourceLine" id="cb4-5" title="5">[wait time=200]</a>
-<a class="sourceLine" id="cb4-6" title="6">[freeimage layer=&quot;base&quot;]</a></code></pre></div>
-<p>この、<code>[title name="走るか寝るかするメロス"]</code>を書き換えて保存し、先ほどのゲーム画面を開こう。リロードしてタイトルが変わっていれば成功だ。</p>
-<p>以下、シナリオファイルを修正し、オリジナルのゲームを作ってみよ。原則として、入力された文字がそのまま画面に表示されるが、「タグ」と呼ばれる機能でゲームを制御する。例えば、</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb5-1" title="1">「走るか寝るかするメロス」[l][r]</a></code></pre></div>
+<pre class="txt"><code>*start
+
+[title name=&quot;走るか寝るかするメロス&quot;]
+[hidemenubutton]
+[wait time=200]
+[freeimage layer=&quot;base&quot;]</code></pre>
+<p>この、<code>[title name=&quot;走るか寝るかするメロス&quot;]</code>を書き換えて保存し、先ほどのゲーム画面を開こう。自動でリロードされ、タイトルが変わっていれば成功だ。</p>
+<h3 id="step-6-オリジナルゲームの作成">Step 6: オリジナルゲームの作成</h3>
+<p>シナリオファイル<code>first.ks</code>を修正し、必要があれば画像を追加し、オリジナルゲームを作成せよ。そして、完成したゲームをGitHubにpushせよ。</p>
+<p>オリジナルのゲームを作ってみよ。原則として、入力された文字がそのまま画面に表示されるが、「タグ」と呼ばれる機能でゲームを制御する。例えば、</p>
+<pre class="txt"><code>「走るか寝るかするメロス」[l][r]</code></pre>
 <p>の<code>[l]</code>はマウスの入力待ち、<code>[r]</code>は改行をする命令だ。</p>
 <p>選択肢は</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb6-1" title="1">[link target=*tag_sleep] →寝る [endlink][r]</a>
-<a class="sourceLine" id="cb6-2" title="2">[link target=*tag_run] →走る [endlink][r]</a>
-<a class="sourceLine" id="cb6-3" title="3">[s]</a></code></pre></div>
+<pre class="txt"><code>[link target=*tag_sleep] →寝る [endlink][r]
+[link target=*tag_run] →走る [endlink][r]
+[s]</code></pre>
 <p>のように作る。<code>[link]</code>と<code>[endlink]</code>で囲まれたテキストをクリックすると、<code>target=</code>で指定されたラベルにジャンプする。例えば「→寝る」をクリックすると<code>*tag_sleep</code>のある場所にジャンプする。その先はこうなっている。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode txt"><code class="sourceCode default"><a class="sourceLine" id="cb7-1" title="1">*tag_sleep</a>
-<a class="sourceLine" id="cb7-2" title="2"></a>
-<a class="sourceLine" id="cb7-3" title="3">[cm]</a>
-<a class="sourceLine" id="cb7-4" title="4"></a>
-<a class="sourceLine" id="cb7-5" title="5">[bg storage=sleep.jpg time=500]</a>
-<a class="sourceLine" id="cb7-6" title="6"></a>
-<a class="sourceLine" id="cb7-7" title="7">メロスは死んだように深く眠った。[l][r]</a>
-<a class="sourceLine" id="cb7-8" title="8">勇者は、ひどく赤面した。[r]</a>
-<a class="sourceLine" id="cb7-9" title="9"></a>
-<a class="sourceLine" id="cb7-10" title="10">【 BAD END 】[l][cm]</a>
-<a class="sourceLine" id="cb7-11" title="11"></a>
-<a class="sourceLine" id="cb7-12" title="12">[jump target=*start]</a></code></pre></div>
+<pre class="txt"><code>*tag_sleep
+
+[cm]
+
+[bg storage=sleep.jpg time=500]
+
+メロスは死んだように深く眠った。[l][r]
+勇者は、ひどく赤面した。[r]
+
+【 BAD END 】[l][cm]
+
+[jump target=*start]</code></pre>
 <p><code>[cm]</code>はテキストをクリアする命令だ。<code>[bg]</code>は背景画像を指定する。<code>bgimage</code>というディレクトリにある画像を<code>storage=filename</code>で指定することで表示する。<code>time</code>は表示するまでの時間(ミリ秒)だ。</p>
 <p>最後に<code>[jump target=*start]</code>で<code>*start</code>ラベル、つまりゲームの最初に戻っている。</p>
-<p>その他のタグについては公式サイトの<a href="https://tyrano.jp/tag/">タグリファレンス</a>を参照のこと。</p>
-<h3 id="レポート課題-1">レポート課題</h3>
-<p>オリジナルのゲームを作成し、自分のリポジトリにプッシュしたのち、ブラウザで動作確認したらそのURLをレポートとして提出せよ。ローカルテスト用のURL(<code>http://127.0.0.1</code>)ではなく、<code>https://アカウント名.github.io/tyrano_sample</code>の方を提出すること。</p>
-<p><strong>レポート提出についての注意：</strong></p>
+<h4 id="よく使うタグ">よく使うタグ</h4>
+<p>よく使うタグを以下にまとめておく。</p>
 <ul>
-<li>レポート提出前に必ず<code>https://アカウント名.github.io/tyrano_sample</code>のURLで動作確認を行うこと。</li>
-<li>最後に<code>git push</code>してから実際に反映されるまで数分かかる。</li>
-<li><code>git push</code>する前に、必ず<code>git status</code>を実行し、<code>git add</code>忘れ、<code>git commit</code>忘れを確認すること。画像がGitリポジトリに追加されていない場合、ローカルでは問題なく動作するが、リモートでは画像が表示されない。</li>
+<li><code>[l]</code> このタグに到達すると、マウスのクリック待ちとなる。数字の1ではなく、小文字のLであることに注意。</li>
+<li><code>[r]</code> 改行する。</li>
+<li><code>[cm]</code> テキストをクリアする。画面の切り替えの前などに使う。</li>
+<li><code>[bg storage=filename.jpg time=500]</code> <code>docs/data/bgimage</code>にある背景画像を表示する。すでに<code>run.jpg</code>と<code>sleep.jpg</code>があるので、必要に応じてファイルをそこに追加すること。</li>
+<li><code>*label</code> 文頭にアスタリスク<code>*</code>に続けて文字を並べるとラベルとなる。<code>[jump]</code>や<code>[link]</code>と組み合わせて使う。</li>
+<li><code>[jump target=*label]</code> ラベルにジャンプする。ゲームの最初に戻る時などに使う。</li>
+<li><code>[link target=*label]</code>と<code>[endlink]</code>で囲まれたテキストをクリックすると、<code>*label</code>で指定された場所にジャンプする。物語を分岐させるのに使う。</li>
 </ul>
+<p>その他のタグについては公式サイトの<a href="https://tyrano.jp/tag/">タグリファレンス</a>を参照のこと。</p>
+<h3 id="step-7-完成したゲームのデプロイ">Step 7: 完成したゲームのデプロイ</h3>
+<p>ゲームが完成したら、GitHub Pagesにデプロイする。</p>
+<p>まずLive Serverにより、ローカルで動作確認を行うこと。特に、シナリオファイル<code>first.ks</code>の保存を忘れないこと。VS Codeのタブの「first.ks」の隣が「●」になっていたら保存されていない。保存されていると「X」となるはずなので、必ず保存すること。</p>
+<p>ローカルでの動作確認が済んだら、以下の手順でpushせよ。</p>
+<ol style="list-style-type: decimal">
+<li>Git Bashで、カレントディレクトリが<code>/z/github/tyrano_sample</code>であることを確認する。</li>
+<li>その場所で<code>git add .</code>を実行する</li>
+<li><code>git commit -m &quot;updates&quot;</code> を実行する。</li>
+<li><code>git push</code>を実行する(パスフレーズを入力すること)。</li>
+</ol>
+<p>pushができたら、数分待ってからGitHubの「Settings」「Pages」にある<code>https://アカウント名.github.io/tyrano_sample</code>をクリックし、動作確認を行う。特に、画像ファイルの反映には時間がかかる。</p>
+<h3 id="レポート課題-1">レポート課題</h3>
+<p>オリジナルのゲームを作成し、自分のリポジトリにプッシュしたのち、ブラウザで動作確認したらそのURLを、ゲーム画面のスクリーンショットとともにレポートとして提出せよ。ローカルテスト用のURL(<code>http://127.0.0.1</code>)ではなく、<code>https://アカウント名.github.io/tyrano_sample</code>の方を提出すること。</p>
 <p><strong>ゲーム内容についての注意：</strong></p>
 <ul>
 <li>公序良俗に反するような内容にしてはならない。</li>
 <li>(たとえ友人であっても)特定個人を揶揄するような内容にしてはならない。有名人も題材としない。</li>
-<li>画像を用いる場合は、ライセンスとして問題ないものを利用する(例えば「<a href="https://www.irasutoya.com/">いらすとや</a>」や「<a href="https://www.pexels.com/ja-jp/">Pexels</a>」の画像を利用するなど)。</li>
+<li>画像を用いる場合は、ライセンスとして再配布して問題ないものを利用する(例えば「<a href="https://www.irasutoya.com/">いらすとや</a>」や「<a href="https://www.pexels.com/ja-jp/">Pexels</a>」の画像を利用するなど)。</li>
 <li>面白い作品は別の場所で紹介する可能性があるため、紹介されたくない場合はその旨をレポートに明記すること。</li>
 </ul>
 <h2 id="余談ceoからのメッセージ">余談：CEOからのメッセージ</h2>
@@ -162,7 +180,7 @@
 <p>繰り返しになりますが、Facebookは、会社を構築するためだけでなく、世界をよりオープンでつながりのあるものにするために存在しています。私たちFacebookのメンバー全員が、世界にとって真の価値を生み出すために日々努力してまいります。</p>
 </blockquote>
 <ul>
-<li>Facebook Inc.のForm S-1、「Letter from Mark Zuckerberg」より。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000119312512034517/d287954ds1.htm">https://www.sec.gov/Archives/edgar/data/1326801/000119312512034517/d287954ds1.htm</a></li>
+<li>Facebook Inc.のForm S-1、「Letter from Mark Zuckerberg」より。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000119312512034517/d287954ds1.htm" class="uri">https://www.sec.gov/Archives/edgar/data/1326801/000119312512034517/d287954ds1.htm</a></li>
 </ul>
           </article>
   </body>
