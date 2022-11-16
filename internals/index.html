@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-                <title>internals/README.md</title>
+                <title>Gitの中身</title>
     <style type="text/css">
       p {
         padding-left: 1em;
@@ -45,562 +45,687 @@
 
   <body>
     <article class="markdown-body">
-                        <h1 id="gitの中身">Gitの中身</h1>
-<h2 id="はじめに">はじめに</h2>
-<p>Gitで管理するプロジェクトには<code>.git</code>というディレクトリがあり、その中にGitの管理情報が入っている。その中には、全てのコミットや、いろんなバージョンのファイル、ブランチ、タグといった情報が格納されている。Gitを操作するにあたり、この中身がどうなっているかを理解する必要はないし、もし中身を覚えたとしても、操作方法は変わらないまま、内部実装だけ変更になる可能性もある。それでも、Gitの仕組み、特に様々な情報が<code>.git</code>にどのように格納されているかを知っておくのは二つの理由から有用だと考える。</p>
-<p>一つ目の理由は、「物が動く仕組み」を知っておくことが教養だからだ。車を運転するのに、アクセルを踏めば進み、ブレーキを踏めば止まり、ハンドルを回せば曲がることを知っていれば十分だ。しかし、シリンダーにガソリンが噴射され、ピストンで圧縮したところで点火し、爆発する力でピストンが押される、という直線的な動きを作り、それを回転運動に変換してタイヤが回っている、ということくらいは(特に理工系の学生なら)ぼんやりとは知っておいて欲しい。さらに、その点火システム(イグニッションコイル)に電磁誘導が使われていると知れば、「なるほど、学校で習った電磁気の性質がこんなところに使われているのか」と思うことであろう。自分でゼロから作れるほど理解する必要はないが、物やツールをブラックボックスにせず、その中身をぼんやりとでも知っておくのは良いことだ。</p>
-<p>もう一つの理由は、「機能は、なんらかの方法で実装されている」という感覚を持って欲しいためだ。我々がツールに求めるのは「機能」であるが、同じ機能であっても複数の実現手段がある。例えば、電子レンジとオーブンは、「どちらも食品を加熱する」という機能を持っているが、その実現方法は異なる。同様に、GitもSubversionはどちらもバージョン管理システムであり、どちらにもブランチやタグという概念があるが、その実装方法は全く異なる。Gitはツールである。ツールであるからには何らかの機能を提供している。その機能、例えばコミットによるスナップショットの保存や、ブランチの切り替えなどが、実際にはどのように実現されているかを見てみるのは無駄にはならないであろう。</p>
-<p>以下では、Gitの実装、特に<code>.git</code>ディレクトリの中に何がどのように格納されているか紹介する。その詳細を覚える必要は全くない。しかし、「機能の実現には実装が伴う」ということ、また、Gitの実装が非常に素直であることを実感して欲しい。</p>
-<h2 id="gitディレクトリの中身"><code>.git</code>ディレクトリの中身</h2>
-<p>まず、<code>.git</code>の中身を見てみよう。適当なリポジトリで<code>ls .git</code>してみる。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1">$ <span class="fu">ls</span> .git</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="ex">COMMIT_EDITMSG</span>  HEAD       branches/  description  index  logs/     packed-refs</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="ex">FETCH_HEAD</span>      ORIG_HEAD  config     hooks/       info/  objects/  refs/</a></code></pre></div>
-<p>表示されるファイルはリポジトリの状態によって異なるが、概ね上記のようなファイルやディレクトリが含まれている。このうち、主なものを紹介する。</p>
-<ul>
-<li><code>HEAD</code> - カレントブランチ(HEAD)の情報を保存するファイル</li>
-<li><code>index</code> - インデックスの情報を保存するファイル</li>
-<li><code>config</code> - リモートブランチや上流ブランチ等の情報を保存するファイル</li>
-<li><code>refs</code> - ブランチの情報を保存するディレクトリ</li>
-<li><code>objects</code> - コミットなどのオブジェクトを保存するディレクトリ</li>
-</ul>
-<p>以下、これらの「中身」について触れてみよう。</p>
-<h2 id="gitのオブジェクト">Gitのオブジェクト</h2>
-<p>まずは、<code>.git/objects</code>の中身を見てみよう。ここにはGitが管理する「オブジェクト」が格納されている。Gitのオブジェクトには、以下の4種類がある。</p>
-<figure>
-<img src="fig/objects.png" alt="objects" /><figcaption>objects</figcaption>
-</figure>
-<ul>
-<li>blobオブジェクト： ファイルを圧縮したもの。ファイルシステムの「ファイル」に対応</li>
-<li>treeオブジェクト： Blobオブジェクトや別のTreeオブジェクトを管理する。ファイルシステムの「ディレクトリ」に対応</li>
-<li>コミットオブジェクト： Treeオブジェクトを包んだもの。コミットのスナップショットに対応するTreeオブジェクトに、親コミット、コミットメッセージなどを付加する</li>
-<li>タグオブジェクト： 他のGitオブジェクトを包んだもの。ほとんどの場合はコミットオブジェクトを包むが、TagのメッセージやTagをつけた人の情報などを付加する</li>
-</ul>
-<p>この講義ではタグについては扱わないので、残りの三つ、blobオブジェクト、treeオブジェクト、コミットオブジェクトについて見てみよう。</p>
-<h3 id="blobオブジェクト">blobオブジェクト</h3>
-<figure>
-<img src="fig/blob.png" alt="blob" /><figcaption>blob</figcaption>
-</figure>
-<p>blob<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>オブジェクトは、ファイルを保存するためのオブジェクトだ。その実体は、ファイルに<code>blob</code>というテキストと、ファイルサイズをヘッダ情報として付加し、zlibで圧縮したものだ。</p>
-<p>blobオブジェクトを実際に作ってみよう。適当なディレクトリで<code>git init</code>してから、適当なファイルを作る。</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="fu">mkdir</span> blob</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="bu">cd</span> blob</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="fu">git</span> init</a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="bu">echo</span> -n <span class="st">&quot;Hello Git&quot;</span> <span class="op">&gt;</span> test.txt</a></code></pre></div>
-<p>改行が含まれないように、echoに-nオプションをつけている。これをgit addすると対応するblobオブジェクトが作られる。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">git</span> add test.txt</a></code></pre></div>
-<p>この時点で、<code>e51ca0d0b8c5b6e02473228bbf876ba000932e96</code>というblobオブジェクトが作られた。見てみよう。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1">$ <span class="fu">git</span> cat-file -t e51ca0d0b8c5b6e02473228bbf876ba000932e96</a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="ex">blob</span></a>
-<a class="sourceLine" id="cb4-3" title="3"></a>
-<a class="sourceLine" id="cb4-4" title="4">$ <span class="fu">git</span> cat-file -p e51ca0d0b8c5b6e02473228bbf876ba000932e96</a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="ex">Hello</span> Git</a></code></pre></div>
-<p><code>git cat-file</code>はオブジェクトのハッシュを指定して中身を見るためのコマンドだ。<code>-t</code>はそのオブジェクトのタイプを、<code>-p</code>は中身を表示する。<code>e51ca0d...</code>というオブジェクトはblobオブジェクトであり、中身は「Hello Git」というテキストファイルであることがわかる</p>
-<p>この<code>e51ca0d...</code>というオブジェクトの実体は、<code>.git/objects</code>の中にファイルとして格納されている。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" title="1">$ <span class="fu">ls</span> -1 .git/objects/*/*</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="ex">.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span></a></code></pre></div>
-<p>Gitはオブジェクトのファイル名の頭二文字をディレクトリにして、残りをその下のファイルとして保存する。したがって、<code>e51ca0d...</code>というオブジェクトは、<code>.git/objects</code>以下の<code>e5</code>ディレクトリの下に、<code>1ca0d...</code>というファイル名で保存される。</p>
-<p>このblobオブジェクトのファイル名は、対象となるファイルの頭にblob ファイルサイズ\0をつけたもののSHA-1ハッシュ値だ。ハッシュ値とは、ハッシュ関数にデータを入力した時の出力であり、ハッシュ関数とは、任意の長さのデータから、(多くの場合)固定長の長さの値を得るための操作のことだ。SHAは「Secure Hash Algorithm」の略であり、SHA-1(シャーワン)はSHAシリーズのうちの一つである。</p>
-<p>ハッシュとは、以下のような性質を持つものだ。</p>
-<ul>
-<li>任意の長さのデータを受け取り、固定の長さの出力(ハッシュ値)を返す</li>
-<li>入力からハッシュ値を得るのは容易だが、あるハッシュ値を出力するような入力を探すのは極めて困難</li>
-<li>入力が少しでも変化すると、ハッシュ値が大きく変化する</li>
-</ul>
-<p>特に二番目の性質を「強衝突耐性」と呼ぶ。例えばメッセージとハッシュ値を両方展開した時、もしメッセージが改変されていればハッシュ値が変わるから改竄がバレる。しかし、同じハッシュ値を持つ別の入力を作ることができれば、データを改竄してもバレない。</p>
-<p>SHA-1の強衝突耐性は既に突破されているため、セキュリティ用途には向かないが、残りの二つの性質が便利であるため、GitではオブジェクトのIDとしてSHA-1ハッシュを用いている。SHA-1は任意の入力に対して160ビットの出力を返す。16進数は0からFまでの16種類の数値で表現され、1桁が4ビットであるから、160ビットを16進数表記すると40桁となる。これがGitのコミットハッシュが0からFまでの16種類の文字を使って40桁となる理由だ。Gitではハッシュ値を全桁指定する必要はなく、他と区別が付く長さだけ指定すれば良い。通常、先頭7桁も取れば十分なので、<code>git log --oneline</code>などでは7桁だけ表示される。</p>
-<p>さて、このハッシュ値を実際に作ってみよう。そのためには、<code>test.txt</code>の冒頭に<code>blob 9\0</code>というヘッダを付けた内容のSHA-1ハッシュ値を求めればよい。なお、<code>blob 9\0</code>の<code>blob</code>はblobオブジェクトであること、<code>9</code>はファイルサイズ、<code>\0</code>はヌル文字と呼ばれ、ヘッダと中身の境界を表現している。SHA-1ハッシュを得るには<code>shasum</code>を用いる。</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1">$ <span class="kw">{</span> <span class="bu">echo</span> -en <span class="st">&#39;blob 9\0&#39;</span><span class="kw">;</span><span class="fu">cat</span> test.txt<span class="kw">;}</span> <span class="kw">|</span> <span class="ex">shasum</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="ex">e51ca0d0b8c5b6e02473228bbf876ba000932e96</span> *-</a></code></pre></div>
-<p>確かに<code>e51ca0d</code>というコミットハッシュが得られた。なお、Gitにはヘッダを付けてハッシュを得るコマンド<code>git hash-object</code>が用意されている。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1">$ <span class="fu">git</span> hash-object test.txt</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="ex">e51ca0d0b8c5b6e02473228bbf876ba000932e96</span></a></code></pre></div>
-<p>同じハッシュ値が得られた。<code>git cat-file</code>や<code>git hash-object</code>という、普段使わないが、普段使うコマンドの裏で実行されている低レベルなコマンドを <strong>配管コマンド(plumbing commands)</strong> と呼ぶ。一方、普段我々が使う<code>git add</code>や<code>git commit</code>などのコマンドを <strong>磁器コマンド (porcelain commands)</strong> と呼ぶ。これは、磁器とはトイレの便器のことで、Gitをトイレだと思った時、我々が普段使うコマンドが外に出ている便器、普段見ることのない低レベルなコマンドを下水などの配管にたとえたものだ。</p>
-<p>細かいことはともかく、「Gitで良く出てくる英数字のIDはSHA-1ハッシュである」とだけ覚えておくと良い。</p>
-<p>さて、ファイル名はSHA-1ハッシュであった。中身はファイルをヘッダ込みでzlibで圧縮したものだ。例えばPythonで実装するなこんな感じになる。</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode py"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1"><span class="im">import</span> zlib</a>
-<a class="sourceLine" id="cb8-2" title="2">content <span class="op">=</span> <span class="st">&quot;Hello Git&quot;</span> <span class="co"># ファイルの中身</span></a>
-<a class="sourceLine" id="cb8-3" title="3"></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co"># ヘッダ付与</span></a>
-<a class="sourceLine" id="cb8-5" title="5">store <span class="op">=</span> <span class="ss">f&quot;blob </span><span class="sc">{</span><span class="bu">len</span>(content)<span class="sc">}</span><span class="ch">\0</span><span class="sc">{</span>content<span class="sc">}</span><span class="ss">&quot;</span>.encode(<span class="st">&quot;utf-8&quot;</span>)</a>
-<a class="sourceLine" id="cb8-6" title="6"></a>
-<a class="sourceLine" id="cb8-7" title="7">data <span class="op">=</span> zlib.compress(store, level<span class="op">=</span><span class="dv">1</span>) <span class="co"># 圧縮</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="bu">print</span>(<span class="bu">bytes</span>.<span class="bu">hex</span>(data))      <span class="co"># 中身の表示</span></a></code></pre></div>
-<p><code>Hello Git</code>という中身を持つファイルに、<code>blob 9\0</code>というヘッダを付与して、<code>zlib.compress</code>で圧縮したバイト列を表示するスクリプトだ。実行してみよう。</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1">$ <span class="ex">python3</span> test.py</a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="ex">78014bcac94f52b064f048cdc9c95770cf2c01002b750531</span></a></code></pre></div>
-<p>先ほど作成したblobオブジェクトの中身もダンプしてみよう。</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1">$ <span class="fu">od</span> -tx1 .git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="ex">0000000</span> 78 01 4b ca c9 4f 52 b0 64 f0 48 cd c9 c9 57 70</a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="ex">0000020</span> cf 2c 01 00 2b 75 05 31</a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="ex">0000030</span></a></code></pre></div>
-<p>完全に一致していることがわかると思う。</p>
-<p>まとめると、</p>
-<ul>
-<li>Gitのblobオブジェクトはファイルに対応している</li>
-<li>blobオブジェクトは対象ファイルにヘッダを付与したものであり、ファイル名はSHA-1ハッシュ値、ファイルの中身はzlibで圧縮したもの</li>
-</ul>
-<p>である。以外に単純であることが実感できたであろうか？</p>
-<h3 id="コミットオブジェクト">コミットオブジェクト</h3>
-<p>コミットオブジェクトは、コミット、すなわちスナップショットを保存するためのものだ。先ほど、<code>git add</code>した状態で止めていたのを、コミットしてみよう。</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1">$ <span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></a>
-<a class="sourceLine" id="cb11-2" title="2">[<span class="ex">main</span> (root-commit) <span class="ex">ca70291</span>] initial commit</a>
-<a class="sourceLine" id="cb11-3" title="3"> <span class="ex">1</span> file changed, 1 insertion(+)</a>
-<a class="sourceLine" id="cb11-4" title="4"> <span class="ex">create</span> mode 100644 test.txt</a></code></pre></div>
-<p>コミットハッシュ<code>ca70291</code>を持つコミットが作られた。これに対応するオブジェクトがコミットオブジェクトだ。いま、オブジェクトが何個できたか見てみよう。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1">$ <span class="fu">ls</span> -1 .git/objects/*/*</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="ex">.git/objects/ca/70291031230dde40264d62b6e8d2424e2c9366</span></a>
-<a class="sourceLine" id="cb12-3" title="3"><span class="ex">.git/objects/dd/1d7ee1e23a241a3597a0d0be5139a997fc29c8</span></a>
-<a class="sourceLine" id="cb12-4" title="4"><span class="ex">.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span></a></code></pre></div>
-<p><code>.git/objects</code>以下に3つオブジェクトができている。このうち、<code>e51ca0d</code>は<code>test.txt</code>に対応するblobオブジェクト、<code>ca70291</code>は今作ったコミットオブジェクト、もう一つの<code>dd1d7ee</code>は後述するtreeオブジェクトであり、コミットが保持するスナップショットを表現する 。blobオブジェクトやtreeオブジェクトは、同じ中身であれば同じハッシュ値を持つ。一方、コミットオブジェクトのハッシュはぶつかっては困るので、毎回異なるものになる。</p>
-<p>さっき作ったコミットオブジェクト<code>ca70291</code>のタイプを見てみよう。。ちなみに、先ほど述べたように、ハッシュ値は他と区別が付けば40桁全てを指定する必要はない。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb13-1" title="1">$ <span class="fu">git</span> cat-file -t ca70291</a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="ex">commit</span></a></code></pre></div>
-<p>確かにコミットオブジェクトになっている。この表示から<code>ca70291</code>はコミットオブジェクトであることがわかる。コミットオブジェクトは、以下の情報をまとめたものだ。</p>
-<ul>
-<li>スナップショットを保存するtreeオブジェクト</li>
-<li>親コミットのコミットハッシュ
-<ul>
-<li>root-commitなら親コミット情報なし</li>
-<li>merge commitなら親コミット情報二つ</li>
-</ul></li>
-<li>コミットの作成者情報</li>
-<li>コミットメッセージ</li>
-</ul>
-<p>中身を見てみよう。</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1">$ <span class="fu">git</span> cat-file -p ca70291</a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="ex">tree</span> dd1d7ee1e23a241a3597a0d0be5139a997fc29c8</a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1632060650 +0900</a>
-<a class="sourceLine" id="cb14-4" title="4"><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1632060650 +0900</a>
-<a class="sourceLine" id="cb14-5" title="5"></a>
-<a class="sourceLine" id="cb14-6" title="6"><span class="ex">initial</span> commit</a></code></pre></div>
-<p><code>dd1d7ee</code>というtreeオブジェクト、作成者、コミットメッセージを含んでいることがわかる。なお、これはroot commitなので、親コミットの情報は持っていない。適当に修正してコミットしてみよう。</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" title="1">$ <span class="bu">echo</span> <span class="st">&quot;Hello commit object&quot;</span> <span class="op">&gt;&gt;</span> test.txt</a>
-<a class="sourceLine" id="cb15-2" title="2">$ <span class="fu">git</span> commit -am <span class="st">&quot;update&quot;</span></a>
-<a class="sourceLine" id="cb15-3" title="3">[<span class="ex">main</span> 1f620eb] update</a>
-<a class="sourceLine" id="cb15-4" title="4"> <span class="ex">1</span> file changed, 1 insertion(+), <span class="ex">1</span> deletion(-)</a></code></pre></div>
-<p>新しく<code>1f620eb</code>というコミットができた。中身を見てみよう。</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" title="1">$ <span class="fu">git</span> cat-file -p 1f620eb</a>
-<a class="sourceLine" id="cb16-2" title="2"><span class="ex">tree</span> 55e11d02569af14b5d29fe56fd44c1cc32c55e72</a>
-<a class="sourceLine" id="cb16-3" title="3"><span class="ex">parent</span> ca70291031230dde40264d62b6e8d2424e2c9366</a>
-<a class="sourceLine" id="cb16-4" title="4"><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630738892  +0900</a>
-<a class="sourceLine" id="cb16-5" title="5"><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630738892 +0900</a>
-<a class="sourceLine" id="cb16-6" title="6"></a>
-<a class="sourceLine" id="cb16-7" title="7"></a>
-<a class="sourceLine" id="cb16-8" title="8"><span class="ex">update</span></a></code></pre></div>
-<figure>
-<img src="fig/commit.png" alt="commit.png" /><figcaption>commit.png</figcaption>
-</figure>
-<p>スナップショットを表すtreeオブジェクトが<code>dd1d7ee</code>から<code>55e11d0</code>に更新され、新たに親コミットとして、先ほどの<code>ca70291</code>が保存されている。</p>
-<p>マージにより作られたマージコミットの場合は、二つの親コミットの情報を含んでいる。いま、こんな歴史を持つリポジトリを考えよう。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1">$ <span class="fu">git</span> log --graph --pretty=oneline</a>
-<a class="sourceLine" id="cb17-2" title="2"><span class="ex">*</span>   f4baa057ce89467a2faced36229da02799c9e394 (HEAD -<span class="op">&gt;</span> main) <span class="ex">Merge</span> branch <span class="st">&#39;branch&#39;</span></a>
-<a class="sourceLine" id="cb17-3" title="3"><span class="kw">|\</span></a>
-<a class="sourceLine" id="cb17-4" title="4"><span class="kw">|</span> <span class="ex">*</span> 6aecd68aa423651edda9d22e20925314ff3e8386 (branch) <span class="ex">update</span></a>
-<a class="sourceLine" id="cb17-5" title="5"><span class="ex">*</span> <span class="kw">|</span> <span class="ex">953cb6056e5f0437f0d4e102f232d8eb705f6428</span> adds test2.txt</a>
-<a class="sourceLine" id="cb17-6" title="6"><span class="kw">|</span><span class="ex">/</span></a>
-<a class="sourceLine" id="cb17-7" title="7"><span class="ex">*</span> 6db4350c6ebd75338ac4bc2eb2a2924895a0c73b initial commit</a></code></pre></div>
-<p>root commitである<code>6db4350</code>から<code>6aecd68</code>と<code>953cb60</code>が分岐し、マージされて<code>f4baa05</code>になっている。</p>
-<figure>
-<img src="fig/merge.png" alt="merge.png" /><figcaption>merge.png</figcaption>
-</figure>
-<p>この最後のマージコミットf4baa05の中身を見てみよう。</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1">$ <span class="fu">git</span> cat-file -p f4baa05</a>
-<a class="sourceLine" id="cb18-2" title="2"><span class="ex">tree</span> 706a1741c1d94977ba496449d80ab848ca945e14</a>
-<a class="sourceLine" id="cb18-3" title="3"><span class="ex">parent</span> 953cb6056e5f0437f0d4e102f232d8eb705f6428</a>
-<a class="sourceLine" id="cb18-4" title="4"><span class="ex">parent</span> 6aecd68aa423651edda9d22e20925314ff3e8386</a>
-<a class="sourceLine" id="cb18-5" title="5"><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630743012 +0900</a>
-<a class="sourceLine" id="cb18-6" title="6"><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630743012 +0900</a>
-<a class="sourceLine" id="cb18-7" title="7"></a>
-<a class="sourceLine" id="cb18-8" title="8"><span class="ex">Merge</span> branch <span class="st">&#39;branch&#39;</span></a></code></pre></div>
-<p>スナップショットを保存するtreeオブジェクト<code>706a174</code>の他に、二つの親コミット<code>953cb60</code>と<code>6aecd68</code>が保存されていることがわかる。</p>
-<h3 id="treeオブジェクト">treeオブジェクト</h3>
-<p>treeオブジェクトは、ディレクトリに対応するオブジェクトだ。先ほどのblobオブジェクトの作り方を見てわかるように、blobオブジェクトはファイル名を保存していない。blobオブジェクトとファイル名を対応させるのもtreeオブジェクトの役目だ。また、コミットオブジェクトが格納するのは、スナップショット全体を表現するtreeオブジェクトである。</p>
-<p>treeオブジェクトがディレクトリに対応することを見るため、適当にディレクトリを含むリポジトリを作ってみよう。</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb19-1" title="1"><span class="fu">mkdir</span> tree</a>
-<a class="sourceLine" id="cb19-2" title="2"><span class="bu">cd</span> tree</a>
-<a class="sourceLine" id="cb19-3" title="3"><span class="fu">git</span> init</a>
-<a class="sourceLine" id="cb19-4" title="4"><span class="fu">mkdir</span> dir1 dir2</a>
-<a class="sourceLine" id="cb19-5" title="5"><span class="bu">echo</span> <span class="st">&quot;file1&quot;</span> <span class="op">&gt;</span> dir1/file1.txt</a>
-<a class="sourceLine" id="cb19-6" title="6"><span class="bu">echo</span> <span class="st">&quot;file2&quot;</span> <span class="op">&gt;</span> dir2/file2.txt</a>
-<a class="sourceLine" id="cb19-7" title="7"><span class="bu">echo</span> <span class="st">&quot;README&quot;</span> <span class="op">&gt;</span> README.md</a>
-<a class="sourceLine" id="cb19-8" title="8"><span class="fu">git</span> add README.md dir1 dir2</a></code></pre></div>
-<p>コミットしてみる。</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb20-1" title="1">$ <span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></a>
-<a class="sourceLine" id="cb20-2" title="2">[<span class="ex">main</span> (root-commit) <span class="ex">662458a</span>] initial commit</a>
-<a class="sourceLine" id="cb20-3" title="3"> <span class="ex">3</span> files changed, 3 insertions(+)</a>
-<a class="sourceLine" id="cb20-4" title="4"> <span class="ex">create</span> mode 100644 README.md</a>
-<a class="sourceLine" id="cb20-5" title="5"> <span class="ex">create</span> mode 100644 dir1/file1.txt</a>
-<a class="sourceLine" id="cb20-6" title="6"> <span class="ex">create</span> mode 100644 dir2/file2.txt</a></code></pre></div>
-<p>これで、コミットオブジェクト(<code>662458a</code>)が作られた。中身を見てみよう。</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb21-1" title="1">$ <span class="fu">git</span> cat-file -p 662458a</a>
-<a class="sourceLine" id="cb21-2" title="2"><span class="ex">tree</span> 193fea0500b331a7ccb536aa691d8eb7df8afd13</a>
-<a class="sourceLine" id="cb21-3" title="3"><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630737694 +0900</a>
-<a class="sourceLine" id="cb21-4" title="4"><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630737694 +0900</a>
-<a class="sourceLine" id="cb21-5" title="5"></a>
-<a class="sourceLine" id="cb21-6" title="6"><span class="ex">initial</span> commit</a></code></pre></div>
-<p>treeオブジェクトとコミットメッセージ等の情報を含んでいることがわかる。root commitなので、親コミットの情報はない。同じ手順を踏めば、コミットハッシュは異なっても、同じtreeオブジェクトができているはずだ。treeオブジェクト<code>193fea0</code>は、このコミットのスナップショットを保存している。見てみよう。</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb22-1" title="1">$ <span class="fu">git</span> cat-file -p 193fea0</a>
-<a class="sourceLine" id="cb22-2" title="2"><span class="ex">100644</span> blob e845566c06f9bf557d35e8292c37cf05d97a9769    README.md</a>
-<a class="sourceLine" id="cb22-3" title="3"><span class="ex">040000</span> tree 0b9f291245f6c596fd30bee925fe94fe0cbadd60    dir1</a>
-<a class="sourceLine" id="cb22-4" title="4"><span class="ex">040000</span> tree 345699cffb47ac20257e0ce4cebcbfc4b2a7f9e3    dir2</a></code></pre></div>
-<p>ファイル<code>README.md</code>に対応する<code>blob</code>オブジェクトと、ディレクトリ<code>dir1</code>、<code>dir2</code>に対応するtreeオブジェクトが含まれている。二つのtreeオブジェクトも見てみよう。</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb23-1" title="1">$ <span class="fu">git</span> cat-file -p 0b9f291</a>
-<a class="sourceLine" id="cb23-2" title="2"><span class="ex">100644</span> blob e2129701f1a4d54dc44f03c93bca0a2aec7c5449    file1.txt</a>
-<a class="sourceLine" id="cb23-3" title="3">$ <span class="fu">git</span> cat-file -p 345699c</a>
-<a class="sourceLine" id="cb23-4" title="4"><span class="ex">100644</span> blob 6c493ff740f9380390d5c9ddef4af18697ac9375    file2.txt</a></code></pre></div>
-<p>ファイル構造とオブジェクトの構造を図示すると以下のようになる。</p>
-<figure>
-<img src="fig/tree.png" alt="tree.png" /><figcaption>tree.png</figcaption>
-</figure>
-<p>さて、blobオブジェクトやtreeオブジェクトにはファイル名、ディレクトリ名は含まれておらず、treeオブジェクトは、自分が管理するオブジェクトと名前の対応を管理している。</p>
-<p>また、blobオブジェクトのハッシュは、ファイルサイズと中身だけで決まり、ファイル名は関係ない。したがって、Gitは「同じ中身だけど、異なるファイル名」を、同じblobオブジェクトで管理する。これを確認してみよう。</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb24-1" title="1"><span class="fu">mkdir</span> synonym</a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="bu">cd</span> synonym</a>
-<a class="sourceLine" id="cb24-3" title="3"><span class="fu">git</span> init</a>
-<a class="sourceLine" id="cb24-4" title="4"><span class="bu">echo</span> <span class="st">&quot;Hello&quot;</span> <span class="op">&gt;</span> file1.txt</a>
-<a class="sourceLine" id="cb24-5" title="5"><span class="fu">cp</span> file1.txt file2.txt</a>
-<a class="sourceLine" id="cb24-6" title="6"><span class="fu">git</span> add file1.txt file2.txt</a></code></pre></div>
-<p>これで、中身が同じファイル<code>file1.txt</code>、<code>file2.txt</code>がステージングされた。コミットしてみる。</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb25-1" title="1">$ <span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></a>
-<a class="sourceLine" id="cb25-2" title="2">[<span class="ex">main</span> (root-commit) <span class="ex">75470e6</span>] initial commit</a>
-<a class="sourceLine" id="cb25-3" title="3"> <span class="ex">2</span> files changed, 2 insertions(+)</a>
-<a class="sourceLine" id="cb25-4" title="4"> <span class="ex">create</span> mode 100644 file1.txt</a>
-<a class="sourceLine" id="cb25-5" title="5"> <span class="ex">create</span> mode 100644 file2.txt</a></code></pre></div>
-<p>コミットオブジェクト<code>75470e6</code>ができたので、中身を見てみよう。</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" title="1">$ <span class="fu">git</span> cat-file -p 75470e6</a>
-<a class="sourceLine" id="cb26-2" title="2"><span class="ex">tree</span> e79a5d99a8e5cd5da0260866b85df60052fd045e</a>
-<a class="sourceLine" id="cb26-3" title="3"><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630745015 +0900</a>
-<a class="sourceLine" id="cb26-4" title="4"><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630745015 +0900</a>
-<a class="sourceLine" id="cb26-5" title="5"></a>
-<a class="sourceLine" id="cb26-6" title="6"><span class="ex">initial</span> commit</a></code></pre></div>
-<p>treeオブジェクト<code>e79a5d9</code>ができている。中身を見てみよう。</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb27-1" title="1">$ <span class="fu">git</span> cat-file -p e79a5d9</a>
-<a class="sourceLine" id="cb27-2" title="2"><span class="ex">100644</span> blob e965047ad7c57865823c7d992b1d046ea66edf78    file1.txt</a>
-<a class="sourceLine" id="cb27-3" title="3"><span class="ex">100644</span> blob e965047ad7c57865823c7d992b1d046ea66edf78    file2.txt</a></code></pre></div>
-<p>全く同じblobオブジェクトに別名を与えていることがわかる。</p>
-<h2 id="gitの参照">Gitの参照</h2>
-<p>Gitオブジェクトの次は、Gitの参照を見てみよう。参照はブランチやタグなどで<code>.git/refs</code>以下に格納されている。</p>
-<h3 id="headとブランチの実体">HEADとブランチの実体</h3>
-<figure>
-<img src="fig/head.png" alt="head" /><figcaption>head</figcaption>
-</figure>
-<p>通常、GitではHEADがブランチを、ブランチがコミットを指している。<code>HEAD</code>の実体は<code>.git/HEAD</code>というファイルだ。ブランチは<code>git/refs</code>にブランチ名と同名のファイルとして保存されている。例えば<code>main</code>ブランチの実体は<code>.git/refs/heads/main</code>というファイルだ。この関係を見てみよう。</p>
-<p>適当なディレクトリ<code>test</code>を作って、その中で<code>git init</code>する。</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb28-1" title="1"><span class="fu">mkdir</span> test</a>
-<a class="sourceLine" id="cb28-2" title="2"><span class="bu">cd</span> test</a>
-<a class="sourceLine" id="cb28-3" title="3"><span class="fu">git</span> init</a></code></pre></div>
-<p>この時点で<code>.git</code>が作られ、その中に<code>HEAD</code>が作られた。ファイルの中身を見てみよう。</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb29-1" title="1">$ <span class="fu">cat</span> .git/HEAD</a>
-<a class="sourceLine" id="cb29-2" title="2"><span class="ex">ref</span>: refs/heads/main</a></code></pre></div>
-<p>この<code>ref: refs/heads/main</code>は、「<code>HEAD</code>は今<code>refs/heads/main</code>を指しているよ」という意味だ。しかし、<code>git init</code>直後はまだこのファイルは存在しない。</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb30-1" title="1">$ <span class="fu">cat</span> .git/refs/heads/main</a>
-<a class="sourceLine" id="cb30-2" title="2"><span class="ex">cat</span>: .git/refs/heads/main: そのようなファイルやディレクトリはありません</a></code></pre></div>
-<p>さて、適当なファイルを作って、<code>git add</code>、<code>git commit</code>してみよう。</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb31-1" title="1">$ <span class="bu">echo</span> <span class="st">&quot;Hello&quot;</span> <span class="op">&gt;</span> hello.txt</a>
-<a class="sourceLine" id="cb31-2" title="2">$ <span class="fu">git</span> add hello.txt</a>
-<a class="sourceLine" id="cb31-3" title="3">$ <span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></a>
-<a class="sourceLine" id="cb31-4" title="4">[<span class="ex">main</span> (root-commit) <span class="ex">c950332</span>] initial commit</a>
-<a class="sourceLine" id="cb31-5" title="5"> <span class="ex">1</span> file changed, 1 insertion(+)</a>
-<a class="sourceLine" id="cb31-6" title="6"> <span class="ex">create</span> mode 100644 hello.txt</a></code></pre></div>
-<p>初めて<code>git commit</code>した時点で、<code>main</code>ブランチの実体が作られる。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb32-1" title="1">$ <span class="fu">cat</span> .git/refs/heads/main</a>
-<a class="sourceLine" id="cb32-2" title="2"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p><code>main</code>ブランチの実体である<code>main</code>というファイルには、コミットオブジェクトのハッシュが入っている。今回のケースでは、先ほど作られたコミットオブジェクト<code>c950332</code>が保存されている。このように、通常は<code>HEAD</code>はブランチのファイルの場所を指し、ブランチのファイルはコミットオブジェクトのハッシュを保存している。<code>git log</code>で見てみよう。</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb33-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb33-2" title="2"><span class="ex">c950332</span> (HEAD -<span class="op">&gt;</span> main) <span class="ex">initial</span> commit</a></code></pre></div>
-<p><code>HEAD -&gt; main</code>と、<code>HEAD</code>が<code>main</code>を指していることが明示されている。</p>
-<h3 id="detached-head状態">Detached HEAD状態</h3>
-<p>さて、直接コミットハッシュを指定して<code>git checkout</code>してみよう。</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb34-1" title="1">$ <span class="fu">git</span> checkout c950332</a>
-<a class="sourceLine" id="cb34-2" title="2"><span class="ex">Note</span>: switching to <span class="st">&#39;c950332&#39;</span>.</a>
-<a class="sourceLine" id="cb34-3" title="3"></a>
-<a class="sourceLine" id="cb34-4" title="4"><span class="ex">You</span> are in <span class="st">&#39;detached HEAD&#39;</span> state. You can look around, make experimental</a>
-<a class="sourceLine" id="cb34-5" title="5"><span class="ex">changes</span> and commit them, and you can discard any commits you make in this</a>
-<a class="sourceLine" id="cb34-6" title="6"><span class="ex">state</span> without impacting any branches by switching back to a branch.</a>
-<a class="sourceLine" id="cb34-7" title="7"></a>
-<a class="sourceLine" id="cb34-8" title="8"><span class="ex">If</span> you want to create a new branch to retain commits you create, you may</a>
-<a class="sourceLine" id="cb34-9" title="9"><span class="kw">do</span> <span class="ex">so</span> (now or later) <span class="ex">by</span> using -c with the switch command. Example:</a>
-<a class="sourceLine" id="cb34-10" title="10"></a>
-<a class="sourceLine" id="cb34-11" title="11">  <span class="fu">git</span> switch -c <span class="op">&lt;</span>new-branch-name<span class="op">&gt;</span></a>
-<a class="sourceLine" id="cb34-12" title="12"></a>
-<a class="sourceLine" id="cb34-13" title="13"><span class="ex">Or</span> undo this operation with:</a>
-<a class="sourceLine" id="cb34-14" title="14"></a>
-<a class="sourceLine" id="cb34-15" title="15">  <span class="fu">git</span> switch -</a>
-<a class="sourceLine" id="cb34-16" title="16"></a>
-<a class="sourceLine" id="cb34-17" title="17"><span class="ex">Turn</span> off this advice by setting config variable advice.detachedHead to false</a>
-<a class="sourceLine" id="cb34-18" title="18"></a>
-<a class="sourceLine" id="cb34-19" title="19"><span class="ex">HEAD</span> is now at c950332 initial commit</a></code></pre></div>
-<p>これで、<code>HEAD</code>がブランチを介してではなく、直接コミットを指している状態、いわゆる頭が取れた(<code>detached HEAD</code>)状態になった。この状態で<code>git log</code>を見てみる。</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb35-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb35-2" title="2"><span class="ex">c950332</span> (HEAD, main) <span class="ex">initial</span> commit</a></code></pre></div>
-<p>先ほどと異なり、<code>HEAD</code>と<code>main</code>の間の矢印が消えた。<code>HEAD</code>ファイルの中身を見てみよう。</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb36-1" title="1">$ <span class="fu">cat</span> .git/HEAD</a>
-<a class="sourceLine" id="cb36-2" title="2"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p>先ほどは<code>ref: refs/heads/main</code>と、<code>main</code>ブランチの実体ファイルへのパスが格納されていたが、今は<code>HEAD</code>が直接コミットを指していることを反映して、そのコミットハッシュが保存されている。</p>
-<figure>
-<img src="fig/detached_head.png" alt="detached_head" /><figcaption>detached_head</figcaption>
-</figure>
-<p><code>main</code>ブランチに戻ろう。</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb37-1" title="1">$ <span class="fu">git</span> switch main</a>
-<a class="sourceLine" id="cb37-2" title="2">$ <span class="fu">cat</span> .git/HEAD</a>
-<a class="sourceLine" id="cb37-3" title="3"><span class="ex">ref</span>: refs/heads/main</a></code></pre></div>
-<p><code>.git/HEAD</code>の中身がブランチへの参照に戻っている。</p>
-<h3 id="ブランチの作成と削除">ブランチの作成と削除</h3>
-<p><code>main</code>ブランチから、もう一つブランチを生やしてみよう。</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb38-1" title="1"><span class="fu">git</span> switch -c branch</a></code></pre></div>
-<p>これで、<code>branch</code>ブランチが作られ、<code>main</code>の指すコミットと同じコミットを指しているはずだ。まずは<code>git log</code>で見てみよう。</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb39-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb39-2" title="2"><span class="ex">c950332</span> (HEAD -<span class="op">&gt;</span> branch, main) <span class="ex">initial</span> commit</a></code></pre></div>
-<p><code>HEAD</code>は<code>branch</code>を指し、<code>branch</code>も<code>main</code>も<code>c950332</code>を指している状態になっている。ファイルの中身も確認しよう。</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb40-1" title="1">$ <span class="fu">cat</span> .git/HEAD</a>
-<a class="sourceLine" id="cb40-2" title="2"><span class="ex">ref</span>: refs/heads/branch</a>
-<a class="sourceLine" id="cb40-3" title="3"></a>
-<a class="sourceLine" id="cb40-4" title="4">$ <span class="fu">cat</span> .git/refs/heads/main</a>
-<a class="sourceLine" id="cb40-5" title="5"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a>
-<a class="sourceLine" id="cb40-6" title="6"></a>
-<a class="sourceLine" id="cb40-7" title="7">$ <span class="fu">cat</span> .git/refs/heads/branch</a>
-<a class="sourceLine" id="cb40-8" title="8"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p><code>.git/refs/heads/main</code>と同じ内容の<code>.git/refs/heads/branch</code>が作成されている。</p>
-<p>ここで、人為的に<code>.git/refs/heads/</code>にもう一つファイルを作ってみよう。</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb41-1" title="1">$ <span class="fu">cp</span> .git/refs/heads/main .git/refs/heads/branch2</a>
-<a class="sourceLine" id="cb41-2" title="2">$ <span class="fu">ls</span> .git/refs/heads</a>
-<a class="sourceLine" id="cb41-3" title="3"><span class="ex">branch</span>  branch2  main</a></code></pre></div>
-<p><code>.git/refs/heads</code>内に、<code>branch2</code>というファイルが作成された。<code>git log</code>を見てみると、</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb42-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb42-2" title="2"><span class="ex">c950332</span> (HEAD -<span class="op">&gt;</span> branch, main, branch2) <span class="ex">initial</span> commit</a></code></pre></div>
-<p><code>branch2</code>が増え、<code>main</code>や<code>branch</code>と同じコミットを指していることが表示された。すなわち、<code>git</code>は<code>git log</code>が叩かれた時、全てのブランチがどのコミットを指しているか調べていることがわある。また、ブランチの作成が、単にファイルのコピーで実装されていることもわかった。</p>
-<p>作った<code>branch2</code>をgitを使って消してみよう。</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb43-1" title="1">$ <span class="fu">git</span> branch -d branch2</a>
-<a class="sourceLine" id="cb43-2" title="2"><span class="ex">Deleted</span> branch branch2 (was c950332)<span class="ex">.</span></a>
-<a class="sourceLine" id="cb43-3" title="3"></a>
-<a class="sourceLine" id="cb43-4" title="4">$ <span class="fu">ls</span> .git/refs/heads</a>
-<a class="sourceLine" id="cb43-5" title="5"><span class="ex">branch</span>  main</a></code></pre></div>
-<p>問題なく消せた。<code>.git/refs/heads</code>にあったブランチの実体も消えた。つまり、ブランチの削除は単にファイルの削除として実装されている。</p>
-<h3 id="リモートブランチと上流ブランチ">リモートブランチと上流ブランチ</h3>
-<p>リモートブランチも、普通にブランチと同じようにファイルで実装されている。まずは一つ上のディレクトリにリモートブランチ用のベアリポジトリを作ろう。</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb44-1" title="1"><span class="fu">git</span> init --bare ../test.git</a></code></pre></div>
-<p>ベアリポジトリは、<code>.git</code>の中身がそのままディレクトリに展開された内容になっている。</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb45-1" title="1">$ <span class="ex">tree</span> ../test.git</a>
-<a class="sourceLine" id="cb45-2" title="2"><span class="ex">../test.git</span></a>
-<a class="sourceLine" id="cb45-3" title="3">├── <span class="ex">HEAD</span></a>
-<a class="sourceLine" id="cb45-4" title="4">├── <span class="ex">branches</span></a>
-<a class="sourceLine" id="cb45-5" title="5">├── <span class="ex">config</span></a>
-<a class="sourceLine" id="cb45-6" title="6">├── <span class="ex">description</span></a>
-<a class="sourceLine" id="cb45-7" title="7">├── <span class="ex">hooks</span></a>
-<a class="sourceLine" id="cb45-8" title="8">│   ├── <span class="ex">applypatch-msg.sample</span></a>
-<a class="sourceLine" id="cb45-9" title="9">│   ├── <span class="ex">commit-msg.sample</span></a>
-<a class="sourceLine" id="cb45-10" title="10">│   ├── <span class="ex">fsmonitor-watchman.sample</span></a>
-<a class="sourceLine" id="cb45-11" title="11">│   ├── <span class="ex">post-update.sample</span></a>
-<a class="sourceLine" id="cb45-12" title="12">│   ├── <span class="ex">pre-applypatch.sample</span></a>
-<a class="sourceLine" id="cb45-13" title="13">│   ├── <span class="ex">pre-commit.sample</span></a>
-<a class="sourceLine" id="cb45-14" title="14">│   ├── <span class="ex">pre-merge-commit.sample</span></a>
-<a class="sourceLine" id="cb45-15" title="15">│   ├── <span class="ex">pre-push.sample</span></a>
-<a class="sourceLine" id="cb45-16" title="16">│   ├── <span class="ex">pre-rebase.sample</span></a>
-<a class="sourceLine" id="cb45-17" title="17">│   ├── <span class="ex">pre-receive.sample</span></a>
-<a class="sourceLine" id="cb45-18" title="18">│   ├── <span class="ex">prepare-commit-msg.sample</span></a>
-<a class="sourceLine" id="cb45-19" title="19">│   └── <span class="ex">update.sample</span></a>
-<a class="sourceLine" id="cb45-20" title="20">├── <span class="ex">info</span></a>
-<a class="sourceLine" id="cb45-21" title="21">│   └── <span class="ex">exclude</span></a>
-<a class="sourceLine" id="cb45-22" title="22">├── <span class="ex">objects</span></a>
-<a class="sourceLine" id="cb45-23" title="23">│   ├── <span class="ex">info</span></a>
-<a class="sourceLine" id="cb45-24" title="24">│   └── <span class="ex">pack</span></a>
-<a class="sourceLine" id="cb45-25" title="25">└── <span class="ex">refs</span></a>
-<a class="sourceLine" id="cb45-26" title="26">    ├── <span class="ex">heads</span></a>
-<a class="sourceLine" id="cb45-27" title="27">    └── <span class="ex">tags</span></a>
-<a class="sourceLine" id="cb45-28" title="28"></a>
-<a class="sourceLine" id="cb45-29" title="29"><span class="ex">9</span> directories, 16 files</a></code></pre></div>
-<p><code>git init</code>直後の<code>.git</code>ディレクトリと同じ中身であることがわかる。</p>
-<p>さて、このリポジトリをリモートリポジトリ<code>origin</code>として登録し、上流ブランチを<code>origin/main</code>にして<code>push</code>しよう。</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb46-1" title="1">$ <span class="fu">git</span> remote add origin ../test.git</a>
-<a class="sourceLine" id="cb46-2" title="2">$ <span class="fu">git</span> push -u origin main</a>
-<a class="sourceLine" id="cb46-3" title="3"><span class="ex">Enumerating</span> objects: 3, done.</a>
-<a class="sourceLine" id="cb46-4" title="4"><span class="ex">Counting</span> objects: 100% (3/3), <span class="kw">done</span><span class="ex">.</span></a>
-<a class="sourceLine" id="cb46-5" title="5"><span class="ex">Writing</span> objects: 100% (3/3), <span class="ex">227</span> bytes <span class="kw">|</span> <span class="ex">227.00</span> KiB/s, done.</a>
-<a class="sourceLine" id="cb46-6" title="6"><span class="ex">Total</span> 3 (delta 0), <span class="ex">reused</span> 0 (delta 0)</a>
-<a class="sourceLine" id="cb46-7" title="7"><span class="ex">To</span> ../test.git</a>
-<a class="sourceLine" id="cb46-8" title="8"> <span class="ex">*</span> [new branch]      main -<span class="op">&gt;</span> main</a>
-<a class="sourceLine" id="cb46-9" title="9"><span class="ex">Branch</span> <span class="st">&#39;main&#39;</span> set up to track remote branch <span class="st">&#39;main&#39;</span> from <span class="st">&#39;origin&#39;</span>.</a></code></pre></div>
-<p>これで、<code>origin/main</code>ブランチが作成され、<code>main</code>の上流ブランチとして登録された。<code>git branch</code>で見てみよう。</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb47-1" title="1">$ <span class="fu">git</span> branch -vva</a>
-<a class="sourceLine" id="cb47-2" title="2">  <span class="ex">branch</span>                a35d7e4 updates hello.txt</a>
-<a class="sourceLine" id="cb47-3" title="3"><span class="ex">*</span> main                c950332 [origin/main] initial commit</a>
-<a class="sourceLine" id="cb47-4" title="4">  <span class="ex">remotes/origin/main</span> c950332 initial commit</a></code></pre></div>
-<p><code>remotes/origin/main</code>ブランチが作成され、<code>main</code>ブランチの上流が<code>origin/main</code>になっていることがわかる。さて、<code>main</code>ブランチの実体は<code>.git/refs/main</code>というファイルだった。同様に、<code>remotes/origin/main</code>の実体は、<code>.git/refs/remotes/origin/main</code>にある。ブランチの名前を(ディレクトリも含めて)そのまま<code>.git/ref</code>に展開したような形になっている。<code>.git/refs/remotes/origin/main</code>の中身は、単にコミットハッシュが記録されているだけだ。</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb48-1" title="1">$ <span class="fu">cat</span> .git/refs/remotes/origin/main</a>
-<a class="sourceLine" id="cb48-2" title="2"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p>また、<code>main</code>の実体も同じコミットハッシュを指しているだけで、ここに上流ブランチの情報はない</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb49-1" title="1">$ <span class="fu">cat</span> .git/refs/heads/main</a>
-<a class="sourceLine" id="cb49-2" title="2"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p><code>main</code>の上流ブランチは、ブランチの実体ファイルではなく、<code>.git/config</code>というファイルに保存されている。中身を見てみよう。</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb50-1" title="1">$ <span class="fu">cat</span> .git/config</a>
-<a class="sourceLine" id="cb50-2" title="2">[<span class="ex">core</span>]</a>
-<a class="sourceLine" id="cb50-3" title="3">        <span class="ex">repositoryformatversion</span> = 0</a>
-<a class="sourceLine" id="cb50-4" title="4">        <span class="ex">filemode</span> = true</a>
-<a class="sourceLine" id="cb50-5" title="5">        <span class="ex">bare</span> = false</a>
-<a class="sourceLine" id="cb50-6" title="6">        <span class="ex">logallrefupdates</span> = true</a>
-<a class="sourceLine" id="cb50-7" title="7">[<span class="ex">remote</span> <span class="st">&quot;origin&quot;</span>]</a>
-<a class="sourceLine" id="cb50-8" title="8">        <span class="ex">url</span> = ../test.git</a>
-<a class="sourceLine" id="cb50-9" title="9">        <span class="ex">fetch</span> = +refs/heads/*:refs/remotes/origin/*</a>
-<a class="sourceLine" id="cb50-10" title="10">[<span class="ex">branch</span> <span class="st">&quot;main&quot;</span>]</a>
-<a class="sourceLine" id="cb50-11" title="11">        <span class="ex">remote</span> = origin</a>
-<a class="sourceLine" id="cb50-12" title="12">        <span class="ex">merge</span> = refs/heads/main</a></code></pre></div>
-<p>このファイルの階層構造は<code>git config</code>でそのままたどることができる。</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb51-1" title="1">$ <span class="fu">git</span> config branch.main.remote</a>
-<a class="sourceLine" id="cb51-2" title="2"><span class="ex">origin</span></a>
-<a class="sourceLine" id="cb51-3" title="3"></a>
-<a class="sourceLine" id="cb51-4" title="4">$ <span class="fu">git</span> config remote.origin.url</a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="ex">url</span> = ../test.git</a></code></pre></div>
-<p>また、<code>git log</code>は、リモートブランチも調べてくれる。</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb52-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb52-2" title="2"><span class="ex">c950332</span> (HEAD -<span class="op">&gt;</span> main, origin/main) <span class="ex">initial</span> commit</a></code></pre></div>
-<p><code>origin/main</code>が、<code>main</code>と同じブランチを指していることがわかる。</p>
-<p>もう一つリモートリポジトリを増やしてみよう。</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb53-1" title="1"><span class="fu">git</span> init --bare ../test2.git</a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="fu">git</span> remote add origin2 ../test2.git</a></code></pre></div>
-<p>これで、<code>.git/config</code>には<code>origin2</code>の情報が追加される。</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb54-1" title="1">$ <span class="fu">cat</span> .git/config</a>
-<a class="sourceLine" id="cb54-2" title="2">[<span class="ex">core</span>]</a>
-<a class="sourceLine" id="cb54-3" title="3">        <span class="ex">repositoryformatversion</span> = 0</a>
-<a class="sourceLine" id="cb54-4" title="4">        <span class="ex">filemode</span> = true</a>
-<a class="sourceLine" id="cb54-5" title="5">        <span class="ex">bare</span> = false</a>
-<a class="sourceLine" id="cb54-6" title="6">        <span class="ex">logallrefupdates</span> = true</a>
-<a class="sourceLine" id="cb54-7" title="7">[<span class="ex">remote</span> <span class="st">&quot;origin&quot;</span>]</a>
-<a class="sourceLine" id="cb54-8" title="8">        <span class="ex">url</span> = ../test.git</a>
-<a class="sourceLine" id="cb54-9" title="9">        <span class="ex">fetch</span> = +refs/heads/*:refs/remotes/origin/*</a>
-<a class="sourceLine" id="cb54-10" title="10">[<span class="ex">branch</span> <span class="st">&quot;main&quot;</span>]</a>
-<a class="sourceLine" id="cb54-11" title="11">        <span class="ex">remote</span> = origin</a>
-<a class="sourceLine" id="cb54-12" title="12">        <span class="ex">merge</span> = refs/heads/main</a>
-<a class="sourceLine" id="cb54-13" title="13">[<span class="ex">remote</span> <span class="st">&quot;origin2&quot;</span>]</a>
-<a class="sourceLine" id="cb54-14" title="14">        <span class="ex">url</span> = ../test2.git</a>
-<a class="sourceLine" id="cb54-15" title="15">        <span class="ex">fetch</span> = +refs/heads/*:refs/remotes/origin2/*</a></code></pre></div>
-<p>しかし、まだ<code>origin2</code>の実体は作られていません。</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb55-1" title="1">$ <span class="ex">tree</span> .git/refs/remotes</a>
-<a class="sourceLine" id="cb55-2" title="2"><span class="ex">.git/refs/remotes</span></a>
-<a class="sourceLine" id="cb55-3" title="3">└── <span class="ex">origin</span></a>
-<a class="sourceLine" id="cb55-4" title="4">    └── <span class="ex">main</span></a>
-<a class="sourceLine" id="cb55-5" title="5"></a>
-<a class="sourceLine" id="cb55-6" title="6"><span class="ex">1</span> directory, 1 file</a></code></pre></div>
-<p><code>origin</code>の実体がディレクトリで、その下に<code>main</code>ファイルがあるが、<code>origin2</code>というディレクトリはまだ存在しないことがわかる。</p>
-<p>ここで、<code>main</code>ブランチの上流ブランチを<code>origin2/main</code>にして<code>push</code>してみる。</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb56-1" title="1">$ <span class="fu">git</span> push -u origin2</a>
-<a class="sourceLine" id="cb56-2" title="2"><span class="ex">Enumerating</span> objects: 3, done.</a>
-<a class="sourceLine" id="cb56-3" title="3"><span class="ex">Counting</span> objects: 100% (3/3), <span class="kw">done</span><span class="ex">.</span></a>
-<a class="sourceLine" id="cb56-4" title="4"><span class="ex">Writing</span> objects: 100% (3/3), <span class="ex">227</span> bytes <span class="kw">|</span> <span class="ex">227.00</span> KiB/s, done.</a>
-<a class="sourceLine" id="cb56-5" title="5"><span class="ex">Total</span> 3 (delta 0), <span class="ex">reused</span> 0 (delta 0)</a>
-<a class="sourceLine" id="cb56-6" title="6"><span class="ex">To</span> ../test2.git</a>
-<a class="sourceLine" id="cb56-7" title="7"> <span class="ex">*</span> [new branch]      main -<span class="op">&gt;</span> main</a>
-<a class="sourceLine" id="cb56-8" title="8"><span class="ex">Branch</span> <span class="st">&#39;main&#39;</span> set up to track remote branch <span class="st">&#39;main&#39;</span> from <span class="st">&#39;origin2&#39;</span>.</a></code></pre></div>
-<p>このタイミングで<code>origin2/main</code>の実体が作られる。</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb57-1" title="1">$ <span class="ex">tree</span> .git/refs/remotes</a>
-<a class="sourceLine" id="cb57-2" title="2"><span class="ex">.git/refs/remotes</span></a>
-<a class="sourceLine" id="cb57-3" title="3">├── <span class="ex">origin</span></a>
-<a class="sourceLine" id="cb57-4" title="4">│   └── <span class="ex">main</span></a>
-<a class="sourceLine" id="cb57-5" title="5">└── <span class="ex">origin2</span></a>
-<a class="sourceLine" id="cb57-6" title="6">    └── <span class="ex">main</span></a>
-<a class="sourceLine" id="cb57-7" title="7"></a>
-<a class="sourceLine" id="cb57-8" title="8"><span class="ex">2</span> directories, 2 files</a></code></pre></div>
-<p>そして、<code>origin2/main</code>が<code>main</code>や<code>origin/main</code>と同じコミットハッシュを指す。</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb58-1" title="1">$ <span class="fu">cat</span> .git/refs/remotes/origin2/main</a>
-<a class="sourceLine" id="cb58-2" title="2"><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></a></code></pre></div>
-<p>したがって、<code>git log</code>に<code>origin2/main</code>も表示されるようになる</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb59-1" title="1">$ <span class="fu">git</span> log --oneline</a>
-<a class="sourceLine" id="cb59-2" title="2"><span class="ex">c950332</span> (HEAD -<span class="op">&gt;</span> main, origin2/main, origin/main) <span class="ex">initial</span> commit</a></code></pre></div>
-<h2 id="インデックス">インデックス</h2>
-<p>ワーキングツリーとリポジトリの間に「インデックス」を挟み、コミットの前にステージングを行うのがGitの特徴だ。このインデックスの実体は<code>.git/index</code>という一つのファイルだ。この中身もちょっと覗いてみよう。</p>
-<h3 id="インデックスの実体と中身">インデックスの実体と中身</h3>
-<p>適当なディレクトリを掘って、そこにファイルを作り、<code>git init</code>してみる。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb60-1" title="1"><span class="fu">mkdir</span> index_test</a>
-<a class="sourceLine" id="cb60-2" title="2"><span class="bu">cd</span> index_test</a>
-<a class="sourceLine" id="cb60-3" title="3"><span class="bu">echo</span> <span class="st">&quot;My first file&quot;</span> <span class="op">&gt;</span> test.txt</a>
-<a class="sourceLine" id="cb60-4" title="4"><span class="fu">git</span> init</a></code></pre></div>
-<p>さて、<code>git init</code>した直後は、まだ<code>index</code>は作られていない。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb61-1" title="1">$ <span class="fu">ls</span> .git/index</a>
-<a class="sourceLine" id="cb61-2" title="2"><span class="ex">ls</span>: cannot access <span class="st">&#39;.git/index&#39;</span>: No such file or directory</a></code></pre></div>
-<p>しかし、<code>git add</code>すると<code>index</code>が作られる。</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb62-1" title="1">$ <span class="fu">git</span> add test.txt</a>
-<a class="sourceLine" id="cb62-2" title="2">$ <span class="fu">ls</span> .git/index</a>
-<a class="sourceLine" id="cb62-3" title="3"><span class="ex">.git/index</span></a></code></pre></div>
-<p>また、<code>git add test.txt</code>したことで、<code>test.txt</code>に対応するblobオブジェクトも作られている。</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb63-1" title="1">$ <span class="fu">ls</span> -1 .git/objects/*/*</a>
-<a class="sourceLine" id="cb63-2" title="2"><span class="ex">.git/objects/36/3d8b784900d74b3159e8e93a651c0db42629ef</span></a></code></pre></div>
-<p><code>git add</code>は、ファイルをインデックスに登録するコマンドであった。したがって、いま<code>test.txt</code>がインデックスに登録されたはずだ。インデックスの中身は、<code>git ls-files --stage</code>で見ることができる。</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb64-1" title="1">$ <span class="fu">git</span> ls-files --stage</a>
-<a class="sourceLine" id="cb64-2" title="2"><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</a></code></pre></div>
-<p>確かに<code>test.txt</code>というファイルに対応するblobオブジェクトができている。そのハッシュは<code>363d8b784900d74b3159e8e93a651c0db42629ef</code>であり、先ほど<code>.git/objects</code>に作成されたものだ。</p>
-<p>つまり、<code>git add test.txt</code>をした時、Gitは</p>
-<ul>
-<li><code>test.txt</code>に対応するblobオブジェクトを作り、SHA-1ハッシュを計算してファイル名とする。</li>
-<li>作られたオブジェクトは<code>.git/objects</code>に保存。ただし、ハッシュの上二文字をディレクトリとし、残りをファイル名として仕分けする</li>
-<li><code>index</code>にそのblobオブジェクトと名前を登録する</li>
-</ul>
-<p>という作業をしている。</p>
-<h3 id="ブランチ切り替えとインデックス">ブランチ切り替えとインデックス</h3>
-<p>ブランチを切り替えると、インデックスがどうなるか見てみよう。</p>
-<p>まずはブランチ<code>branch_a</code>を作り、そこに<code>file_a.txt</code>を追加、コミットする。</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb65-1" title="1">$ <span class="fu">git</span> switch -c branch_a</a>
-<a class="sourceLine" id="cb65-2" title="2"><span class="ex">Switched</span> to a new branch <span class="st">&#39;branch_a&#39;</span></a>
-<a class="sourceLine" id="cb65-3" title="3">$ <span class="bu">echo</span> <span class="st">&quot;This is A&quot;</span> <span class="op">&gt;</span> file_a.txt</a>
-<a class="sourceLine" id="cb65-4" title="4">$ <span class="fu">git</span> add file_a.txt</a>
-<a class="sourceLine" id="cb65-5" title="5">$ <span class="fu">git</span> commit -m <span class="st">&quot;adds file_a.txt&quot;</span></a>
-<a class="sourceLine" id="cb65-6" title="6">[<span class="ex">branch_a</span> 41e4b52] adds file_a.txt</a>
-<a class="sourceLine" id="cb65-7" title="7"> <span class="ex">1</span> file changed, 1 insertion(+)</a>
-<a class="sourceLine" id="cb65-8" title="8"> <span class="ex">create</span> mode 100644 file_a.txt</a></code></pre></div>
-<p>これで、ワーキングツリーには<code>test.txt</code>と<code>file_a.txt</code>の二つのファイルが含まれるようになった。当然、インデックスにも同じファイルが登録されている。</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb66-1" title="1">$ <span class="fu">git</span> ls-files --stage</a>
-<a class="sourceLine" id="cb66-2" title="2"><span class="ex">100644</span> e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt</a>
-<a class="sourceLine" id="cb66-3" title="3"><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</a></code></pre></div>
-<p><code>file_a.txt</code>のblobオブジェクトが増えている。これが<code>file_a.txt</code>のハッシュであることを確認しておこう。</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb67-1" title="1">$ <span class="fu">git</span> hash-object file_a.txt</a>
-<a class="sourceLine" id="cb67-2" title="2"><span class="ex">e32836f4cedd87510bfd2f145bc0696861fdb026</span></a></code></pre></div>
-<p>この状態で、ブランチを切り替えてみよう。まずは<code>main</code>に戻る。</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb68-1" title="1">$ <span class="fu">git</span> switch main</a>
-<a class="sourceLine" id="cb68-2" title="2"><span class="ex">Switched</span> to branch <span class="st">&#39;main&#39;</span></a></code></pre></div>
-<p>インデックスを見てみよう。</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb69-1" title="1">$ <span class="fu">git</span> ls-files --stage</a>
-<a class="sourceLine" id="cb69-2" title="2"><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</a></code></pre></div>
-<p><code>main</code>ブランチには<code>test.txt</code>しかないので、インデックスにあるのも<code>test.txt</code>のblobオブジェクトだけだ。</p>
-<p>新たなブランチ<code>branch_b</code>を作り、歴史を分岐させよう。</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb70-1" title="1">$ <span class="fu">git</span> switch -c branch_b</a>
-<a class="sourceLine" id="cb70-2" title="2"><span class="ex">Switched</span> to a new branch <span class="st">&#39;branch_b&#39;</span></a></code></pre></div>
-<p>ファイル<code>file_b.txt</code>を追加し、コミットする。</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb71-1" title="1">$ <span class="bu">echo</span> <span class="st">&quot;This is B&quot;</span> <span class="op">&gt;</span> file_b.txt</a>
-<a class="sourceLine" id="cb71-2" title="2">$ <span class="fu">git</span> add file_b.txt</a>
-<a class="sourceLine" id="cb71-3" title="3">$ <span class="fu">git</span> commit -m <span class="st">&quot;adds file_b.txt&quot;</span></a>
-<a class="sourceLine" id="cb71-4" title="4">[<span class="ex">branch_b</span> 81085f2] adds file_b.txt</a>
-<a class="sourceLine" id="cb71-5" title="5"> <span class="ex">1</span> file changed, 1 insertion(+)</a>
-<a class="sourceLine" id="cb71-6" title="6"> <span class="ex">create</span> mode 100644 file_b.txt</a></code></pre></div>
-<p><code>git add</code>の時点で<code>file_b.txt</code>に対応するblobオブジェクトが作られ、インデックスに登録される。インデックスの中身を見てみよう。</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb72-1" title="1">$ <span class="fu">git</span> ls-files --stage</a>
-<a class="sourceLine" id="cb72-2" title="2"><span class="ex">100644</span> 6a571f63d9d0bce7995b5c08d218370d7ea719a5 0    file_b.txt</a>
-<a class="sourceLine" id="cb72-3" title="3"><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</a></code></pre></div>
-<p><code>test.txt</code>と<code>file_b.txt</code>が入っている。</p>
-<p>この状態で、<code>branch_a</code>ブランチに切り替えて見よう。</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb73-1" title="1">$ <span class="fu">git</span> switch branch_a</a>
-<a class="sourceLine" id="cb73-2" title="2"><span class="ex">Switched</span> to branch <span class="st">&#39;branch_a&#39;</span></a></code></pre></div>
-<p>ワーキングツリーのファイルが<code>test.txt</code>と<code>file_a.txt</code>になる。</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb74-1" title="1">$ <span class="fu">ls</span></a>
-<a class="sourceLine" id="cb74-2" title="2"><span class="ex">file_a.txt</span>  test.txt</a></code></pre></div>
-<p>インデックスの中身も連動する。</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb75-1" title="1">$ <span class="fu">git</span> ls-files --stage</a>
-<a class="sourceLine" id="cb75-2" title="2"><span class="ex">100644</span> e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt</a>
-<a class="sourceLine" id="cb75-3" title="3"><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</a></code></pre></div>
-<figure>
-<img src="https://github.com/kaityo256/zenn-content/raw/main/articles/inside_the_index/switch.png" alt="index" /><figcaption>index</figcaption>
-</figure>
-<p>つまり、ブランチ切り替えの際、ワーキングツリーだけでなく、インデックスも切り替えられている。</p>
-<h2 id="まとめ">まとめ</h2>
-<p>Gitのオブジェクト、ブランチ、そしてインデックスの実装について見てみた。Gitのオブジェクトは、ファイルがblobオブジェクトに、ディレクトリがtreeオブジェクトに対応し、コミットオブジェクトは、スナップショットを表すtreeオブジェクトと、親コミットのハッシュ、そしてコミットの作者やメッセージの情報をまとめたものだ。オブジェクトの名前はSHA-1ハッシュ値になっており、blobオブジェクトやtreeオブジェクトは中身からハッシュ値が決まるため、同じ内容なら同じハッシュ値となる。</p>
-<p>ブランチはファイルとして実装され、ブランチの作成はファイルのコピー、削除はファイルの削除で実装されている。また、<code>origin/main</code>みたいなリモートブランチは、<code>origin</code>はディレクトリとして実装されている。上流ブランチなどの情報は<code>.git/config</code>にあり、<code>git config</code>で表示できる情報は、そのまま<code>.git/config</code>内のファイルの構造に対応している。</p>
-<p>インデックスは<code>.git/index</code>というファイルが実体であり、その中身は「blobオブジェクトの目録」であった。ブランチを切り替えるとインデックスの中身も切り替わる。そしてワーキングツリーがきれいな状態の場合は、ワーキングツリーとインデックスの中身は一致している。</p>
-<p>以上を見て、非常に「素直」に実装されていることがわかったと思う。よくわからないコミットハッシュや、<code>.git</code>ディレクトリの中身も、上記の知識を持ってから見てみると「なるほどな」とわかった気になるものだ。</p>
-<p>上記のことを完全に理解する必要はない。しかし、自動車のボンネットを開けた時に、これがエンジンで、ここがバッテリーで、ということくらいはわかるであろう。同じくらいの解像度でGitが裏で何をやっているかが、ぼんやりと分かればそれでよい。</p>
-<section class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>blobは<a href="https://docs.github.com/en/rest/reference/git#blobs">Binary Large OBjectsの略</a>らしい。<a href="#fnref1" class="footnote-back">↩</a></p></li>
-</ol>
-</section>
+                  <header>
+        <h1 class="title">Gitの中身</h1>
+                              </header>
+                  <h1 id="はじめに">はじめに</h1>
+                  <p>Gitで管理するプロジェクトには<code>.git</code>というディレクトリがあり、その中にGitの管理情報が入っている。その中には、全てのコミットや、いろんなバージョンのファイル、ブランチ、タグといった情報が格納されている。Gitを操作するにあたり、この中身がどうなっているかを理解する必要はないし、もし中身を覚えたとしても、操作方法は変わらないまま、内部実装だけ変更になる可能性もある。それでも、Gitの仕組み、特に様々な情報が<code>.git</code>にどのように格納されているかを知っておくのは二つの理由から有用だと考える。</p>
+                  <p>一つ目の理由は、「物が動く仕組み」を知っておくことが教養だからだ。車を運転するのに、アクセルを踏めば進み、ブレーキを踏めば止まり、ハンドルを回せば曲がることを知っていれば十分だ。しかし、シリンダーにガソリンが噴射され、ピストンで圧縮したところで点火し、爆発する力でピストンが押される、という直線的な動きを作り、それを回転運動に変換してタイヤが回っている、ということくらいは(特に理工系の学生なら)ぼんやりとは知っておいて欲しい。さらに、その点火システム(イグニッションコイル)に電磁誘導が使われていると知れば、「なるほど、学校で習った電磁気の性質がこんなところに使われているのか」と思うことであろう。自分でゼロから作れるほど理解する必要はないが、物やツールをブラックボックスにせず、その中身をぼんやりとでも知っておくのは良いことだ。</p>
+                  <p>もう一つの理由は、「機能は、なんらかの方法で実装されている」という感覚を持って欲しいためだ。我々がツールに求めるのは「機能」であるが、同じ機能であっても複数の実現手段がある。例えば、電子レンジとオーブンは、「どちらも食品を加熱する」という機能を持っているが、その実現方法は異なる。同様に、GitもSubversionはどちらもバージョン管理システムであり、どちらにもブランチやタグという概念があるが、その実装方法は全く異なる。Gitはツールである。ツールであるからには何らかの機能を提供している。その機能、例えばコミットによるスナップショットの保存や、ブランチの切り替えなどが、実際にはどのように実現されているかを見てみるのは無駄にはならないであろう。</p>
+                  <p>以下では、Gitの実装、特に<code>.git</code>ディレクトリの中に何がどのように格納されているか紹介する。その詳細を覚える必要は全くない。しかし、「機能の実現には実装が伴う」ということ、また、Gitの実装が非常に素直であることを実感して欲しい。</p>
+                  <h1
+                  id="gitディレクトリの中身"><code>.git</code>ディレクトリの中身</h1>
+                  <p>まず、<code>.git</code>の中身を見てみよう。適当なリポジトリで<code>ls .git</code>してみる。</p>
+                  <div class="sourceCode" id="cb1"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls .git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">COMMIT_EDITMSG</span>  HEAD       branches/  description  index  logs/     packed-refs</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">FETCH_HEAD</span>      ORIG_HEAD  config     hooks/       info/  objects/  refs/</span></code></pre></div>
+                  <p>表示されるファイルはリポジトリの状態によって異なるが、概ね上記のようなファイルやディレクトリが含まれている。このうち、主なものを紹介する。</p>
+                  <ul>
+                  <li><code>HEAD</code> -
+                  カレントブランチ(HEAD)の情報を保存するファイル</li>
+                  <li><code>index</code> -
+                  インデックスの情報を保存するファイル</li>
+                  <li><code>config</code> -
+                  リモートブランチや上流ブランチ等の情報を保存するファイル</li>
+                  <li><code>refs</code> -
+                  ブランチの情報を保存するディレクトリ</li>
+                  <li><code>objects</code> -
+                  コミットなどのオブジェクトを保存するディレクトリ</li>
+                  </ul>
+                  <p>以下、これらの「中身」について触れてみよう。</p>
+                  <h1 id="gitのオブジェクト">Gitのオブジェクト</h1>
+                  <p>まずは、<code>.git/objects</code>の中身を見てみよう。ここにはGitが管理する「オブジェクト」が格納されている。Gitのオブジェクトには、以下の4種類がある。</p>
+                  <figure>
+                  <img src="fig/objects.png" alt="objects" />
+                  <figcaption aria-hidden="true">objects</figcaption>
+                  </figure>
+                  <ul>
+                  <li>blobオブジェクト：
+                  ファイルを圧縮したもの。ファイルシステムの「ファイル」に対応</li>
+                  <li>treeオブジェクト：
+                  Blobオブジェクトや別のTreeオブジェクトを管理する。ファイルシステムの「ディレクトリ」に対応</li>
+                  <li>コミットオブジェクト：
+                  Treeオブジェクトを包んだもの。コミットのスナップショットに対応するTreeオブジェクトに、親コミット、コミットメッセージなどを付加する</li>
+                  <li>タグオブジェクト：
+                  他のGitオブジェクトを包んだもの。ほとんどの場合はコミットオブジェクトを包むが、TagのメッセージやTagをつけた人の情報などを付加する</li>
+                  </ul>
+                  <p>この講義ではタグについては扱わないので、残りの三つ、blobオブジェクト、treeオブジェクト、コミットオブジェクトについて見てみよう。</p>
+                  <h2 id="blobオブジェクト">blobオブジェクト</h2>
+                  <figure>
+                  <img src="fig/blob.png" alt="blob" />
+                  <figcaption aria-hidden="true">blob</figcaption>
+                  </figure>
+                  <p>blob<a href="#fn1" class="footnote-ref" id="fnref1"
+                  role="doc-noteref"><sup>1</sup></a>オブジェクトは、ファイルを保存するためのオブジェクトだ。その実体は、ファイルに<code>blob</code>というテキストと、ファイルサイズをヘッダ情報として付加し、zlibで圧縮したものだ。</p>
+                  <p>blobオブジェクトを実際に作ってみよう。適当なディレクトリで<code>git init</code>してから、適当なファイルを作る。</p>
+                  <div class="sourceCode" id="cb2"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> blob</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> blob</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-n</span> <span class="st">&quot;Hello Git&quot;</span> <span class="op">&gt;</span> test.txt</span></code></pre></div>
+                  <p>改行が含まれないように、echoに-nオプションをつけている。これをgit
+                  addすると対応するblobオブジェクトが作られる。</p>
+                  <div class="sourceCode" id="cb3"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add test.txt</span></code></pre></div>
+                  <p>この時点で、<code>e51ca0d0b8c5b6e02473228bbf876ba000932e96</code>というblobオブジェクトが作られた。見てみよう。</p>
+                  <div class="sourceCode" id="cb4"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-t</span> e51ca0d0b8c5b6e02473228bbf876ba000932e96</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">blob</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> e51ca0d0b8c5b6e02473228bbf876ba000932e96</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> Git</span></code></pre></div>
+                  <p><code>git cat-file</code>はオブジェクトのハッシュを指定して中身を見るためのコマンドだ。<code>-t</code>はそのオブジェクトのタイプを、<code>-p</code>は中身を表示する。<code>e51ca0d...</code>というオブジェクトはblobオブジェクトであり、中身は「Hello
+                  Git」というテキストファイルであることがわかる</p>
+                  <p>この<code>e51ca0d...</code>というオブジェクトの実体は、<code>.git/objects</code>の中にファイルとして格納されている。</p>
+                  <div class="sourceCode" id="cb5"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-1</span> .git/objects/<span class="pp">*</span>/<span class="pp">*</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span></span></code></pre></div>
+                  <p>Gitはオブジェクトのファイル名の頭二文字をディレクトリにして、残りをその下のファイルとして保存する。したがって、<code>e51ca0d...</code>というオブジェクトは、<code>.git/objects</code>以下の<code>e5</code>ディレクトリの下に、<code>1ca0d...</code>というファイル名で保存される。</p>
+                  <p>このblobオブジェクトのファイル名は、対象となるファイルの頭にblob
+                  ファイルサイズ\0をつけたもののSHA-1ハッシュ値だ。ハッシュ値とは、ハッシュ関数にデータを入力した時の出力であり、ハッシュ関数とは、任意の長さのデータから、(多くの場合)固定長の長さの値を得るための操作のことだ。SHAは「Secure
+                  Hash
+                  Algorithm」の略であり、SHA-1(シャーワン)はSHAシリーズのうちの一つである。</p>
+                  <p>ハッシュとは、以下のような性質を持つものだ。</p>
+                  <ul>
+                  <li>任意の長さのデータを受け取り、固定の長さの出力(ハッシュ値)を返す</li>
+                  <li>入力からハッシュ値を得るのは容易だが、あるハッシュ値を出力するような入力を探すのは極めて困難</li>
+                  <li>入力が少しでも変化すると、ハッシュ値が大きく変化する</li>
+                  </ul>
+                  <p>特に二番目の性質を「強衝突耐性」と呼ぶ。例えばメッセージとハッシュ値を両方展開した時、もしメッセージが改変されていればハッシュ値が変わるから改竄がバレる。しかし、同じハッシュ値を持つ別の入力を作ることができれば、データを改竄してもバレない。</p>
+                  <p>SHA-1の強衝突耐性は既に突破されているため、セキュリティ用途には向かないが、残りの二つの性質が便利であるため、GitではオブジェクトのIDとしてSHA-1ハッシュを用いている。SHA-1は任意の入力に対して160ビットの出力を返す。16進数は0からFまでの16種類の数値で表現され、1桁が4ビットであるから、160ビットを16進数表記すると40桁となる。これがGitのコミットハッシュが0からFまでの16種類の文字を使って40桁となる理由だ。Gitではハッシュ値を全桁指定する必要はなく、他と区別が付く長さだけ指定すれば良い。通常、先頭7桁も取れば十分なので、<code>git log --oneline</code>などでは7桁だけ表示される。</p>
+                  <p>さて、このハッシュ値を実際に作ってみよう。そのためには、<code>test.txt</code>の冒頭に<code>blob 9\0</code>というヘッダを付けた内容のSHA-1ハッシュ値を求めればよい。なお、<code>blob 9\0</code>の<code>blob</code>はblobオブジェクトであること、<code>9</code>はファイルサイズ、<code>\0</code>はヌル文字と呼ばれ、ヘッダと中身の境界を表現している。SHA-1ハッシュを得るには<code>shasum</code>を用いる。</p>
+                  <div class="sourceCode" id="cb6"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> { echo <span class="at">-en</span> <span class="st">&#39;blob 9\0&#39;</span><span class="kw">;</span><span class="fu">cat</span> test.txt<span class="kw">;</span><span class="er">}</span> <span class="kw">|</span> <span class="ex">shasum</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">e51ca0d0b8c5b6e02473228bbf876ba000932e96</span> <span class="pp">*</span>-</span></code></pre></div>
+                  <p>確かに<code>e51ca0d</code>というコミットハッシュが得られた。なお、Gitにはヘッダを付けてハッシュを得るコマンド<code>git hash-object</code>が用意されている。</p>
+                  <div class="sourceCode" id="cb7"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git hash-object test.txt</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">e51ca0d0b8c5b6e02473228bbf876ba000932e96</span></span></code></pre></div>
+                  <p>同じハッシュ値が得られた。<code>git cat-file</code>や<code>git hash-object</code>という、普段使わないが、普段使うコマンドの裏で実行されている低レベルなコマンドを
+                  <strong>配管コマンド(plumbing commands)</strong>
+                  と呼ぶ。一方、普段我々が使う<code>git add</code>や<code>git commit</code>などのコマンドを
+                  <strong>磁器コマンド (porcelain commands)</strong>
+                  と呼ぶ。これは、磁器とはトイレの便器のことで、Gitをトイレだと思った時、我々が普段使うコマンドが外に出ている便器、普段見ることのない低レベルなコマンドを下水などの配管にたとえたものだ。</p>
+                  <p>細かいことはともかく、「Gitで良く出てくる英数字のIDはSHA-1ハッシュである」とだけ覚えておくと良い。</p>
+                  <p>さて、ファイル名はSHA-1ハッシュであった。中身はファイルをヘッダ込みでzlibで圧縮したものだ。例えばPythonで実装するなこんな感じになる。</p>
+                  <div class="sourceCode" id="cb8"><pre
+                  class="sourceCode py"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zlib</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> <span class="st">&quot;Hello Git&quot;</span> <span class="co"># ファイルの中身</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ヘッダ付与</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>store <span class="op">=</span> <span class="ss">f&quot;blob </span><span class="sc">{</span><span class="bu">len</span>(content)<span class="sc">}</span><span class="ch">\0</span><span class="sc">{</span>content<span class="sc">}</span><span class="ss">&quot;</span>.encode(<span class="st">&quot;utf-8&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> zlib.compress(store, level<span class="op">=</span><span class="dv">1</span>) <span class="co"># 圧縮</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">bytes</span>.<span class="bu">hex</span>(data))      <span class="co"># 中身の表示</span></span></code></pre></div>
+                  <p><code>Hello Git</code>という中身を持つファイルに、<code>blob 9\0</code>というヘッダを付与して、<code>zlib.compress</code>で圧縮したバイト列を表示するスクリプトだ。実行してみよう。</p>
+                  <div class="sourceCode" id="cb9"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 test.py</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">78014bcac94f52b064f048cdc9c95770cf2c01002b750531</span></span></code></pre></div>
+                  <p>先ほど作成したblobオブジェクトの中身もダンプしてみよう。</p>
+                  <div class="sourceCode" id="cb10"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> od <span class="at">-tx1</span> .git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">0000000</span> 78 01 4b ca c9 4f 52 b0 64 f0 48 cd c9 c9 57 70</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">0000020</span> cf 2c 01 00 2b 75 05 31</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">0000030</span></span></code></pre></div>
+                  <p>完全に一致していることがわかると思う。</p>
+                  <p>まとめると、</p>
+                  <ul>
+                  <li>Gitのblobオブジェクトはファイルに対応している</li>
+                  <li>blobオブジェクトは対象ファイルにヘッダを付与したものであり、ファイル名はSHA-1ハッシュ値、ファイルの中身はzlibで圧縮したもの</li>
+                  </ul>
+                  <p>である。以外に単純であることが実感できたであろうか？</p>
+                  <h2
+                  id="コミットオブジェクト">コミットオブジェクト</h2>
+                  <p>コミットオブジェクトは、コミット、すなわちスナップショットを保存するためのものだ。先ほど、<code>git add</code>した状態で止めていたのを、コミットしてみよう。</p>
+                  <div class="sourceCode" id="cb11"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;initial commit&quot;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> <span class="er">(</span><span class="ex">root-commit</span><span class="kw">)</span> <span class="ex">ca70291]</span> initial commit</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 test.txt</span></code></pre></div>
+                  <p>コミットハッシュ<code>ca70291</code>を持つコミットが作られた。これに対応するオブジェクトがコミットオブジェクトだ。いま、オブジェクトが何個できたか見てみよう。</p>
+                  <div class="sourceCode" id="cb12"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-1</span> .git/objects/<span class="pp">*</span>/<span class="pp">*</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/ca/70291031230dde40264d62b6e8d2424e2c9366</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/dd/1d7ee1e23a241a3597a0d0be5139a997fc29c8</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span></span></code></pre></div>
+                  <p><code>.git/objects</code>以下に3つオブジェクトができている。このうち、<code>e51ca0d</code>は<code>test.txt</code>に対応するblobオブジェクト、<code>ca70291</code>は今作ったコミットオブジェクト、もう一つの<code>dd1d7ee</code>は後述するtreeオブジェクトであり、コミットが保持するスナップショットを表現する
+                  。blobオブジェクトやtreeオブジェクトは、同じ中身であれば同じハッシュ値を持つ。一方、コミットオブジェクトのハッシュはぶつかっては困るので、毎回異なるものになる。</p>
+                  <p>さっき作ったコミットオブジェクト<code>ca70291</code>のタイプを見てみよう。。ちなみに、先ほど述べたように、ハッシュ値は他と区別が付けば40桁全てを指定する必要はない。</p>
+                  <div class="sourceCode" id="cb13"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-t</span> ca70291</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span></span></code></pre></div>
+                  <p>確かにコミットオブジェクトになっている。この表示から<code>ca70291</code>はコミットオブジェクトであることがわかる。コミットオブジェクトは、以下の情報をまとめたものだ。</p>
+                  <ul>
+                  <li>スナップショットを保存するtreeオブジェクト</li>
+                  <li>親コミットのコミットハッシュ
+                  <ul>
+                  <li>root-commitなら親コミット情報なし</li>
+                  <li>merge commitなら親コミット情報二つ</li>
+                  </ul></li>
+                  <li>コミットの作成者情報</li>
+                  <li>コミットメッセージ</li>
+                  </ul>
+                  <p>中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb14"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> ca70291</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> dd1d7ee1e23a241a3597a0d0be5139a997fc29c8</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1632060650 +0900</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1632060650 +0900</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="ex">initial</span> commit</span></code></pre></div>
+                  <p><code>dd1d7ee</code>というtreeオブジェクト、作成者、コミットメッセージを含んでいることがわかる。なお、これはroot
+                  commitなので、親コミットの情報は持っていない。適当に修正してコミットしてみよう。</p>
+                  <div class="sourceCode" id="cb15"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;Hello commit object&quot;</span> <span class="op">&gt;&gt;</span> test.txt</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-am</span> <span class="st">&quot;update&quot;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> 1f620eb] update</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span><span class="ex">,</span> 1 deletion<span class="er">(</span><span class="ex">-</span><span class="kw">)</span></span></code></pre></div>
+                  <p>新しく<code>1f620eb</code>というコミットができた。中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb16"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 1f620eb</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> 55e11d02569af14b5d29fe56fd44c1cc32c55e72</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">parent</span> ca70291031230dde40264d62b6e8d2424e2c9366</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630738892  +0900</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630738892 +0900</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="ex">update</span></span></code></pre></div>
+                  <figure>
+                  <img src="fig/commit.png" alt="commit.png" />
+                  <figcaption aria-hidden="true">commit.png</figcaption>
+                  </figure>
+                  <p>スナップショットを表すtreeオブジェクトが<code>dd1d7ee</code>から<code>55e11d0</code>に更新され、新たに親コミットとして、先ほどの<code>ca70291</code>が保存されている。</p>
+                  <p>マージにより作られたマージコミットの場合は、二つの親コミットの情報を含んでいる。いま、こんな歴史を持つリポジトリを考えよう。</p>
+                  <div class="sourceCode" id="cb17"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--graph</span> <span class="at">--pretty</span><span class="op">=</span>oneline</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   f4baa057ce89467a2faced36229da02799c9e394 <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">Merge</span> branch <span class="st">&#39;branch&#39;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> 6aecd68aa423651edda9d22e20925314ff3e8386 <span class="er">(</span><span class="ex">branch</span><span class="kw">)</span> <span class="ex">update</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> <span class="kw">|</span> <span class="ex">953cb6056e5f0437f0d4e102f232d8eb705f6428</span> adds test2.txt</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 6db4350c6ebd75338ac4bc2eb2a2924895a0c73b initial commit</span></code></pre></div>
+                  <p>root
+                  commitである<code>6db4350</code>から<code>6aecd68</code>と<code>953cb60</code>が分岐し、マージされて<code>f4baa05</code>になっている。</p>
+                  <figure>
+                  <img src="fig/merge.png" alt="merge.png" />
+                  <figcaption aria-hidden="true">merge.png</figcaption>
+                  </figure>
+                  <p>この最後のマージコミットf4baa05の中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb18"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> f4baa05</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> 706a1741c1d94977ba496449d80ab848ca945e14</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">parent</span> 953cb6056e5f0437f0d4e102f232d8eb705f6428</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="ex">parent</span> 6aecd68aa423651edda9d22e20925314ff3e8386</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630743012 +0900</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630743012 +0900</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Merge</span> branch <span class="st">&#39;branch&#39;</span></span></code></pre></div>
+                  <p>スナップショットを保存するtreeオブジェクト<code>706a174</code>の他に、二つの親コミット<code>953cb60</code>と<code>6aecd68</code>が保存されていることがわかる。</p>
+                  <h2 id="treeオブジェクト">treeオブジェクト</h2>
+                  <p>treeオブジェクトは、ディレクトリに対応するオブジェクトだ。先ほどのblobオブジェクトの作り方を見てわかるように、blobオブジェクトはファイル名を保存していない。blobオブジェクトとファイル名を対応させるのもtreeオブジェクトの役目だ。また、コミットオブジェクトが格納するのは、スナップショット全体を表現するtreeオブジェクトである。</p>
+                  <p>treeオブジェクトがディレクトリに対応することを見るため、適当にディレクトリを含むリポジトリを作ってみよう。</p>
+                  <div class="sourceCode" id="cb19"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> tree</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tree</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> dir1 dir2</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;file1&quot;</span> <span class="op">&gt;</span> dir1/file1.txt</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;file2&quot;</span> <span class="op">&gt;</span> dir2/file2.txt</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;README&quot;</span> <span class="op">&gt;</span> README.md</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add README.md dir1 dir2</span></code></pre></div>
+                  <p>コミットしてみる。</p>
+                  <div class="sourceCode" id="cb20"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;initial commit&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> <span class="er">(</span><span class="ex">root-commit</span><span class="kw">)</span> <span class="ex">662458a]</span> initial commit</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">3</span> files changed, 3 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 README.md</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 dir1/file1.txt</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 dir2/file2.txt</span></code></pre></div>
+                  <p>これで、コミットオブジェクト(<code>662458a</code>)が作られた。中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb21"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 662458a</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> 193fea0500b331a7ccb536aa691d8eb7df8afd13</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630737694 +0900</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630737694 +0900</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="ex">initial</span> commit</span></code></pre></div>
+                  <p>treeオブジェクトとコミットメッセージ等の情報を含んでいることがわかる。root
+                  commitなので、親コミットの情報はない。同じ手順を踏めば、コミットハッシュは異なっても、同じtreeオブジェクトができているはずだ。treeオブジェクト<code>193fea0</code>は、このコミットのスナップショットを保存している。見てみよう。</p>
+                  <div class="sourceCode" id="cb22"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 193fea0</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob e845566c06f9bf557d35e8292c37cf05d97a9769    README.md</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">040000</span> tree 0b9f291245f6c596fd30bee925fe94fe0cbadd60    dir1</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="ex">040000</span> tree 345699cffb47ac20257e0ce4cebcbfc4b2a7f9e3    dir2</span></code></pre></div>
+                  <p>ファイル<code>README.md</code>に対応する<code>blob</code>オブジェクトと、ディレクトリ<code>dir1</code>、<code>dir2</code>に対応するtreeオブジェクトが含まれている。二つのtreeオブジェクトも見てみよう。</p>
+                  <div class="sourceCode" id="cb23"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 0b9f291</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob e2129701f1a4d54dc44f03c93bca0a2aec7c5449    file1.txt</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 345699c</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob 6c493ff740f9380390d5c9ddef4af18697ac9375    file2.txt</span></code></pre></div>
+                  <p>ファイル構造とオブジェクトの構造を図示すると以下のようになる。</p>
+                  <figure>
+                  <img src="fig/tree.png" alt="tree.png" />
+                  <figcaption aria-hidden="true">tree.png</figcaption>
+                  </figure>
+                  <p>さて、blobオブジェクトやtreeオブジェクトにはファイル名、ディレクトリ名は含まれておらず、treeオブジェクトは、自分が管理するオブジェクトと名前の対応を管理している。</p>
+                  <p>また、blobオブジェクトのハッシュは、ファイルサイズと中身だけで決まり、ファイル名は関係ない。したがって、Gitは「同じ中身だけど、異なるファイル名」を、同じblobオブジェクトで管理する。これを確認してみよう。</p>
+                  <div class="sourceCode" id="cb24"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> synonym</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> synonym</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello&quot;</span> <span class="op">&gt;</span> file1.txt</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> file1.txt file2.txt</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt file2.txt</span></code></pre></div>
+                  <p>これで、中身が同じファイル<code>file1.txt</code>、<code>file2.txt</code>がステージングされた。コミットしてみる。</p>
+                  <div class="sourceCode" id="cb25"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;initial commit&quot;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> <span class="er">(</span><span class="ex">root-commit</span><span class="kw">)</span> <span class="ex">75470e6]</span> initial commit</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">2</span> files changed, 2 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 file1.txt</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 file2.txt</span></code></pre></div>
+                  <p>コミットオブジェクト<code>75470e6</code>ができたので、中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb26"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> 75470e6</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> e79a5d99a8e5cd5da0260866b85df60052fd045e</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630745015 +0900</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> H. Watanabe <span class="op">&lt;</span>kaityo256@example.com<span class="op">&gt;</span> 1630745015 +0900</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="ex">initial</span> commit</span></code></pre></div>
+                  <p>treeオブジェクト<code>e79a5d9</code>ができている。中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb27"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-p</span> e79a5d9</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob e965047ad7c57865823c7d992b1d046ea66edf78    file1.txt</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob e965047ad7c57865823c7d992b1d046ea66edf78    file2.txt</span></code></pre></div>
+                  <p>全く同じblobオブジェクトに別名を与えていることがわかる。</p>
+                  <h1 id="gitの参照">Gitの参照</h1>
+                  <p>Gitオブジェクトの次は、Gitの参照を見てみよう。参照はブランチやタグなどで<code>.git/refs</code>以下に格納されている。</p>
+                  <h2
+                  id="headとブランチの実体">HEADとブランチの実体</h2>
+                  <figure>
+                  <img src="fig/head.png" alt="head" />
+                  <figcaption aria-hidden="true">head</figcaption>
+                  </figure>
+                  <p>通常、GitではHEADがブランチを、ブランチがコミットを指している。<code>HEAD</code>の実体は<code>.git/HEAD</code>というファイルだ。ブランチは<code>git/refs</code>にブランチ名と同名のファイルとして保存されている。例えば<code>main</code>ブランチの実体は<code>.git/refs/heads/main</code>というファイルだ。この関係を見てみよう。</p>
+                  <p>適当なディレクトリ<code>test</code>を作って、その中で<code>git init</code>する。</p>
+                  <div class="sourceCode" id="cb28"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> test</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> test</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span></code></pre></div>
+                  <p>この時点で<code>.git</code>が作られ、その中に<code>HEAD</code>が作られた。ファイルの中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb29"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/HEAD</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ref:</span> refs/heads/main</span></code></pre></div>
+                  <p>この<code>ref: refs/heads/main</code>は、「<code>HEAD</code>は今<code>refs/heads/main</code>を指しているよ」という意味だ。しかし、<code>git init</code>直後はまだこのファイルは存在しない。</p>
+                  <div class="sourceCode" id="cb30"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/heads/main</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cat:</span> .git/refs/heads/main: そのようなファイルやディレクトリはありません</span></code></pre></div>
+                  <p>さて、適当なファイルを作って、<code>git add</code>、<code>git commit</code>してみよう。</p>
+                  <div class="sourceCode" id="cb31"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;Hello&quot;</span> <span class="op">&gt;</span> hello.txt</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add hello.txt</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;initial commit&quot;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> <span class="er">(</span><span class="ex">root-commit</span><span class="kw">)</span> <span class="ex">c950332]</span> initial commit</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 hello.txt</span></code></pre></div>
+                  <p>初めて<code>git commit</code>した時点で、<code>main</code>ブランチの実体が作られる。</p>
+                  <div class="sourceCode" id="cb32"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/heads/main</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p><code>main</code>ブランチの実体である<code>main</code>というファイルには、コミットオブジェクトのハッシュが入っている。今回のケースでは、先ほど作られたコミットオブジェクト<code>c950332</code>が保存されている。このように、通常は<code>HEAD</code>はブランチのファイルの場所を指し、ブランチのファイルはコミットオブジェクトのハッシュを保存している。<code>git log</code>で見てみよう。</p>
+                  <div class="sourceCode" id="cb33"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <p><code>HEAD -&gt; main</code>と、<code>HEAD</code>が<code>main</code>を指していることが明示されている。</p>
+                  <h2 id="detached-head状態">Detached HEAD状態</h2>
+                  <p>さて、直接コミットハッシュを指定して<code>git checkout</code>してみよう。</p>
+                  <div class="sourceCode" id="cb34"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git checkout c950332</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Note:</span> switching to <span class="st">&#39;c950332&#39;</span>.</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> are in <span class="st">&#39;detached HEAD&#39;</span> state. You can look around, make experimental</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="ex">changes</span> and commit them, and you can discard any commits you make in this</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="ex">state</span> without impacting any branches by switching back to a branch.</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="ex">If</span> you want to create a new branch to retain commits you create, you may</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> <span class="ex">so</span> <span class="er">(</span><span class="ex">now</span> or later<span class="kw">)</span> <span class="ex">by</span> using <span class="at">-c</span> with the switch command. Example:</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">git</span> switch <span class="at">-c</span> <span class="op">&lt;</span>new-branch-name<span class="op">&gt;</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Or</span> undo this operation with:</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">git</span> switch <span class="at">-</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="ex">Turn</span> off this advice by setting config variable advice.detachedHead to false</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a><span class="ex">HEAD</span> is now at c950332 initial commit</span></code></pre></div>
+                  <p>これで、<code>HEAD</code>がブランチを介してではなく、直接コミットを指している状態、いわゆる頭が取れた(<code>detached HEAD</code>)状態になった。この状態で<code>git log</code>を見てみる。</p>
+                  <div class="sourceCode" id="cb35"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD,</span> main<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <p>先ほどと異なり、<code>HEAD</code>と<code>main</code>の間の矢印が消えた。<code>HEAD</code>ファイルの中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb36"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/HEAD</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p>先ほどは<code>ref: refs/heads/main</code>と、<code>main</code>ブランチの実体ファイルへのパスが格納されていたが、今は<code>HEAD</code>が直接コミットを指していることを反映して、そのコミットハッシュが保存されている。</p>
+                  <figure>
+                  <img src="fig/detached_head.png"
+                  alt="detached_head" />
+                  <figcaption
+                  aria-hidden="true">detached_head</figcaption>
+                  </figure>
+                  <p><code>main</code>ブランチに戻ろう。</p>
+                  <div class="sourceCode" id="cb37"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git switch main</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/HEAD</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ref:</span> refs/heads/main</span></code></pre></div>
+                  <p><code>.git/HEAD</code>の中身がブランチへの参照に戻っている。</p>
+                  <h2
+                  id="ブランチの作成と削除">ブランチの作成と削除</h2>
+                  <p><code>main</code>ブランチから、もう一つブランチを生やしてみよう。</p>
+                  <div class="sourceCode" id="cb38"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> branch</span></code></pre></div>
+                  <p>これで、<code>branch</code>ブランチが作られ、<code>main</code>の指すコミットと同じコミットを指しているはずだ。まずは<code>git log</code>で見てみよう。</p>
+                  <div class="sourceCode" id="cb39"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> branch, main<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <p><code>HEAD</code>は<code>branch</code>を指し、<code>branch</code>も<code>main</code>も<code>c950332</code>を指している状態になっている。ファイルの中身も確認しよう。</p>
+                  <div class="sourceCode" id="cb40"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/HEAD</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ref:</span> refs/heads/branch</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/heads/main</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/heads/branch</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p><code>.git/refs/heads/main</code>と同じ内容の<code>.git/refs/heads/branch</code>が作成されている。</p>
+                  <p>ここで、人為的に<code>.git/refs/heads/</code>にもう一つファイルを作ってみよう。</p>
+                  <div class="sourceCode" id="cb41"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cp .git/refs/heads/main .git/refs/heads/branch2</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls .git/refs/heads</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ex">branch</span>  branch2  main</span></code></pre></div>
+                  <p><code>.git/refs/heads</code>内に、<code>branch2</code>というファイルが作成された。<code>git log</code>を見てみると、</p>
+                  <div class="sourceCode" id="cb42"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> branch, main, branch2<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <p><code>branch2</code>が増え、<code>main</code>や<code>branch</code>と同じコミットを指していることが表示された。すなわち、<code>git</code>は<code>git log</code>が叩かれた時、全てのブランチがどのコミットを指しているか調べていることがわある。また、ブランチの作成が、単にファイルのコピーで実装されていることもわかった。</p>
+                  <p>作った<code>branch2</code>をgitを使って消してみよう。</p>
+                  <div class="sourceCode" id="cb43"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch <span class="at">-d</span> branch2</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Deleted</span> branch branch2 <span class="er">(</span><span class="ex">was</span> c950332<span class="kw">)</span><span class="bu">.</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls .git/refs/heads</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="ex">branch</span>  main</span></code></pre></div>
+                  <p>問題なく消せた。<code>.git/refs/heads</code>にあったブランチの実体も消えた。つまり、ブランチの削除は単にファイルの削除として実装されている。</p>
+                  <h2
+                  id="リモートブランチと上流ブランチ">リモートブランチと上流ブランチ</h2>
+                  <p>リモートブランチも、普通にブランチと同じようにファイルで実装されている。まずは一つ上のディレクトリにリモートブランチ用のベアリポジトリを作ろう。</p>
+                  <div class="sourceCode" id="cb44"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="at">--bare</span> ../test.git</span></code></pre></div>
+                  <p>ベアリポジトリは、<code>.git</code>の中身がそのままディレクトリに展開された内容になっている。</p>
+                  <div class="sourceCode" id="cb45"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree ../test.git</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="ex">../test.git</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> HEAD</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> branches</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> config</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> description</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> hooks</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── applypatch-msg.sample</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── commit-msg.sample</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── fsmonitor-watchman.sample</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── post-update.sample</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-applypatch.sample</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-commit.sample</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-merge-commit.sample</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-push.sample</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-rebase.sample</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── pre-receive.sample</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── prepare-commit-msg.sample</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> └── update.sample</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> info</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> └── exclude</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> objects</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> ├── info</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> └── pack</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> refs</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> heads</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> tags</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a><span class="ex">9</span> directories, 16 files</span></code></pre></div>
+                  <p><code>git init</code>直後の<code>.git</code>ディレクトリと同じ中身であることがわかる。</p>
+                  <p>さて、このリポジトリをリモートリポジトリ<code>origin</code>として登録し、上流ブランチを<code>origin/main</code>にして<code>push</code>しよう。</p>
+                  <div class="sourceCode" id="cb46"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git remote add origin ../test.git</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git push <span class="at">-u</span> origin main</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 3, done.</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> 227 bytes <span class="kw">|</span> <span class="ex">227.00</span> KiB/s, done.</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 3 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> ../test.git</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> [new branch]      main <span class="at">-</span><span class="op">&gt;</span> main</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Branch</span> <span class="st">&#39;main&#39;</span> set up to track remote branch <span class="st">&#39;main&#39;</span> from <span class="st">&#39;origin&#39;</span>.</span></code></pre></div>
+                  <p>これで、<code>origin/main</code>ブランチが作成され、<code>main</code>の上流ブランチとして登録された。<code>git branch</code>で見てみよう。</p>
+                  <div class="sourceCode" id="cb47"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch <span class="at">-vva</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">branch</span>                a35d7e4 updates hello.txt</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main                c950332 [origin/main] initial commit</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">remotes/origin/main</span> c950332 initial commit</span></code></pre></div>
+                  <p><code>remotes/origin/main</code>ブランチが作成され、<code>main</code>ブランチの上流が<code>origin/main</code>になっていることがわかる。さて、<code>main</code>ブランチの実体は<code>.git/refs/main</code>というファイルだった。同様に、<code>remotes/origin/main</code>の実体は、<code>.git/refs/remotes/origin/main</code>にある。ブランチの名前を(ディレクトリも含めて)そのまま<code>.git/ref</code>に展開したような形になっている。<code>.git/refs/remotes/origin/main</code>の中身は、単にコミットハッシュが記録されているだけだ。</p>
+                  <div class="sourceCode" id="cb48"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/remotes/origin/main</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p>また、<code>main</code>の実体も同じコミットハッシュを指しているだけで、ここに上流ブランチの情報はない</p>
+                  <div class="sourceCode" id="cb49"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/heads/main</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p><code>main</code>の上流ブランチは、ブランチの実体ファイルではなく、<code>.git/config</code>というファイルに保存されている。中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb50"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/config</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[core]</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>        <span class="ex">repositoryformatversion</span> = 0</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        <span class="ex">filemode</span> = true</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>        <span class="ex">bare</span> = false</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>        <span class="ex">logallrefupdates</span> = true</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="ex">[remote</span> <span class="st">&quot;origin&quot;</span>]</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>        <span class="ex">url</span> = ../test.git</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>        <span class="ex">fetch</span> = +refs/heads/<span class="pp">*</span>:refs/remotes/origin/<span class="pp">*</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="ex">[branch</span> <span class="st">&quot;main&quot;</span>]</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>        <span class="ex">remote</span> = origin</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>        <span class="ex">merge</span> = refs/heads/main</span></code></pre></div>
+                  <p>このファイルの階層構造は<code>git config</code>でそのままたどることができる。</p>
+                  <div class="sourceCode" id="cb51"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git config branch.main.remote</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="ex">origin</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git config remote.origin.url</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="ex">url</span> = ../test.git</span></code></pre></div>
+                  <p>また、<code>git log</code>は、リモートブランチも調べてくれる。</p>
+                  <div class="sourceCode" id="cb52"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, origin/main<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <p><code>origin/main</code>が、<code>main</code>と同じブランチを指していることがわかる。</p>
+                  <p>もう一つリモートリポジトリを増やしてみよう。</p>
+                  <div class="sourceCode" id="cb53"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="at">--bare</span> ../test2.git</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin2 ../test2.git</span></code></pre></div>
+                  <p>これで、<code>.git/config</code>には<code>origin2</code>の情報が追加される。</p>
+                  <div class="sourceCode" id="cb54"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/config</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[core]</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>        <span class="ex">repositoryformatversion</span> = 0</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>        <span class="ex">filemode</span> = true</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>        <span class="ex">bare</span> = false</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>        <span class="ex">logallrefupdates</span> = true</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="ex">[remote</span> <span class="st">&quot;origin&quot;</span>]</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>        <span class="ex">url</span> = ../test.git</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>        <span class="ex">fetch</span> = +refs/heads/<span class="pp">*</span>:refs/remotes/origin/<span class="pp">*</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="ex">[branch</span> <span class="st">&quot;main&quot;</span>]</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>        <span class="ex">remote</span> = origin</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>        <span class="ex">merge</span> = refs/heads/main</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="ex">[remote</span> <span class="st">&quot;origin2&quot;</span>]</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>        <span class="ex">url</span> = ../test2.git</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>        <span class="ex">fetch</span> = +refs/heads/<span class="pp">*</span>:refs/remotes/origin2/<span class="pp">*</span></span></code></pre></div>
+                  <p>しかし、まだ<code>origin2</code>の実体は作られていません。</p>
+                  <div class="sourceCode" id="cb55"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree .git/refs/remotes</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/refs/remotes</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> origin</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> main</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="ex">1</span> directory, 1 file</span></code></pre></div>
+                  <p><code>origin</code>の実体がディレクトリで、その下に<code>main</code>ファイルがあるが、<code>origin2</code>というディレクトリはまだ存在しないことがわかる。</p>
+                  <p>ここで、<code>main</code>ブランチの上流ブランチを<code>origin2/main</code>にして<code>push</code>してみる。</p>
+                  <div class="sourceCode" id="cb56"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git push <span class="at">-u</span> origin2</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 3, done.</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> 227 bytes <span class="kw">|</span> <span class="ex">227.00</span> KiB/s, done.</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 3 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> ../test2.git</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> [new branch]      main <span class="at">-</span><span class="op">&gt;</span> main</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Branch</span> <span class="st">&#39;main&#39;</span> set up to track remote branch <span class="st">&#39;main&#39;</span> from <span class="st">&#39;origin2&#39;</span>.</span></code></pre></div>
+                  <p>このタイミングで<code>origin2/main</code>の実体が作られる。</p>
+                  <div class="sourceCode" id="cb57"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree .git/refs/remotes</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/refs/remotes</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> origin</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> └── main</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> origin2</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> main</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="ex">2</span> directories, 2 files</span></code></pre></div>
+                  <p>そして、<code>origin2/main</code>が<code>main</code>や<code>origin/main</code>と同じコミットハッシュを指す。</p>
+                  <div class="sourceCode" id="cb58"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/remotes/origin2/main</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>
+                  <p>したがって、<code>git log</code>に<code>origin2/main</code>も表示されるようになる</p>
+                  <div class="sourceCode" id="cb59"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c950332</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, origin2/main, origin/main<span class="kw">)</span> <span class="ex">initial</span> commit</span></code></pre></div>
+                  <h1 id="インデックス">インデックス</h1>
+                  <p>ワーキングツリーとリポジトリの間に「インデックス」を挟み、コミットの前にステージングを行うのがGitの特徴だ。このインデックスの実体は<code>.git/index</code>という一つのファイルだ。この中身もちょっと覗いてみよう。</p>
+                  <h2
+                  id="インデックスの実体と中身">インデックスの実体と中身</h2>
+                  <p>適当なディレクトリを掘って、そこにファイルを作り、<code>git init</code>してみる。</p>
+                  <div class="sourceCode" id="cb60"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> index_test</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> index_test</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;My first file&quot;</span> <span class="op">&gt;</span> test.txt</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span></code></pre></div>
+                  <p>さて、<code>git init</code>した直後は、まだ<code>index</code>は作られていない。</p>
+                  <div class="sourceCode" id="cb61"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls .git/index</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ls:</span> cannot access <span class="st">&#39;.git/index&#39;</span>: No such file or directory</span></code></pre></div>
+                  <p>しかし、<code>git add</code>すると<code>index</code>が作られる。</p>
+                  <div class="sourceCode" id="cb62"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add test.txt</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls .git/index</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/index</span></span></code></pre></div>
+                  <p>また、<code>git add test.txt</code>したことで、<code>test.txt</code>に対応するblobオブジェクトも作られている。</p>
+                  <div class="sourceCode" id="cb63"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-1</span> .git/objects/<span class="pp">*</span>/<span class="pp">*</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/36/3d8b784900d74b3159e8e93a651c0db42629ef</span></span></code></pre></div>
+                  <p><code>git add</code>は、ファイルをインデックスに登録するコマンドであった。したがって、いま<code>test.txt</code>がインデックスに登録されたはずだ。インデックスの中身は、<code>git ls-files --stage</code>で見ることができる。</p>
+                  <div class="sourceCode" id="cb64"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git ls-files <span class="at">--stage</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</span></code></pre></div>
+                  <p>確かに<code>test.txt</code>というファイルに対応するblobオブジェクトができている。そのハッシュは<code>363d8b784900d74b3159e8e93a651c0db42629ef</code>であり、先ほど<code>.git/objects</code>に作成されたものだ。</p>
+                  <p>つまり、<code>git add test.txt</code>をした時、Gitは</p>
+                  <ul>
+                  <li><code>test.txt</code>に対応するblobオブジェクトを作り、SHA-1ハッシュを計算してファイル名とする。</li>
+                  <li>作られたオブジェクトは<code>.git/objects</code>に保存。ただし、ハッシュの上二文字をディレクトリとし、残りをファイル名として仕分けする</li>
+                  <li><code>index</code>にそのblobオブジェクトと名前を登録する</li>
+                  </ul>
+                  <p>という作業をしている。</p>
+                  <h2
+                  id="ブランチ切り替えとインデックス">ブランチ切り替えとインデックス</h2>
+                  <p>ブランチを切り替えると、インデックスがどうなるか見てみよう。</p>
+                  <p>まずはブランチ<code>branch_a</code>を作り、そこに<code>file_a.txt</code>を追加、コミットする。</p>
+                  <div class="sourceCode" id="cb65"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git switch <span class="at">-c</span> branch_a</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to a new branch <span class="st">&#39;branch_a&#39;</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;This is A&quot;</span> <span class="op">&gt;</span> file_a.txt</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add file_a.txt</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;adds file_a.txt&quot;</span></span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="ex">[branch_a</span> 41e4b52] adds file_a.txt</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 file_a.txt</span></code></pre></div>
+                  <p>これで、ワーキングツリーには<code>test.txt</code>と<code>file_a.txt</code>の二つのファイルが含まれるようになった。当然、インデックスにも同じファイルが登録されている。</p>
+                  <div class="sourceCode" id="cb66"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git ls-files <span class="at">--stage</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</span></code></pre></div>
+                  <p><code>file_a.txt</code>のblobオブジェクトが増えている。これが<code>file_a.txt</code>のハッシュであることを確認しておこう。</p>
+                  <div class="sourceCode" id="cb67"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git hash-object file_a.txt</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="ex">e32836f4cedd87510bfd2f145bc0696861fdb026</span></span></code></pre></div>
+                  <p>この状態で、ブランチを切り替えてみよう。まずは<code>main</code>に戻る。</p>
+                  <div class="sourceCode" id="cb68"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git switch main</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to branch <span class="st">&#39;main&#39;</span></span></code></pre></div>
+                  <p>インデックスを見てみよう。</p>
+                  <div class="sourceCode" id="cb69"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git ls-files <span class="at">--stage</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</span></code></pre></div>
+                  <p><code>main</code>ブランチには<code>test.txt</code>しかないので、インデックスにあるのも<code>test.txt</code>のblobオブジェクトだけだ。</p>
+                  <p>新たなブランチ<code>branch_b</code>を作り、歴史を分岐させよう。</p>
+                  <div class="sourceCode" id="cb70"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git switch <span class="at">-c</span> branch_b</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to a new branch <span class="st">&#39;branch_b&#39;</span></span></code></pre></div>
+                  <p>ファイル<code>file_b.txt</code>を追加し、コミットする。</p>
+                  <div class="sourceCode" id="cb71"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;This is B&quot;</span> <span class="op">&gt;</span> file_b.txt</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add file_b.txt</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span> <span class="st">&quot;adds file_b.txt&quot;</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[branch_b</span> 81085f2] adds file_b.txt</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 file_b.txt</span></code></pre></div>
+                  <p><code>git add</code>の時点で<code>file_b.txt</code>に対応するblobオブジェクトが作られ、インデックスに登録される。インデックスの中身を見てみよう。</p>
+                  <div class="sourceCode" id="cb72"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git ls-files <span class="at">--stage</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 6a571f63d9d0bce7995b5c08d218370d7ea719a5 0    file_b.txt</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</span></code></pre></div>
+                  <p><code>test.txt</code>と<code>file_b.txt</code>が入っている。</p>
+                  <p>この状態で、<code>branch_a</code>ブランチに切り替えて見よう。</p>
+                  <div class="sourceCode" id="cb73"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git switch branch_a</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to branch <span class="st">&#39;branch_a&#39;</span></span></code></pre></div>
+                  <p>ワーキングツリーのファイルが<code>test.txt</code>と<code>file_a.txt</code>になる。</p>
+                  <div class="sourceCode" id="cb74"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="ex">file_a.txt</span>  test.txt</span></code></pre></div>
+                  <p>インデックスの中身も連動する。</p>
+                  <div class="sourceCode" id="cb75"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git ls-files <span class="at">--stage</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> e32836f4cedd87510bfd2f145bc0696861fdb026 0    file_a.txt</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> 363d8b784900d74b3159e8e93a651c0db42629ef 0    test.txt</span></code></pre></div>
+                  <figure>
+                  <img
+                  src="https://github.com/kaityo256/zenn-content/raw/main/articles/inside_the_index/switch.png"
+                  alt="index" />
+                  <figcaption aria-hidden="true">index</figcaption>
+                  </figure>
+                  <p>つまり、ブランチ切り替えの際、ワーキングツリーだけでなく、インデックスも切り替えられている。</p>
+                  <h1 id="まとめ">まとめ</h1>
+                  <p>Gitのオブジェクト、ブランチ、そしてインデックスの実装について見てみた。Gitのオブジェクトは、ファイルがblobオブジェクトに、ディレクトリがtreeオブジェクトに対応し、コミットオブジェクトは、スナップショットを表すtreeオブジェクトと、親コミットのハッシュ、そしてコミットの作者やメッセージの情報をまとめたものだ。オブジェクトの名前はSHA-1ハッシュ値になっており、blobオブジェクトやtreeオブジェクトは中身からハッシュ値が決まるため、同じ内容なら同じハッシュ値となる。</p>
+                  <p>ブランチはファイルとして実装され、ブランチの作成はファイルのコピー、削除はファイルの削除で実装されている。また、<code>origin/main</code>みたいなリモートブランチは、<code>origin</code>はディレクトリとして実装されている。上流ブランチなどの情報は<code>.git/config</code>にあり、<code>git config</code>で表示できる情報は、そのまま<code>.git/config</code>内のファイルの構造に対応している。</p>
+                  <p>インデックスは<code>.git/index</code>というファイルが実体であり、その中身は「blobオブジェクトの目録」であった。ブランチを切り替えるとインデックスの中身も切り替わる。そしてワーキングツリーがきれいな状態の場合は、ワーキングツリーとインデックスの中身は一致している。</p>
+                  <p>以上を見て、非常に「素直」に実装されていることがわかったと思う。よくわからないコミットハッシュや、<code>.git</code>ディレクトリの中身も、上記の知識を持ってから見てみると「なるほどな」とわかった気になるものだ。</p>
+                  <p>上記のことを完全に理解する必要はない。しかし、自動車のボンネットを開けた時に、これがエンジンで、ここがバッテリーで、ということくらいはわかるであろう。同じくらいの解像度でGitが裏で何をやっているかが、ぼんやりと分かればそれでよい。</p>
+                  <section id="footnotes"
+                  class="footnotes footnotes-end-of-document"
+                  role="doc-endnotes">
+                  <hr />
+                  <ol>
+                  <li id="fn1"><p>blobは<a
+                  href="https://docs.github.com/en/rest/reference/git#blobs">Binary
+                  Large OBjectsの略</a>らしい。<a href="#fnref1"
+                  class="footnote-back"
+                  role="doc-backlink">↩︎</a></p></li>
+                  </ol>
+                  </section>
           </article>
   </body>
 
