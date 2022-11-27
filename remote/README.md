@@ -118,7 +118,7 @@ Gitではローカルにリモートの情報のコピーを用意しておき�
 
 ![upstream branch](fig/upstream_branch.png)
 
-ローカルの`main`ブランチにとっての「上流」はローカルの`origin/main`ブランチであり、`origin/main`を`main`の上流ブランチと呼ぶまた、ローカルの`origin/main`ブランチはリモートの`main`ブランチをリモート追跡しており、`origin/main`をリモートの`main`ブランチのリモート追跡ブランチと呼ぶつまり`origin/main`は上流ブランチでもリモート追跡ブランチでもあることに注意したい。
+ローカルの`main`ブランチにとっての「上流」はローカルの`origin/main`ブランチであり、`origin/main`を`main`の上流ブランチと呼ぶ。また、ローカルの`origin/main`ブランチはリモートの`main`ブランチをリモート追跡しており、`origin/main`をリモートの`main`ブランチのリモート追跡ブランチと呼ぶ。つまり`origin/main`は上流ブランチでもリモート追跡ブランチでもあることに注意したい。
 
 最初にリポジトリをクローンした時、メインブランチである`main`ができるが、自動的に上流ブランチ`origin/main`も作成される。ローカルの`main`はローカルの`origin/main`を、ローカルの`origin/main`はリモートの`main`を見ている。
 
