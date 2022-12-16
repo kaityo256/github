@@ -158,7 +158,7 @@
                   <figcaption aria-hidden="true">upstream
                   branch</figcaption>
                   </figure>
-                  <p>ローカルの<code>main</code>ブランチにとっての「上流」はローカルの<code>origin/main</code>ブランチであり、<code>origin/main</code>を<code>main</code>の上流ブランチと呼ぶまた、ローカルの<code>origin/main</code>ブランチはリモートの<code>main</code>ブランチをリモート追跡しており、<code>origin/main</code>をリモートの<code>main</code>ブランチのリモート追跡ブランチと呼ぶつまり<code>origin/main</code>は上流ブランチでもリモート追跡ブランチでもあることに注意したい。</p>
+                  <p>ローカルの<code>main</code>ブランチにとっての「上流」はローカルの<code>origin/main</code>ブランチであり、<code>origin/main</code>を<code>main</code>の上流ブランチと呼ぶ。また、ローカルの<code>origin/main</code>ブランチはリモートの<code>main</code>ブランチをリモート追跡しており、<code>origin/main</code>をリモートの<code>main</code>ブランチのリモート追跡ブランチと呼ぶ。つまり<code>origin/main</code>は上流ブランチでもリモート追跡ブランチでもあることに注意したい。</p>
                   <p>最初にリポジトリをクローンした時、メインブランチである<code>main</code>ができるが、自動的に上流ブランチ<code>origin/main</code>も作成される。ローカルの<code>main</code>はローカルの<code>origin/main</code>を、ローカルの<code>origin/main</code>はリモートの<code>main</code>を見ている。</p>
                   <p>上流ブランチは、<code>git fetch</code>、<code>git merge</code>、<code>git rebase</code>等で、引数を省略した時の対象ブランチとなる。先の<code>fetch</code>、<code>merge</code>、<code>push</code>などの操作を、ブランチがどのように動くかも含めてもう一度見てみよう。</p>
                   <p>まず、リモートリポジトリの<code>main</code>の歴史が、ローカルの<code>main</code>よりも進んでいる状態で<code>git fetch</code>しよう。<code>main</code>に上流ブランチ<code>origin/main</code>が設定されており、<code>origin/main</code>はリモートの<code>main</code>をリモート追跡しているため、これは</p>
