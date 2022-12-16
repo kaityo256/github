@@ -1,0 +1,22 @@
+PREDEF:
+  - preface.re
+
+CHAPS:
+  - vcs.re
+  - term.re
+  - command.re
+  - basics.re
+  - branch.re
+  - remote.re
+  - advanced.re
+  - internals.re
+  - practice_basic.re
+  - practice_advanced.re
+  - practice_github_basic.re
+  - practice_github_advanced.re
+
+POSTDEF:
+  - postface.re
+
+APPENDIX:
+  - references.re
