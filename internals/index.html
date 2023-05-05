@@ -148,7 +148,7 @@
                   <strong>磁器コマンド (porcelain commands)</strong>
                   と呼ぶ。これは、磁器とはトイレの便器のことで、Gitをトイレだと思った時、我々が普段使うコマンドが外に出ている便器、普段見ることのない低レベルなコマンドを下水などの配管にたとえたものだ。</p>
                   <p>細かいことはともかく、「Gitで良く出てくる英数字のIDはSHA-1ハッシュである」とだけ覚えておくと良い。</p>
-                  <p>さて、ファイル名はSHA-1ハッシュであった。中身はファイルをヘッダ込みでzlibで圧縮したものだ。例えばPythonで実装するなこんな感じになる。</p>
+                  <p>さて、ファイル名はSHA-1ハッシュであった。中身はファイルをヘッダ込みでzlibで圧縮したものだ。例えばPythonで実装するならこんな感じになる。</p>
                   <div class="sourceCode" id="cb8"><pre
                   class="sourceCode py"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zlib</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> <span class="st">&quot;Hello Git&quot;</span> <span class="co"># ファイルの中身</span></span>
@@ -174,7 +174,7 @@
                   <li>Gitのblobオブジェクトはファイルに対応している</li>
                   <li>blobオブジェクトは対象ファイルにヘッダを付与したものであり、ファイル名はSHA-1ハッシュ値、ファイルの中身はzlibで圧縮したもの</li>
                   </ul>
-                  <p>である。以外に単純であることが実感できたであろうか？</p>
+                  <p>である。意外に単純であることが実感できたであろうか？</p>
                   <h2
                   id="コミットオブジェクト">コミットオブジェクト</h2>
                   <p>コミットオブジェクトは、コミット、すなわちスナップショットを保存するためのものだ。先ほど、<code>git add</code>した状態で止めていたのを、コミットしてみよう。</p>
@@ -191,7 +191,7 @@
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects/e5/1ca0d0b8c5b6e02473228bbf876ba000932e96</span></span></code></pre></div>
                   <p><code>.git/objects</code>以下に3つオブジェクトができている。このうち、<code>e51ca0d</code>は<code>test.txt</code>に対応するblobオブジェクト、<code>ca70291</code>は今作ったコミットオブジェクト、もう一つの<code>dd1d7ee</code>は後述するtreeオブジェクトであり、コミットが保持するスナップショットを表現する
                   。blobオブジェクトやtreeオブジェクトは、同じ中身であれば同じハッシュ値を持つ。一方、コミットオブジェクトのハッシュはぶつかっては困るので、毎回異なるものになる。</p>
-                  <p>さっき作ったコミットオブジェクト<code>ca70291</code>のタイプを見てみよう。。ちなみに、先ほど述べたように、ハッシュ値は他と区別が付けば40桁全てを指定する必要はない。</p>
+                  <p>さっき作ったコミットオブジェクト<code>ca70291</code>のタイプを見てみよう。ちなみに、先ほど述べたように、ハッシュ値は他と区別が付けば40桁全てを指定する必要はない。</p>
                   <div class="sourceCode" id="cb13"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git cat-file <span class="at">-t</span> ca70291</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span></span></code></pre></div>

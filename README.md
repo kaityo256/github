@@ -143,7 +143,7 @@
 * [講義スライド](https://speakerdeck.com/kaityo256/github-practice-github-advanced)
 * MNISTの学習済みモデルをウェブで試す
 * 簡単なゲーム作成
-* 余談：余談：CEOからのメッセージ
+* 余談：CEOからのメッセージ
 
 ## [おわりに](postface/README.md)
 

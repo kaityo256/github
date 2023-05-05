@@ -54,7 +54,7 @@
                   <p>以下では、特になぜブランチが必要か、ブランチを使ってどのように開発を進めるのか、「歴史を分岐、改変する」とはどういうことかについて説明する。</p>
                   <h1
                   id="なぜブランチをわけるか">なぜブランチをわけるか</h1>
-                  <p>現代においてソフトウェア開発を完全に一人で開発することは稀であり、多くの場合、複数人で分担して開発することになるだろう。開発者が同じソフトウェアに対してばらばらに修正を加えたらプロジェクトが混乱することが予想されるであろう。その「交通整理」を行うためのスールが<strong>ワークフロー
+                  <p>現代においてソフトウェア開発を完全に一人で開発することは稀であり、多くの場合、複数人で分担して開発することになるだろう。開発者が同じソフトウェアに対してばらばらに修正を加えたらプロジェクトが混乱することが予想されるであろう。その「交通整理」を行うためのルールが<strong>ワークフロー
                   (workflow)</strong> である。</p>
                   <p>今、AliceとBobの二人が開発するプロジェクトがあったとしよう。Aliceは機能Aを、Bobは機能Bを開発することになった。機能Aの実現には、サブモジュールA1とA2を実装する必要があるが、A1を実装しただけではプログラムが正しく動作せず、A2まで実装して初めて全体として正しく動作する。</p>
                   <figure>
@@ -103,7 +103,7 @@
                   <figcaption
                   aria-hidden="true">current_branch.png</figcaption>
                   </figure>
-                  <p>今、カレントブランチが<code>branch</code>だとしよう。カレントブランチとは、<code>HEAD</code>というラベルが指すブランチのことなので、<code>HEAD</code>は<code>branch</code>を指してしている。あるブランチ<code>branch</code>が、別のブランチ<code>other</code>と同じコミットを指していたとする。この状態でコミットをすると、新たにコミットが作られ、カレントブランチが指すコミットにつなげられることで歴史が伸びる。そして、カレントブランチは新たに作られたコミットを指す。具体的には、<code>HEAD</code>が<code>branch</code>を指したまま、<code>branch</code>が新たにできたコミットを差す。この時、カレントブランチ以外のブランチは移動しないことに注意。この状態でカレントブランチを<code>other</code>に変更してコミットをすると、歴史が分岐することになる。</p>
+                  <p>今、カレントブランチが<code>branch</code>だとしよう。カレントブランチとは、<code>HEAD</code>というラベルが指すブランチのことなので、<code>HEAD</code>は<code>branch</code>を指している。あるブランチ<code>branch</code>が、別のブランチ<code>other</code>と同じコミットを指していたとする。この状態でコミットをすると、新たにコミットが作られ、カレントブランチが指すコミットにつなげられることで歴史が伸びる。そして、カレントブランチは新たに作られたコミットを指す。具体的には、<code>HEAD</code>が<code>branch</code>を指したまま、<code>branch</code>が新たにできたコミットを指す。この時、カレントブランチ以外のブランチは移動しないことに注意。この状態でカレントブランチを<code>other</code>に変更してコミットをすると、歴史が分岐することになる。</p>
                   <h2 id="コミットと差分">コミットと差分</h2>
                   <figure>
                   <img src="fig/commit.png" alt="commit.png" />
@@ -212,7 +212,7 @@
                   <div class="sourceCode" id="cb9"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch <span class="at">-D</span> branch</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Deleted</span> branch branch <span class="er">(</span><span class="ex">was</span> f59b8e4<span class="kw">)</span><span class="bu">.</span></span></code></pre></div>
-                  <p>なお、このエラーが出る条件は、「カレントブランチからたどることができる歴史のコミットを指しているかどうか」である。したがって、以下のような歴史がある場合、カレントブランチが<code>main</code>の時には<code>old_branch</code>は<code>git branch -d</code>では消せないが、カレントブランチが<code>latest_branch</code>の場合は<code>old_branch</code>を消すことができる。</p>
+                  <p>なお、このエラーが出る条件は、「カレントブランチからたどることができる歴史のコミットを指しているかどうか」である。したがって、以下のような歴史がある場合、カレントブランチが<code>main</code>の時には<code>old_branch</code>は<code>git branch -d</code>では消せないが、カレントブランチが<code>new_branch</code>の場合は<code>old_branch</code>を消すことができる。</p>
                   <figure>
                   <img src="fig/tadoreru.png" alt="tadoreru.png" />
                   <figcaption
