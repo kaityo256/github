@@ -70,7 +70,7 @@
                   </ul>
                   <p>以上から「git
                   con(TAB)–gl(TAB)us(TAB)n(TAB)」と入力すると<code>git config --global user.name</code>まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。</p>
-                  <p>また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。</p>
+                  <p>また、デフォルトエディタをVimにする設定、改行コードの設定、デフォルトブランチ名の設定をしておこう。</p>
                   <div class="sourceCode" id="cb2"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> core.editor vim</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> core.autocrlf false</span>
@@ -255,7 +255,7 @@
                   <p>上記メッセージには、まず<code>git add</code>するか、<code>git commit -a</code>しろとあるので、ここでは後者を実行しよう。オプションは<code>-m</code>とまとめて<code>-am</code>とする。</p>
                   <div class="sourceCode" id="cb30"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;modifies README.md&quot;</span></span></code></pre></div>
-                  <p>以後、慣れるまでは場合は<code>git commit -am</code>を使うことでステージングを省略しても良い。</p>
+                  <p>以後、慣れた場合は<code>git commit -am</code>を使うことでステージングを省略しても良い。</p>
                   <h2 id="step-6-歴史の確認git-log">Step 6:
                   歴史の確認(<code>git log</code>)</h2>
                   <p>これまでの歴史を確認して見よう。上記の通りに作業して来たなら、3つのコミットが作成されたはずだ。<code>git log</code>で歴史を振り返ってみよう。</p>

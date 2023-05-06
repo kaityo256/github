@@ -26,7 +26,7 @@ git config --global user.email "メールアドレス"
 
 以上から「git con(TAB)--gl(TAB)us(TAB)n(TAB)」と入力すると`git config --global user.name`まで入力が完了する。これをタブ補完と呼ぶ。慣れると便利なので、普段から意識して使うようにすると良い。
 
-また、デフォルトエディタをVim、改行コードの設定、デフォルトブランチ名を設定をしておこう。
+また、デフォルトエディタをVimにする設定、改行コードの設定、デフォルトブランチ名の設定をしておこう。
 
 ```sh
 git config --global core.editor vim
@@ -308,7 +308,7 @@ no changes added to commit (use "git add" and/or "git commit -a")
 git commit -am "modifies README.md"
 ```
 
-以後、慣れるまでは場合は`git commit -am`を使うことでステージングを省略しても良い。
+以後、慣れた場合は`git commit -am`を使うことでステージングを省略しても良い。
 
 ### Step 6: 歴史の確認(`git log`)
 

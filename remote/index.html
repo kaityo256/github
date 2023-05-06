@@ -91,7 +91,7 @@
                   <p>リモートリポジトリの情報をクローンする時、すなわち、ローカルに初めて持ってくる時には<code>git clone</code>を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの<code>appi-github</code>というアカウント(正確にはOrganization)の、<code>clone-sample</code>というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。</p>
                   <ul>
                   <li>HTTPSの場合：<code>https://github.com/appi-github/clone-sample.git</code></li>
-                  <li>SSHの場合:<code>git@github.com:appi-github/clone-sample.git</code></li>
+                  <li>SSHの場合：<code>git@github.com:appi-github/clone-sample.git</code></li>
                   </ul>
                   <p><code>git clone</code>によりリモートリポジトリをローカルにクローンするには、上記のURLを指定する。</p>
                   <p>まず、HTTPSプロトコルの場合は以下のように指定する。</p>
@@ -186,7 +186,7 @@
                   <ul>
                   <li><code>git fetch</code>により、リモートの<code>main</code>とローカルの<code>origin/main</code>が同じ状態になる</li>
                   <li><code>git merge</code>により、ローカルの<code>main</code>と<code>origin/main</code>が同じ状態になる</li>
-                  <li><code>git push</code>により、、ローカルの<code>main</code>と<code>origin/main</code>、リモートの<code>main</code>が同じ状態になる</li>
+                  <li><code>git push</code>により、ローカルの<code>main</code>と<code>origin/main</code>、リモートの<code>main</code>が同じ状態になる</li>
                   </ul>
                   <p>実際には<code>git fetch</code>や<code>git push</code>などはリモートやブランチを自由に指定することができるが、それは必要になった時に覚えれば良い。まずは<code>main</code>ブランチのみをリモートと同期させ、<code>git fetch</code>や<code>git push</code>は引数無しで実行するようにしておこう。</p>
                   <h1

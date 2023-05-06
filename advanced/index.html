@@ -215,7 +215,7 @@
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="ex">no</span> changes added to commit <span class="er">(</span><span class="ex">use</span> <span class="st">&quot;git add&quot;</span> and/or <span class="st">&quot;git commit -a&quot;</span><span class="kw">)</span></span>
 <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Dropped</span> refs/stash@{0} <span class="er">(</span><span class="ex">171f9ddd0c02ed7e7ed9105aa9ef30f3553aa742</span><span class="kw">)</span></span></code></pre></div>
                   <p>これにより、あたかも「最初から<code>feature</code>ブランチを切ってから修正をした」ような状態となった。あとはキリの良いところまで作業してコミットし、<code>main</code>ブランチにマージするなりその前にリベースするなりすれば良い。うっかりメインブランチで作業を開始しがちな人(例えば私)は覚えておきたいコマンドだ。</p>
-                  <p>なお、<code>git stash</code>を実行するたびに修正が詰みあがっていく。それぞれに<code>stash@{0}</code>、<code>stash@{1}</code>という名前がつき、<code>git stash apply</code>により名前を指定して適用することもできる。しかし、その場合は適用した修正がスタックに残るため、後で<code>git stash drop</code>で消さなければならない。一方、<code>git stash pop</code>は、最後に積んだ修正を適用し、その修正をスタックから削除する。</p>
+                  <p>なお、<code>git stash</code>を実行するたびに修正が積みあがっていく。それぞれに<code>stash@{0}</code>、<code>stash@{1}</code>という名前がつき、<code>git stash apply</code>により名前を指定して適用することもできる。しかし、その場合は適用した修正がスタックに残るため、後で<code>git stash drop</code>で消さなければならない。一方、<code>git stash pop</code>は、最後に積んだ修正を適用し、その修正をスタックから削除する。</p>
                   <p>あまり積むと後で見てわからなくなるので、原則として<code>git stash</code>は<code>git stash pop</code>と対で利用すると良い。</p>
                   <h2
                   id="プッシュしようとしたらリジェクトされた">プッシュしようとしたらリジェクトされた</h2>

@@ -45,7 +45,7 @@ GitHubのリポジトリには、パブリックなリポジトリとプライ�
 リモートリポジトリの情報をクローンする時、すなわち、ローカルに初めて持ってくる時には`git clone`を使う。この際、クローン元の場所を指定する必要がある。GitHubのリポジトリをローカルにクローンする際には、通信プロトコルをHTTPSとするかSSHとするかにより、URLが異なる。例えばGitHubの`appi-github`というアカウント(正確にはOrganization)の、`clone-sample`というプロジェクトにアクセスしたい時、それぞれURLは以下のようになる。
 
 * HTTPSの場合：`https://github.com/appi-github/clone-sample.git`
-* SSHの場合:`git@github.com:appi-github/clone-sample.git`
+* SSHの場合：`git@github.com:appi-github/clone-sample.git`
 
 `git clone`によりリモートリポジトリをローカルにクローンするには、上記のURLを指定する。
 
@@ -152,7 +152,7 @@ git merge origin/main
 
 * `git fetch`により、リモートの`main`とローカルの`origin/main`が同じ状態になる
 * `git merge`により、ローカルの`main`と`origin/main`が同じ状態になる
-* `git push`により、、ローカルの`main`と`origin/main`、リモートの`main`が同じ状態になる
+* `git push`により、ローカルの`main`と`origin/main`、リモートの`main`が同じ状態になる
 
 実際には`git fetch`や`git push`などはリモートやブランチを自由に指定することができるが、それは必要になった時に覚えれば良い。まずは`main`ブランチのみをリモートと同期させ、`git fetch`や`git push`は引数無しで実行するようにしておこう。
 
