@@ -70,6 +70,8 @@
     * `git pull`
     * プッシュしたブランチをリベースしない
 
+### [SSHによる認証](ssh/README.md)
+
 ### [Gitの使い方(応用編)](advanced/README.md)
 
 * [講義スライド](https://speakerdeck.com/kaityo256/github-advanced)
