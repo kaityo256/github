@@ -96,14 +96,14 @@
                   <h2 id="step-2-リポジトリの作成git-init">Step 2:
                   リポジトリの作成(<code>git init</code>)</h2>
                   <p>それではいよいよGitの操作を一通り確認する。</p>
-                  <p>まずは適当なテスト用のディレクトリを作成し、その中で作業しよう。この講義用に<code>git</code>というディレクトリを作成し、さらにその中に<code>test</code>というディレクトリを作ろう。</p>
+                  <p>まずは適当なテスト用のディレクトリを作成し、その中で作業しよう。この講義用に<code>github</code>というディレクトリを作成し、さらにその中に<code>test</code>というディレクトリを作ろう。</p>
                   <div class="sourceCode" id="cb6"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> git</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> git</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> github</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> test</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> test</span></code></pre></div>
-                  <p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。プロンプトのカレントディレクトリの表示に<code>z/git/test</code>と黄色く表示されていることを確認せよ。以後、<code>cd</code>でディレクトリを移動したら、プロンプトからカレントディレクトリを確認する癖をつけておくこと。</p>
+                  <p>最初に<code>cd</code>を入力しているのは、ホームディレクトリに戻るためだ。これで<code>git</code>ディレクトリの下の<code>test</code>ディレクトリがカレントディレクトリとなった。プロンプトのカレントディレクトリの表示に<code>z/github/test</code>と黄色く表示されていることを確認せよ。以後、<code>cd</code>でディレクトリを移動したら、プロンプトからカレントディレクトリを確認する癖をつけておくこと。</p>
                   <p>この<code>test</code>ディレクトリの中に<code>README.md</code>というファイルを作成しよう。そして、このディレクトリをVSCodeで開こう。左下の「ここに入力して検索」に「vscode」と入力すると、候補として「Visual
                   Studio
                   Code」が表示されるので選ぶ。なお、初回起動時に言語パックをインストールするか聞かれる場合がある。その場合はインストールして再起動すること。VSCodeが起動したら「ファイル」メニューから「フォルダーを開く(もしくは
@@ -119,7 +119,7 @@
                   <p>とだけ入力し、保存しよう。改行を入れるのを忘れないこと。この際、右下に「CRLF」と表示されている場合は、そこをクリックして「改行コードを選択」画面を出し、「LF」を選ぶこと。</p>
                   <p>これで、以下のようなディレクトリ構成になったはずだ。</p>
                   <div class="sourceCode" id="cb8"><pre
-                  class="sourceCode txt"><code class="sourceCode default"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>git</span>
+                  class="sourceCode txt"><code class="sourceCode default"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>github</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>└── test</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    └── README.md</span></code></pre></div>
                   <p>この状態でターミナルに戻り、リポジトリとして初期化しよう。</p>

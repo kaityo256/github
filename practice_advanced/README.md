@@ -14,11 +14,10 @@
 
 ### Step 1: リポジトリのクローン
 
-最初に、作業用のディレクトリ`github`を作ろう。Git Bashで、以下を実行せよ。
+最初に作業用のディレクトリ`github`に移動しよう。Git Bashで、以下を実行せよ。
 
 ```sh
 cd
-mkdir github
 cd github
 ```
 
