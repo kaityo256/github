@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                <title>SSHによる認証</title>
+    <style type="text/css">
+      p {
+        padding-left: 1em;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      p.caption {
+        display: none;
+      }
+
+      img {
+        width: 100%
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://kaityo256.github.io/python_zero/github-markdown.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <article class="markdown-body">
+                  <header>
+        <h1 class="title">SSHによる認証</h1>
+                              </header>
+                  <h1 id="はじめに">はじめに</h1>
+                  <p>Gitはローカルリポジトリとリモートリポジトリを連携して使う。リモートリポジトリとは文字通りリモートサーバにあるリポジトリであり、ネットワークを介してアクセスすることになる。ネットワーク越しにアクセスする以上、なんらかの方法で通信相手が本当に正しい相手であるかを確認する必要がある。GitのホスティングサービスであるGitHubは複数の認証方法を用意しているが、ここではSSHによる認証について説明する。</p>
+                  <h1 id="認証とは">認証とは</h1>
+                  <figure>
+                  <img src="fig/authentication.png" alt="認証" />
+                  <figcaption aria-hidden="true">認証</figcaption>
+                  </figure>
+                  <p>例えば家に帰る時、鍵を開けて入るであろう。これは「この家に入る権利があるのは、このドアの鍵に合う鍵を持っている人である」ということを意味する。一般に、「誰かが何かを行う正当な権利を持っていること」を確認する手続きを認証と呼ぶ。自転車の鍵で、数字を揃えるタイプの鍵を見たことがあるだろう。これは「この自転車を使う権利があるのは、この鍵の数字を知っている人である」という形で認証を行っている。また、タブレットやスマートフォンなどを他の人に勝手に使われると困るので、指紋や顔でロックを外している人も多いだろう。これも認証である。</p>
+                  <p>認証には、大きく分けて「所持認証」「知識認証」「生体認証」の3種類があり、それぞれ特徴がある。「所持認証」とは、特別な物を所有していることをもって、何かの権利があると認証するものだ。例えば家の鍵などがこれにあたる。「知識認証」とは、特別な知識があることにより認証するもので、ナンバー式の鍵などがこれにあたる。「生体認証」とは、指紋認証や顔認証など、体の一部を使って本人であることを確認する方法である。生体認証は広い意味では所持認証の一種であるが、鍵は誰かに貸したり合鍵を作れたりできる一方、指紋認証の場合はそれが難しいなど、運用上の性質がかなり異なるため、別のものとして扱った方が良いだろう。以下では生体認証については扱わない。</p>
+                  <h1 id="ssh公開鍵認証">SSH公開鍵認証</h1>
+                  <p>例えば手元のPCなどでGitを使う場合、GitはそのPCの中にあるリポジトリ(ローカルリポジトリ)とやりとりをするが、そこでは認証は不要である。そのローカルリポジトリを使えるのはそのPCの持ち主だけであり、PCを持っていることがそのリポジトリにアクセスできる人であると考えられる(所持認証)。また、PCにログイン時にパスワードをかけている場合は知識認証を、指紋や顔認証でロックしている場合は生体認証により守られている。</p>
+                  <p>さて、ローカルリポジトリでなにか行った修正を、GitHubなどのサーバに送りたい。GitHubは</p>
+                  <p>GitHubはネットワークの向こうにあるため、物理的な鍵を使った所持認証を行うことはできない。</p>
+                  <p>GitHubは不特定多数がネットワーク越しにアクセスする関係上、ネットワークのどこからでも見える状態になっていなければならない。すると、Gitのコマンドにより、データがローカルリポジトリからGitHubに送られてきた時、GitHubは「そのデータを送ってきたのは、確かにそのリポジトリにアクセスする権利を持つ人である」ことをなんらかの方法で認証しなければならない。そのために利用されるのがSSH公開鍵認証である。なお、以下の説明はかなり簡略化されたものであり、実際に行われている認証プロセスとは異なることに注意されたい。</p>
+                  <figure>
+                  <img src="fig/ssh-keys.png" alt="公開鍵" />
+                  <figcaption aria-hidden="true">公開鍵</figcaption>
+                  </figure>
+                  <p>SSH公開鍵認証のポイントは、秘密鍵と公開鍵という、2つの鍵を用意することにある。秘密鍵と公開鍵はペアになっており、対応する鍵でなければぴったり一致しない。そこで、予めなんらかの方法で公開鍵をGitHubのサーバに登録しておき、「登録した公開鍵とぴったり合う秘密鍵を持っている人」が、そのリポジトリにアクセスする権利のある人である、という形で認証を行うことにする。これがSSH公開鍵認証の仕組みであり、認証のタイプとしては所持認証にあたる。</p>
+                  <h1
+                  id="秘密鍵と公開鍵の生成">秘密鍵と公開鍵の生成</h1>
+                  <p>初めてSSH公開鍵を使う場合は、<code>ssh-keygen</code>で鍵を作ることができる。ターミナルから以下のコマンドを実行する。</p>
+                  <div class="sourceCode" id="cb1"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span></span></code></pre></div>
+                  <p>すると、以下のような表示が出てくる。</p>
+                  <div class="sourceCode" id="cb2"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> public/private rsa key pair.</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> file in which to save the key <span class="er">(</span><span class="ex">/c/Users/watanabe/.ssh/id_rsa</span><span class="kw">)</span><span class="bu">:</span></span></code></pre></div>
+                  <p>これは、「公開鍵、秘密鍵のペアを生成しますよ。保存先の場所を選んでね。何も指定しなければ<code>/c/Users/watanabe/.ssh/id_rsa</code>に保存するよ」という意味だ。特に理由がなければそのままエンターを押して良い。</p>
+                  <div class="sourceCode" id="cb3"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> passphrase <span class="er">(</span><span class="ex">empty</span> for no passphrase<span class="kw">)</span><span class="bu">:</span></span></code></pre></div>
+                  <p>すると、次にパスフレーズを聞かれる。パスフレーズを入力せずにエンターを押すと、パスフレーズなしの秘密鍵が作られるが、
+                  <strong>ここではパスフレーズを入力することを強く推奨する</strong>。なお、パスフレーズを入力しても、画面には何も表示されない(パスフレーズは秘密なので、他の人に見られては困るから)。入力が終わったらエンターキーを押す。</p>
+                  <div class="sourceCode" id="cb4"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> same passphrase again:</span></code></pre></div>
+                  <p>もう一度同じパスフレーズを入力し、エンターキーを押す。画面に表示されない状態でパスフレーズを入力したため、もしかしたら入力ミスをしているかもしれない。そこで、もう一度同じパスフレーズを入力し、それが一致していたら正しく入力できたと判断する。</p>
+                  <div class="sourceCode" id="cb5"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> identification has been saved in /c/Users/watanabe/.ssh/id_rsa</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> public key has been saved in /c/Users/watanabe/.ssh/id_rsa.pub</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> key fingerprint is:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">SHA256:2nMosrJRAKzlDD7zE1qVINL3MYOh6/nTvphyyPUlWCQ</span> watanabe@example.org</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> key<span class="st">&#39;s randomart image is:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">+---[RSA 3072]----+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">|+o .oo.          |</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">|oo+.Eo=          |</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">|o=o..+ +         |</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">|.+o=  o          |</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">|  B oo  S        |</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">| o =o .o..       |</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">| .+ooooo+ .      |</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">|  =oo=o. o       |</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="st">|  .==oo.         |</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="st">+----[SHA256]-----+</span></span></code></pre></div>
+                  <p>パスフレーズの入力が終わると、公開鍵、秘密鍵の保存が行われる。上の例では、秘密鍵のファイル名が<code>id_rsa</code>、公開鍵のファイル名は<code>id_rsa.pub</code>で、どちらも<code>/c/Users/watanabe/.ssh/</code>に、保存されている。fingerprintやrandomart
+                  imageも表示されているが、今は気にしなくて良い。以上の操作により、公開鍵と秘密鍵のペアが生成された。</p>
+                  <p>公開鍵は、秘密鍵から作ることができる(逆はできない)。正しく秘密鍵/公開鍵が作られ、パスフレーズが設定されたか確認するために、秘密鍵から公開鍵を作ってみよう。<code>ssh-keygen</code>コマンドに<code>-yf</code>オプションをつけ、秘密鍵を指定すると、秘密鍵から公開鍵を作ることができる。その際、秘密鍵にパスフレーズが設定されていると、パスフレーズの入力も求められる。</p>
+                  <div class="sourceCode" id="cb6"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh-keygen <span class="at">-yf</span> ~/.ssh/id_rsa</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> passphrase:</span></code></pre></div>
+                  <p>ここで先ほど設定したパスフレーズを入力すると、秘密鍵から計算された公開鍵が表示される。</p>
+                  <div class="sourceCode" id="cb7"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ssh-rsa</span> AAAAB3NzaC1yc2EAAAADAQABAAABgQD5GvlBtFbKHzjOAEENZz6J2ksxoFJEm4/E8CJW/jFU6Q4RwoZS9cgDAX8rmdeVhfwHcv9dDRHdhoPlvSlhNn0y7aa8tuxzUNvQw/xfK3o0BY1RLZpOoW7uHfYV0heAhCxo5fF7icopP4bBJt6YaaXQrI5HTwjEil4nLOLDdvGLDj+Yfe+LQjdULAHJoThiFA7A9CuWooNbLaktq6dqQhoG75yflw2xqcavmq/ku3CqwH4dITbS0p26quQ2yQkeR2qihn69uI2DEXphlPzaPaFxxA4pxXlTpe4J2AagihhRYgeOx1ygAzktQMU7AuJbmVktlr1uQl++F3fVRmfxCvIe3Qotx/DPp49z9EKl9AvBUfpggnryfUWRXRKvYGObQIg0sP9P0c9xqJX77LAnSg4J72zTi/7kYY/MvxXh5XG/MLG8tQURB+H2q7zPRtOtrQWtxZnAc39KTMaFdsM9LLggjPnizqzM9QcF33ErWHjFQpvSXfXB+7sA6+3tOIfwSJs= watanabe@example.org</span></code></pre></div>
+                  <p>先ほど作られた公開鍵と比べてみよう。</p>
+                  <div class="sourceCode" id="cb8"><pre
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat ~/.ssh/id_rsa.pub</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ssh-rsa</span> AAAAB3NzaC1yc2EAAAADAQABAAABgQD5GvlBtFbKHzjOAEENZz6J2ksxoFJEm4/E8CJW/jFU6Q4RwoZS9cgDAX8rmdeVhfwHcv9dDRHdhoPlvSlhNn0y7aa8tuxzUNvQw/xfK3o0BY1RLZpOoW7uHfYV0heAhCxo5fF7icopP4bBJt6YaaXQrI5HTwjEil4nLOLDdvGLDj+Yfe+LQjdULAHJoThiFA7A9CuWooNbLaktq6dqQhoG75yflw2xqcavmq/ku3CqwH4dITbS0p26quQ2yQkeR2qihn69uI2DEXphlPzaPaFxxA4pxXlTpe4J2AagihhRYgeOx1ygAzktQMU7AuJbmVktlr1uQl++F3fVRmfxCvIe3Qotx/DPp49z9EKl9AvBUfpggnryfUWRXRKvYGObQIg0sP9P0c9xqJX77LAnSg4J72zTi/7kYY/MvxXh5XG/MLG8tQURB+H2q7zPRtOtrQWtxZnAc39KTMaFdsM9LLggjPnizqzM9QcF33ErWHjFQpvSXfXB+7sA6+3tOIfwSJs= watanabe@example.org</span></code></pre></div>
+                  <p>全く同じものが表示されていることがわかる。</p>
+                  <h1
+                  id="秘密鍵とパスフレーズ">秘密鍵とパスフレーズ</h1>
+                  <p>公開鍵は、その名の通り公開するための鍵なので、誰に見られてもかまわない。</p>
+                  <ul>
+                  <li>GitHubでも任意の公開鍵が見られる話</li>
+                  <li>知識認証と所持認証</li>
+                  </ul>
+          </article>
+  </body>
+
+  </html>
