@@ -310,13 +310,11 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 まずはBoard(Kanban)方式のプロジェクトを作成し、リポジトリに関連付けよう。以下の作業を実施せよ。
 
-1. GitHubの`test`リポジトリの上のタブから「Project」を選び、「Add project」をクリックする。
-1. 「Go to you profile to create a new project」をクリック
+1. GitHubの、自分のアカウント`test`リポジトリを表示する
+1. 上のタブから「Project」を選び、「Link a project」の右の三角マークをクリックし、「New project」を選ぶ
+1. 「Link a project」が「New project」ボタンに変化するので、そのボタンをクリック
 1. 「Welcome to project」画面が現れたら「Jump right in」ボタンをクリック
-1. 「Create your first GitHub project」画面で「New project」をクリック。
-1. 「Select a template」画面で「Board」を選び、「Create」ボタンを押す。
-1. Projectが作成されるが、名前が「ユーザ名’s untitled project」となっているので、「Kanban」に修正
-1. 「test」リポジトリに戻り、「Project」の「Add project」をクリック、先ほど作成した「Kanban」を選ぶ
+1. 「Select a template」画面で「Board」を選び、「Project name」を「Kanban」に変更してから「Create」ボタンを押す。
 
 これにより「test」リポジトリに「Kanban」プロジェクトが関連付けられた。
 
@@ -407,7 +405,7 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 * B班の場合
     * [`https://github.com/appi-github/pullreq_2023_b`](https://github.com/appi-github/pullreq_2023_b)
 
-このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を`pullreq_2022_a`として説明するが、B班は適宜`pullreq_2022_b`に読み替えること。
+このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を`pullreq_2023_a`として説明するが、B班は適宜`pullreq_2023_b`に読み替えること。
 
 ### Step 2: リポジトリのクローン
 
@@ -416,8 +414,8 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 ```sh
 cd
 cd github
-git clone git@github.com:アカウント名/pullreq_2022_a.git
-cd pullreq_2022_a
+git clone git@github.com:アカウント名/pullreq_2023_a.git
+cd pullreq_2023_a
 ```
 
 ### Step 3: ブランチの作成
