@@ -401,11 +401,11 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。
 
 * A班の場合
-    * [`https://github.com/appi-github/pullreq_2023_a`](https://github.com/appi-github/pullreq_2023_a)
+    * [`https://github.com/appi-github/pullreq_2024_a`](https://github.com/appi-github/pullreq_2024_a)
 * B班の場合
-    * [`https://github.com/appi-github/pullreq_2023_b`](https://github.com/appi-github/pullreq_2023_b)
+    * [`https://github.com/appi-github/pullreq_2024_b`](https://github.com/appi-github/pullreq_2024_b)
 
-このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を`pullreq_2023_a`として説明するが、B班は適宜`pullreq_2023_b`に読み替えること。
+このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を`pullreq_2024_a`として説明するが、B班は適宜`pullreq_2024_b`に読み替えること。
 
 ### Step 2: リポジトリのクローン
 
@@ -414,8 +414,8 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 ```sh
 cd
 cd github
-git clone git@github.com:アカウント名/pullreq_2023_a.git
-cd pullreq_2023_a
+git clone git@github.com:アカウント名/pullreq_2024_a.git
+cd pullreq_2024_a
 ```
 
 ### Step 3: ブランチの作成
