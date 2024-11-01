@@ -19,19 +19,18 @@
 * Enter your email : メールアドレスを入力する
 * Create a password: パスワードを入力する
 * Enter a username: GitHubのアカウント名を入力
-* Would you like to receive product updates and announcements via email?: アナウンスを受け取るか。通常は不要なのでnで良い。
-* Verify your account: 人間であることを証明するため、パズル認証を解く
-* Create account: 実行すると、登録メールにlaunch code(6桁の数字)が届くので、メールを確認して入力
-* 最初にアンケートを聞かれる。答えても良いが、面倒なら「Skip personlization」
+* Email Preferences: アナウンスを受け取るか、通常は不要なのでチェックしなくて良い。
 
-「Learn Git and GitHub without any code!」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。
+以上を入力して「Continue」ボタンを押す。
+
+「Welcome to GitHub」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。
 
 ### Step 2: SSH公開鍵の作成
 
-SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git Bashのホームディレクトリで以下のコマンドを実行せよ。
+SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git Bashのホームディレクトリにて、以下を実行せよ。
 
 ```sh
-$ ssh-keygen
+$ ssh-keygen -t rsa
 Generating public/private rsa key pair.
 Enter file in which to save the key (/z//.ssh/id_rsa):  # (1)
 Created directory '/z/.ssh'.
@@ -149,7 +148,7 @@ $ git log --oneline
 0a103b5 (origin/main, origin/HEAD) Initial commit
 ```
 
-コミットハッシュは人によって異なるが、`origin/main`よりも、`HEAD -> main`が一つ先の歴史を指していることがわかる。この「新しくなった歴史」をGitHubに教えよう。ターミナルで以下を実行せよ。
+コミットハッシュは人によって異なるが、`origin/main`よりも、`HEAD -> main`が一つ先の歴史を指していることがわかる。この「新しくなった歴史」をGitHubに教えよう。Git Bashで以下を実行せよ。
 
 ```sh
 git push
