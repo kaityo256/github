@@ -38,7 +38,7 @@ Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 秘密鍵を保存する場所を入力する。`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
+* (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_rsa):`の後に続けて、`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
 * (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
 * (3) 先ほど入力したものと同じパスフレーズを再度入力する。
 
@@ -53,12 +53,12 @@ Your public key has been saved in /z/.ssh/id_rsa.pub
 
 ### Step 3: SSH公開鍵の登録
 
-GitHubに公開鍵を登録する。
+GitHubに公開鍵を登録する。先ほどGitHubにログインした状態のブラウザで以下の作業をせよ。
 
 * GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。
-* 左に「Account settings」というメニューが現れるので「SSH and GPG keys」を選ぶ。
+* 左に「Access」というメニューが現れるので「SSH and GPG keys」を選ぶ。
 * 「SSH keys」右にある「New SSH key」ボタンを押す
-* 「Title」と「Key」を入力する。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_rsa`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
+* 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_rsa`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
 
 ```sh
 cat .ssh/id_rsa.pub
@@ -93,20 +93,20 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 * GitHubのホーム画面を表示する。左上のネコのようなアイコン(Octocat)をクリックするとホーム画面に戻る。
 * ホーム画面に戻ったら「Create repository」ボタンを押す。
 * リポジトリの新規作成画面では、以下の項目を設定しよう。
-    * Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここではtestとしておく。
+    * Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは`github-test`としておく。
     * Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
     * Public/Private: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
     * Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」にチェックを入れ、「Choose a license」のプルダウンメニューから「MIT License」を選んでおこう。「Add .gitignore」は「None」のままで良い。
 * 以上の設定を終了したら「Create repository」ボタンを押す。
-* リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。
+* リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする。
 
 次に、ローカルマシンで`github`ディレクトリの下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。
 
 ```sh
 cd
 cd github
-git clone git@github.com:アカウント名/test.git
-cd test
+git clone git@github.com:アカウント名/github-test.git
+cd github-test
 ```
 
 先ほどURLをコピーしていたので、`git clone`まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。
@@ -115,19 +115,19 @@ cd test
 
 手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。
 
-まず、クローンしたリポジトリの`README.md`を修正しよう。VSCodeの「フォルダを開く」によって、先ほどクローンされた`test`ディレクトリを開き、`README.md`を開こう(Vimを使える人はVimで開いても良い)。
+まず、クローンしたリポジトリの`README.md`を修正しよう。VSCodeの「フォルダを開く」によって、先ほどクローンされた`github-test`ディレクトリを開き、`README.md`を開こう(Vimを使える人はVimで開いても良い)。
 
 すると、以下のような内容が表示されるはずだ。
 
 ```md
-# test
+# github-test
 test repository
 ```
 
 これを、以下のように「Hello Github」と一行追加し、保存せよ。
 
-```sh
-# test
+```md
+# github-test
 test repository
 
 Hello GitHub
@@ -185,7 +185,7 @@ cd test2
 2nd repository
 ```
 
-この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。
+この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。Git Bashので以下を実行せよ。
 
 ```sh
 git init
@@ -199,7 +199,9 @@ GitHubのホーム画面の左上の「Repositories」の右にある「New」�
 
 空のリポジトリを作りたいので、「Initialize this repository with:」のチェックは全て外した状態で「Create Repository」とすること。
 
-すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、ここでは「既に存在するリポジトリをpushする(...or push an existing repository from the command line)」を選びたいので、そこに書かれている以下のコマンドをコピーする。
+すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、まずは、「Quick setup — if you’ve done this kind of thing before」のしたにある「HTTPS」「SSH」のボタンのうち、「SSH」を押す。
+
+その後、「既に存在するリポジトリをpushする(...or push an existing repository from the command line)」を実行するため、そこに書かれている以下のコマンドをコピーする。
 
 ```sh
 git remote add origin git@github.com:アカウント名/test2.git
@@ -207,7 +209,7 @@ git branch -M main
 git push -u origin main
 ```
 
-これをGit Bashに貼り付けて実行すれば、プッシュできる。この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。
+これをGit Bashに貼り付けて実行すれば、プッシュできる。「Ctrl+C」ではなく、この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。
 
 ### レポート課題
 
@@ -232,10 +234,10 @@ GitHubを使う場合、
 
 ### Step 1: Issueの作成
 
-* 先ほど作った`test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Repositories」の「アカウント名/test」を選べばよい。
+* 先ほど作った`github-test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Top repositories」の「アカウント名/github-test」を選べばよい。
 * 「Code」「Issues」「Pull requests」「Actions」「Projects」などのメニューが並んだタブから「Issues」を選び、「New Issue」ボタンを押す。画面の最上部の「Issues」と間違えないこと。
 * Titleに「READMEの修正」と書く
-* コメント(Leave a commentとあるところ)に「内容を追加」と書く。
+* コメント(Adda descriptionの下)に「内容を追加」と書く。
 * Labelsとして「enhancement」を選ぶ。
 
 以上の操作の後「Submit new issue」をクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。
@@ -249,7 +251,7 @@ Git Bashで以下を実行せよ。
 ```sh
 cd
 cd github
-cd test
+cd github-test
 git switch -c feat/1/README
 ```
 
@@ -265,7 +267,7 @@ Hello GitHub
 modifies README
 ```
 
-修正したら、`git add`、`git commit`するが、コミットメッセージを`closes #1`とする。シャープ`#`を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。
+修正したら、`git add`、`git commit`するが、コミットメッセージを`closes #1`とする。また、`closes`と`#1`の間には空白を入れる。シャープ`#`を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。
 
 ```sh
 git add README.md
@@ -309,15 +311,14 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 まずはBoard(Kanban)方式のプロジェクトを作成し、リポジトリに関連付けよう。以下の作業を実施せよ。
 
-1. GitHubの、自分のアカウント`test`リポジトリを表示する
-1. 上のタブから「Project」を選び、「Link a project」の右の三角マークをクリックし、「New project」を選ぶ
-1. 「Link a project」が「New project」ボタンに変化するので、そのボタンをクリック
-1. 「Welcome to project」画面が現れたら「Jump right in」ボタンをクリック
-1. 「Select a template」画面で「Board」を選び、「Project name」を「Kanban」に変更してから「Create」ボタンを押す。
-
-これにより「test」リポジトリに「Kanban」プロジェクトが関連付けられた。
+1. GitHubの、自分のアカウント`github-test`リポジトリを表示する
+1. 上のタブから「Project」を選び、現れた「+ New project」ボタンをクリック。
+1. 「Welcome to project」画面が現れたら「Jump right in」ボタンをクリック(現れない場合もある)。
+1. 左のメニューから「Board」を選び、「Project name」を「Kanban」に変更してから「Create」ボタンを押す。
 
 ### Step 2: Issueの作成とProjectへの関連付け
+
+またgithub-testリポジトリに戻る。左上のアイコンをクリックし、リポジトリから`github-test`を選ぶ。
 
 上のタブから「Issues」をクリックし、「New Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。
 
@@ -336,13 +337,13 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 ### Step 3: ブランチの作成
 
-Git Bashに戻り、ブランチを作成しよう。今回はラベルが`documentation`、issue番号が2番、内容がREADMEの修正なので、`doc/2/README`としよう。Git Bashの`test`リポジトリで以下を実行せよ。
+Git Bashに戻り、ブランチを作成しよう。今回はラベルが`documentation`、issue番号が2番、内容がREADMEの修正なので、`doc/2/README`としよう。Git Bashの`github-test`リポジトリで以下を実行せよ。
 
 ```sh
 git switch -c doc/2/README
 ```
 
-ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの`test`リポジトリの「Projects」タブから「Kanban」を選ぶ。
+ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの`github-test`リポジトリの「Projects」タブから「Kanban」を選ぶ。
 
 すると、「No Status」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「Kanban」で、状態が「In progress」になっていることがわかる。
 
