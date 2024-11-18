@@ -395,28 +395,20 @@
                   <p>GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。</p>
                   <h2 id="step-1-リポジトリのfork">Step 1:
                   リポジトリのfork</h2>
-                  <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。</p>
-                  <ul>
-                  <li>A班の場合
+                  <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ(A班B班共通)。</p>
                   <ul>
                   <li><a
-                  href="https://github.com/appi-github/pullreq_2024_a"><code>https://github.com/appi-github/pullreq_2024_a</code></a></li>
-                  </ul></li>
-                  <li>B班の場合
-                  <ul>
-                  <li><a
-                  href="https://github.com/appi-github/pullreq_2024_b"><code>https://github.com/appi-github/pullreq_2024_b</code></a></li>
-                  </ul></li>
+                  href="https://github.com/appi-github/pullreq_2025"><code>https://github.com/appi-github/pullreq_2025</code></a></li>
                   </ul>
-                  <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2024_a</code>として説明するが、B班は適宜<code>pullreq_2024_b</code>に読み替えること。</p>
+                  <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。</p>
                   <h2 id="step-2-リポジトリのクローン">Step 2:
                   リポジトリのクローン</h2>
                   <p>ブラウザのURLが<code>https://github.com/自分のアカウント/リポジトリ名</code>になったら、フォークが完了している。ローカルにクローンしよう。「Code」ボタンの「Clone」からリモートリポジトリをコピーできる。プロトコルがHTTPSではなくSSHになっていることを確認すること。</p>
                   <div class="sourceCode" id="cb28"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2024_a.git</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2024_a</span></code></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2025.git</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2025</span></code></pre></div>
                   <h2 id="step-3-ブランチの作成-1">Step 3:
                   ブランチの作成</h2>
                   <p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>12345678</code>である時、以下のコマンドを実行せよ。</p>
