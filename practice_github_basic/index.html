@@ -68,24 +68,18 @@
                   <li>Enter your email : メールアドレスを入力する</li>
                   <li>Create a password: パスワードを入力する</li>
                   <li>Enter a username: GitHubのアカウント名を入力</li>
-                  <li>Would you like to receive product updates and
-                  announcements via email?:
-                  アナウンスを受け取るか。通常は不要なのでnで良い。</li>
-                  <li>Verify your account:
-                  人間であることを証明するため、パズル認証を解く</li>
-                  <li>Create account: 実行すると、登録メールにlaunch
-                  code(6桁の数字)が届くので、メールを確認して入力</li>
-                  <li>最初にアンケートを聞かれる。答えても良いが、面倒なら「Skip
-                  personlization」</li>
+                  <li>Email Preferences:
+                  アナウンスを受け取るか、通常は不要なのでチェックしなくて良い。</li>
                   </ul>
-                  <p>「Learn Git and GitHub without any
-                  code!」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。</p>
+                  <p>以上を入力して「Continue」ボタンを押す。</p>
+                  <p>「Welcome to
+                  GitHub」という画面が出てきたら登録完了だ。この画面はまだ使うので、まだブラウザを閉じないこと。</p>
                   <h2 id="step-2-ssh公開鍵の作成">Step 2:
                   SSH公開鍵の作成</h2>
                   <p>SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git
-                  Bashのホームディレクトリで以下のコマンドを実行せよ。</p>
+                  Bashのホームディレクトリにて、以下を実行せよ。</p>
                   <div class="sourceCode" id="cb1"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh-keygen</span>
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh-keygen <span class="at">-t</span> rsa</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> public/private rsa key pair.</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> file in which to save the key <span class="er">(</span><span class="ex">/z//.ssh/id_rsa</span><span class="kw">)</span><span class="bu">:</span>  <span class="co"># (1)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Created</span> directory <span class="st">&#39;/z/.ssh&#39;</span>.</span>
@@ -93,7 +87,7 @@
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> same passphrase again:                <span class="co"># (3)</span></span></code></pre></div>
                   <ul>
                   <li><ol type="1">
-                  <li>秘密鍵を保存する場所を入力する。<code>/z/.ssh/id_rsa</code>と入力してエンターキーを押すこと。</li>
+                  <li>秘密鍵を保存する場所を入力する。既に表示されている<code>(/z//.ssh/id_rsa):</code>の後に続けて、<code>/z/.ssh/id_rsa</code>と入力してエンターキーを押すこと。</li>
                   </ol></li>
                   <li><ol start="2" type="1">
                   <li>ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、<strong>必ずパスフレーズを入力すること</strong>。ここではキーを入力しても画面には何も表示されないので注意。</li>
@@ -109,15 +103,16 @@
                   <p>といったメッセージが表示されたら成功である。<code>id_rsa</code>が秘密鍵、<code>id_rsa.pub</code>が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。</p>
                   <h2 id="step-3-ssh公開鍵の登録">Step 3:
                   SSH公開鍵の登録</h2>
-                  <p>GitHubに公開鍵を登録する。</p>
+                  <p>GitHubに公開鍵を登録する。先ほどGitHubにログインした状態のブラウザで以下の作業をせよ。</p>
                   <ul>
                   <li>GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。</li>
-                  <li>左に「Account
-                  settings」というメニューが現れるので「SSH and GPG
-                  keys」を選ぶ。</li>
+                  <li>左に「Access」というメニューが現れるので「SSH and
+                  GPG keys」を選ぶ。</li>
                   <li>「SSH keys」右にある「New SSH
                   key」ボタンを押す</li>
-                  <li>「Title」と「Key」を入力する。Titleはなんでも良いが、例えば「Git
+                  <li>「Title」と「Key」を入力する。「Key
+                  type」は何も選ばなくて良い(Authentication
+                  Keyのまま)。Titleはなんでも良いが、例えば「Git
                   Bash」もしくは「University
                   PC」とする。Keyには、<code>.ssh/id_rsa</code>ファイルの中身をコピペする。Git
                   Bashで以下を実行せよ。</li>
@@ -148,7 +143,7 @@
                   <li>リポジトリの新規作成画面では、以下の項目を設定しよう。
                   <ul>
                   <li>Repository name:
-                  リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここではtestとしておく。</li>
+                  リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは<code>github-test</code>としておく。</li>
                   <li>Descrption:
                   リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test
                   repository」にしておこう。</li>
@@ -164,30 +159,30 @@
                   </ul></li>
                   <li>以上の設定を終了したら「Create
                   repository」ボタンを押す。</li>
-                  <li>リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると<code>git@github.com:</code>から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする(「Copied!」と表示される)。</li>
+                  <li>リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると<code>git@github.com:</code>から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする。</li>
                   </ul>
                   <p>次に、ローカルマシンで<code>github</code>ディレクトリの下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。</p>
                   <div class="sourceCode" id="cb6"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/test.git</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> test</span></code></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/github-test.git</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github-test</span></code></pre></div>
                   <p>先ほどURLをコピーしていたので、<code>git clone</code>まで入力した後で、空白を入力してから右クリックで「Paste」を選べば良い。すると、パスフレーズを要求されるので、先ほど設定した秘密鍵のパスフレーズを入力しよう。正しく公開鍵が登録されていたらクローンできる。</p>
                   <h2 id="step-6-ローカルの修正とpush">Step 6:
                   ローカルの修正とpush</h2>
                   <p>手元にクローンしたリポジトリを修正し、GitHubに修正をpushしてみよう。</p>
-                  <p>まず、クローンしたリポジトリの<code>README.md</code>を修正しよう。VSCodeの「フォルダを開く」によって、先ほどクローンされた<code>test</code>ディレクトリを開き、<code>README.md</code>を開こう(Vimを使える人はVimで開いても良い)。</p>
+                  <p>まず、クローンしたリポジトリの<code>README.md</code>を修正しよう。VSCodeの「フォルダを開く」によって、先ほどクローンされた<code>github-test</code>ディレクトリを開き、<code>README.md</code>を開こう(Vimを使える人はVimで開いても良い)。</p>
                   <p>すると、以下のような内容が表示されるはずだ。</p>
                   <div class="sourceCode" id="cb7"><pre
-                  class="sourceCode md"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># test</span></span>
+                  class="sourceCode md"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># github-test</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>test repository</span></code></pre></div>
                   <p>これを、以下のように「Hello
                   Github」と一行追加し、保存せよ。</p>
                   <div class="sourceCode" id="cb8"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> repository</span>
+                  class="sourceCode md"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># github-test</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>test repository</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> GitHub</span></code></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>Hello GitHub</span></code></pre></div>
                   <p>この状態で、<code>README.md</code>の修正を<code>git add</code>して<code>git commit</code>しよう。Git
                   Bashで以下を実行せよ。</p>
                   <div class="sourceCode" id="cb9"><pre
@@ -198,7 +193,8 @@
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log <span class="at">--oneline</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">1db6b18</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">updates</span> README.md</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">0a103b5</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD<span class="kw">)</span> <span class="ex">Initial</span> commit</span></code></pre></div>
-                  <p>コミットハッシュは人によって異なるが、<code>origin/main</code>よりも、<code>HEAD -&gt; main</code>が一つ先の歴史を指していることがわかる。この「新しくなった歴史」をGitHubに教えよう。ターミナルで以下を実行せよ。</p>
+                  <p>コミットハッシュは人によって異なるが、<code>origin/main</code>よりも、<code>HEAD -&gt; main</code>が一つ先の歴史を指していることがわかる。この「新しくなった歴史」をGitHubに教えよう。Git
+                  Bashで以下を実行せよ。</p>
                   <div class="sourceCode" id="cb11"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
                   <p>パスフレーズを聞かれるので入力せよ。これでローカルの修正がリモート(GitHub)に反映された。もう一度ブラウザでGitHubのリポジトリを見てみよう。ブラウザをリロードしてみよ。ローカルの変更が反映され、画面に「Hello
@@ -225,7 +221,8 @@
                   class="sourceCode md"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># test2</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>2nd repository</span></code></pre></div>
-                  <p>この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。</p>
+                  <p>この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。Git
+                  Bashので以下を実行せよ。</p>
                   <div class="sourceCode" id="cb14"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add README.md</span>
@@ -238,15 +235,18 @@
                   <p>空のリポジトリを作りたいので、「Initialize this
                   repository with:」のチェックは全て外した状態で「Create
                   Repository」とすること。</p>
-                  <p>すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、ここでは「既に存在するリポジトリをpushする(…or
-                  push an existing repository from the command
-                  line)」を選びたいので、そこに書かれている以下のコマンドをコピーする。</p>
+                  <p>すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、まずは、「Quick
+                  setup — if you’ve done this kind of thing
+                  before」のしたにある「HTTPS」「SSH」のボタンのうち、「SSH」を押す。</p>
+                  <p>その後、「既に存在するリポジトリをpushする(…or push
+                  an existing repository from the command
+                  line)」を実行するため、そこに書かれている以下のコマンドをコピーする。</p>
                   <div class="sourceCode" id="cb15"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin git@github.com:アカウント名/test2.git</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-M</span> main</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div>
                   <p>これをGit
-                  Bashに貼り付けて実行すれば、プッシュできる。この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。</p>
+                  Bashに貼り付けて実行すれば、プッシュできる。「Ctrl+C」ではなく、この状態で、もう一度GitHubの当該リポジトリを見てみよう。ブラウザをリロードせよ。リポジトリにREADME.mdが作成された状態になるはずだ。</p>
                   <h2 id="レポート課題-1">レポート課題</h2>
                   <p>GitHubの<code>test2</code>リポジトリにおいて<code>README.md</code>が表示されている画面のスクリーンショットをレポートとして提出せよ。</p>
                   <h1 id="課題3-issue管理">課題3: Issue管理</h1>
@@ -265,13 +265,14 @@
                   <p>以下ではブランチとIssueを連携させた開発について体験しよう。</p>
                   <h2 id="step-1-issueの作成">Step 1: Issueの作成</h2>
                   <ul>
-                  <li>先ほど作った<code>test</code>リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Repositories」の「アカウント名/test」を選べばよい。</li>
+                  <li>先ほど作った<code>github-test</code>リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Top
+                  repositories」の「アカウント名/github-test」を選べばよい。</li>
                   <li>「Code」「Issues」「Pull
                   requests」「Actions」「Projects」などのメニューが並んだタブから「Issues」を選び、「New
                   Issue」ボタンを押す。画面の最上部の「Issues」と間違えないこと。</li>
                   <li>Titleに「READMEの修正」と書く</li>
-                  <li>コメント(Leave a
-                  commentとあるところ)に「内容を追加」と書く。</li>
+                  <li>コメント(Adda
+                  descriptionの下)に「内容を追加」と書く。</li>
                   <li>Labelsとして「enhancement」を選ぶ。</li>
                   </ul>
                   <p>以上の操作の後「Submit new
@@ -284,7 +285,7 @@
                   <div class="sourceCode" id="cb16"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> test</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github-test</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> feat/1/README</span></code></pre></div>
                   <h2 id="step-3-コミットとマージ">Step 3:
                   コミットとマージ</h2>
@@ -295,7 +296,7 @@
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> GitHub</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">modifies</span> README</span></code></pre></div>
-                  <p>修正したら、<code>git add</code>、<code>git commit</code>するが、コミットメッセージを<code>closes #1</code>とする。シャープ<code>#</code>を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。</p>
+                  <p>修正したら、<code>git add</code>、<code>git commit</code>するが、コミットメッセージを<code>closes #1</code>とする。また、<code>closes</code>と<code>#1</code>の間には空白を入れる。シャープ<code>#</code>を忘れたり、全角にしたり、数字との間に空白を挟んだりしないこと。</p>
                   <div class="sourceCode" id="cb18"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add README.md</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;closes #1&quot;</span></span></code></pre></div>
@@ -323,21 +324,17 @@
                   Projectの作成</h2>
                   <p>まずはBoard(Kanban)方式のプロジェクトを作成し、リポジトリに関連付けよう。以下の作業を実施せよ。</p>
                   <ol type="1">
-                  <li>GitHubの、自分のアカウント<code>test</code>リポジトリを表示する</li>
-                  <li>上のタブから「Project」を選び、「Link a
-                  project」の右の三角マークをクリックし、「New
-                  project」を選ぶ</li>
-                  <li>「Link a project」が「New
-                  project」ボタンに変化するので、そのボタンをクリック</li>
+                  <li>GitHubの、自分のアカウント<code>github-test</code>リポジトリを表示する</li>
+                  <li>上のタブから「Project」を選び、現れた「+ New
+                  project」ボタンをクリック。</li>
                   <li>「Welcome to project」画面が現れたら「Jump right
-                  in」ボタンをクリック</li>
-                  <li>「Select a
-                  template」画面で「Board」を選び、「Project
+                  in」ボタンをクリック(現れない場合もある)。</li>
+                  <li>左のメニューから「Board」を選び、「Project
                   name」を「Kanban」に変更してから「Create」ボタンを押す。</li>
                   </ol>
-                  <p>これにより「test」リポジトリに「Kanban」プロジェクトが関連付けられた。</p>
                   <h2 id="step-2-issueの作成とprojectへの関連付け">Step
                   2: Issueの作成とProjectへの関連付け</h2>
+                  <p>またgithub-testリポジトリに戻る。左上のアイコンをクリックし、リポジトリから<code>github-test</code>を選ぶ。</p>
                   <p>上のタブから「Issues」をクリックし、「New
                   Issue」ボタンを押し、新たにissueを作る。Titleは「READMEの修正」とする。Issueのコメントには、他のissueを参照したり、チェックボックスを作る機能があるので試してみよう。コメントに以下の内容を記述せよ。</p>
                   <div class="sourceCode" id="cb22"><pre
@@ -352,10 +349,10 @@
                   ブランチの作成</h2>
                   <p>Git
                   Bashに戻り、ブランチを作成しよう。今回はラベルが<code>documentation</code>、issue番号が2番、内容がREADMEの修正なので、<code>doc/2/README</code>としよう。Git
-                  Bashの<code>test</code>リポジトリで以下を実行せよ。</p>
+                  Bashの<code>github-test</code>リポジトリで以下を実行せよ。</p>
                   <div class="sourceCode" id="cb23"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> doc/2/README</span></code></pre></div>
-                  <p>ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの<code>test</code>リポジトリの「Projects」タブから「Kanban」を選ぶ。</p>
+                  <p>ブランチを作成したら、このissueのステータスを「作業中」にしよう。GitHubの<code>github-test</code>リポジトリの「Projects」タブから「Kanban」を選ぶ。</p>
                   <p>すると、「No
                   Status」のところに「READMEの修正」というカードが出来ているはずなので、マウスで「In
                   progress」にドラッグしよう。また「Issues」タブにもどって先ほどのissueを見てみると、「Projects」の「Kanban」で、状態が「In
@@ -398,31 +395,23 @@
                   <p>GitHubでは、公開されているリポジトリを自分の場所に「コピー」することができる。これをforkと呼ぶ。公開リポジトリは、HTTPSによりクローンはできるが、書き込み権限がなければ修正できない。しかし、forkすれば自分の所持するリポジトリとなるので、好きなように修正できる(ただし、ライセンスには気を付けること)。</p>
                   <h2 id="step-1-リポジトリのfork">Step 1:
                   リポジトリのfork</h2>
-                  <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ。</p>
-                  <ul>
-                  <li>A班の場合
+                  <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ(A班B班共通)。</p>
                   <ul>
                   <li><a
-                  href="https://github.com/appi-github/pullreq_2023_a"><code>https://github.com/appi-github/pullreq_2023_a</code></a></li>
-                  </ul></li>
-                  <li>B班の場合
-                  <ul>
-                  <li><a
-                  href="https://github.com/appi-github/pullreq_2023_b"><code>https://github.com/appi-github/pullreq_2023_b</code></a></li>
-                  </ul></li>
+                  href="https://github.com/appi-github/pullreq_2025"><code>https://github.com/appi-github/pullreq_2025</code></a></li>
                   </ul>
-                  <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。以下、A班を例にリポジトリ名を<code>pullreq_2023_a</code>として説明するが、B班は適宜<code>pullreq_2023_b</code>に読み替えること。</p>
+                  <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。</p>
                   <h2 id="step-2-リポジトリのクローン">Step 2:
                   リポジトリのクローン</h2>
                   <p>ブラウザのURLが<code>https://github.com/自分のアカウント/リポジトリ名</code>になったら、フォークが完了している。ローカルにクローンしよう。「Code」ボタンの「Clone」からリモートリポジトリをコピーできる。プロトコルがHTTPSではなくSSHになっていることを確認すること。</p>
                   <div class="sourceCode" id="cb28"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2023_a.git</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2023_a</span></code></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2025.git</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2025</span></code></pre></div>
                   <h2 id="step-3-ブランチの作成-1">Step 3:
                   ブランチの作成</h2>
-                  <p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>1234568</code>である時、以下のコマンドを実行せよ。</p>
+                  <p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>12345678</code>である時、以下のコマンドを実行せよ。</p>
                   <div class="sourceCode" id="cb29"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> 12345678 <span class="kw">|</span> <span class="ex">shasum</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">9806af3952e1380212b0998f07a6afe4e5f00428</span> <span class="pp">*</span>-</span></code></pre></div>

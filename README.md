@@ -1,11 +1,16 @@
-# GitHub演習
+# [GitHub演習](https://kaityo256.github.io/github/)
+
+<a href="https://github.com/kaityo256/github"> <div class="btn-square"><i class="fab fa-github"></i> View on GitHub</div></a>
 
 ## この講義ノートについて
 
 これは、理工学部の三年学部生向けのGit/GitHubを用いたソフトウェア開発演習のための講義ノートである。概ね一般的な記述となっているが、一部に大学のPC室特有の記述があるので、他大の方が利用される際は注意されたい。4回の座学、4回の実習の、計8回の講義/演習で学ぶ構成となっている。
 
-* [GitHubリポジトリ](https://github.com/kaityo256/github)
-* [HTML版](https://kaityo256.github.io/github/)
+なお、この講義ノートを元にした書籍が出版されている。
+
+<a href="https://www.amazon.co.jp/dp/4065352193"><img src="img/book.png" alt="書影" style="width: 240px"/></a>
+
+* [ゼロから学ぶGit/GitHub 現代的なソフトウェア開発のために](https://www.amazon.co.jp/dp/4065352193)
 
 ## [はじめに](preface/README.md)
 
@@ -153,6 +158,13 @@
 
 ## ライセンス
 
-Copyright (C) 2021-present Hiroshi Watanabe
+## ライセンス
 
-この文章と絵(pptxファイルを含む)はクリエイティブ・コモンズ 4.0 表示 (CC-BY 4.0)で提供する。
+本リポジトリは、内容に応じて複数のライセンスを採用しています。
+
+- **ソースコード**: [MIT License](./LICENSE)
+- **文章およびパワーポイントファイル**: [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+ソースコードは商用・非商用問わず自由に利用できます。  
+
+一方、文章およびスライド資料は非営利目的に限り、クレジット表示とライセンスへのリンクを伴うかたちで利用・改変が可能です。
