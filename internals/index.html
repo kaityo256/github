@@ -510,7 +510,7 @@
                   <div class="sourceCode" id="cb47"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch <span class="at">-vva</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">branch</span>                a35d7e4 updates hello.txt</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main                c950332 [origin/main] initial commit</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main                c950332 <span class="pp">[</span><span class="ss">origin/main</span><span class="pp">]</span> initial commit</span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">remotes/origin/main</span> c950332 initial commit</span></code></pre></div>
                   <p><code>remotes/origin/main</code>ブランチが作成され、<code>main</code>ブランチの上流が<code>origin/main</code>になっていることがわかる。さて、<code>main</code>ブランチの実体は<code>.git/refs/main</code>というファイルだった。同様に、<code>remotes/origin/main</code>の実体は、<code>.git/refs/remotes/origin/main</code>にある。ブランチの名前を(ディレクトリも含めて)そのまま<code>.git/ref</code>に展開したような形になっている。<code>.git/refs/remotes/origin/main</code>の中身は、単にコミットハッシュが記録されているだけだ。</p>
                   <div class="sourceCode" id="cb48"><pre
