@@ -95,8 +95,10 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 * リポジトリの新規作成画面では、以下の項目を設定しよう。
     * Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは`github-test`としておく。
     * Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
-    * Public/Private: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
-    * Initialize this repository with: リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add a README file」にチェックを入れ、「Choose a license」のプルダウンメニューから「MIT License」を選んでおこう。「Add .gitignore」は「None」のままで良い。
+    * Choose visiblility: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
+    * Add README: READMEファイルを作成するか。ここではOnにしておこう。
+    * Add .gitignore: .gitignoreを作成するか。今回は作らなくて良い。
+    * Add license: ライセンスを選ぶ。今回はMIT Licenseを選ぶ。
 * 以上の設定を終了したら「Create repository」ボタンを押す。
 * リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする。
 
@@ -240,7 +242,7 @@ GitHubを使う場合、
 * コメント(Adda descriptionの下)に「内容を追加」と書く。
 * Labelsとして「enhancement」を選ぶ。
 
-以上の操作の後「Submit new issue」をクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。
+以上の操作の後「Create」ボタンをクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。
 
 ### Step 2: ブランチの作成
 
@@ -313,7 +315,6 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 1. GitHubの、自分のアカウント`github-test`リポジトリを表示する
 1. 上のタブから「Project」を選び、現れた「+ New project」ボタンをクリック。
-1. 「Welcome to project」画面が現れたら「Jump right in」ボタンをクリック(現れない場合もある)。
 1. 左のメニューから「Board」を選び、「Project name」を「Kanban」に変更してから「Create」ボタンを押す。
 
 ### Step 2: Issueの作成とProjectへの関連付け
