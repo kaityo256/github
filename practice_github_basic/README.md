@@ -30,26 +30,26 @@
 SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git Bashのホームディレクトリにて、以下を実行せよ。
 
 ```sh
-$ ssh-keygen -t rsa
-Generating public/private rsa key pair.
-Enter file in which to save the key (/z//.ssh/id_rsa):  # (1)
+$ ssh-keygen
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/z//.ssh/id_ed25519):  # (1)
 Created directory '/z/.ssh'.
 Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_rsa):`の後に続けて、`/z/.ssh/id_rsa`と入力してエンターキーを押すこと。
+* (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_ed25519):`の後に続けて、`/z/.ssh/id_ed25519`と入力してエンターキーを押すこと。
 * (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
 * (3) 先ほど入力したものと同じパスフレーズを再度入力する。
 
 パスフレーズを二度入力した後、
 
 ```txt
-Your identification has been saved in /z/.ssh/id_rsa
-Your public key has been saved in /z/.ssh/id_rsa.pub
+Your identification has been saved in /z/.ssh/id_ed25519
+Your public key has been saved in /z/.ssh/id_ed25519.pub
 ```
 
-といったメッセージが表示されたら成功である。`id_rsa`が秘密鍵、`id_rsa.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
+といったメッセージが表示されたら成功である。`id_ed25519`が秘密鍵、`id_ed25519.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
 ### Step 3: SSH公開鍵の登録
 
@@ -58,13 +58,13 @@ GitHubに公開鍵を登録する。先ほどGitHubにログインした状態�
 * GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。
 * 左に「Access」というメニューが現れるので「SSH and GPG keys」を選ぶ。
 * 「SSH keys」右にある「New SSH key」ボタンを押す
-* 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_rsa`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
+* 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_ed25519`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
 
 ```sh
-cat .ssh/id_rsa.pub
+cat .ssh/id_ed25519.pub
 ```
 
-すると、`ssh-rsa`から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「Add SSH key」ボタンを押す。
+すると、`ssh-ed25519`から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「Add SSH key」ボタンを押す。
 
 `This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.`というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。
 
@@ -78,7 +78,7 @@ $ ssh -T git@github.com
 
 もし`Are you sure you want to continue connecting (yes/no/[fingerprint])?`というメッセージが表示されたら`yes`と入力する。
 
-`Enter passphrase for key '/path/to/.ssh/id_rsa':`と表示されたら、先ほど設定したパスフレーズを入力する。その結果、
+`Enter passphrase for key '/path/to/.ssh/id_ed25519':`と表示されたら、先ほど設定したパスフレーズを入力する。その結果、
 
 ```txt
 Hi GitHubアカウント名! You've successfully authenticated, but GitHub does not provide shell access.
