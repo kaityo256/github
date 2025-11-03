@@ -51,6 +51,8 @@ Your public key has been saved in /z/.ssh/id_ed25519.pub
 
 といったメッセージが表示されたら成功である。`id_ed25519`が秘密鍵、`id_ed25519.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
+なお、(1)の手続きで`/z/.ssh/id_ed25519`を入力する必要があるのは「演習室のPC」を使う場合のみであり、持ち込みPCなどで実施する場合は何も入力しないでエンターキーを押して進めて良い。
+
 ### Step 3: SSH公開鍵の登録
 
 GitHubに公開鍵を登録する。先ほどGitHubにログインした状態のブラウザで以下の作業をせよ。
@@ -64,7 +66,7 @@ GitHubに公開鍵を登録する。先ほどGitHubにログインした状態�
 cat .ssh/id_ed25519.pub
 ```
 
-すると、`ssh-ed25519`から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「Add SSH key」ボタンを押す。
+すると、`ssh-ed25519`から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「New SSH key」ボタンを押す。
 
 `This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.`というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。
 
@@ -334,7 +336,7 @@ issueには「open (未完了)」と「closed (完了)」の二状態しかな�
 
 このissueをprojectと関連付けよう。右の「Labels」の下にある「Projects」を開き、先ほど作った「Kanban」を選ぼう。
 
-以上の準備が済んだら「Submit new issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。
+以上の準備が済んだら「Create」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。
 
 ### Step 3: ブランチの作成
 
