@@ -79,15 +79,15 @@
                   <p>SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git
                   Bashのホームディレクトリにて、以下を実行せよ。</p>
                   <div class="sourceCode" id="cb1"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh-keygen <span class="at">-t</span> rsa</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> public/private rsa key pair.</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> file in which to save the key <span class="er">(</span><span class="ex">/z//.ssh/id_rsa</span><span class="kw">)</span><span class="bu">:</span>  <span class="co"># (1)</span></span>
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh-keygen</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> public/private ed25519 key pair.</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> file in which to save the key <span class="er">(</span><span class="ex">/z//.ssh/id_ed25519</span><span class="kw">)</span><span class="bu">:</span>  <span class="co"># (1)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Created</span> directory <span class="st">&#39;/z/.ssh&#39;</span>.</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> passphrase <span class="er">(</span><span class="ex">empty</span> for no passphrase<span class="kw">)</span><span class="bu">:</span> <span class="co"># (2)</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> same passphrase again:                <span class="co"># (3)</span></span></code></pre></div>
                   <ul>
                   <li><ol type="1">
-                  <li>秘密鍵を保存する場所を入力する。既に表示されている<code>(/z//.ssh/id_rsa):</code>の後に続けて、<code>/z/.ssh/id_rsa</code>と入力してエンターキーを押すこと。</li>
+                  <li>秘密鍵を保存する場所を入力する。既に表示されている<code>(/z//.ssh/id_ed25519):</code>の後に続けて、<code>/z/.ssh/id_ed25519</code>と入力してエンターキーを押すこと。</li>
                   </ol></li>
                   <li><ol start="2" type="1">
                   <li>ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、<strong>必ずパスフレーズを入力すること</strong>。ここではキーを入力しても画面には何も表示されないので注意。</li>
@@ -98,9 +98,10 @@
                   </ul>
                   <p>パスフレーズを二度入力した後、</p>
                   <div class="sourceCode" id="cb2"><pre
-                  class="sourceCode txt"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Your identification has been saved in /z/.ssh/id_rsa</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Your public key has been saved in /z/.ssh/id_rsa.pub</span></code></pre></div>
-                  <p>といったメッセージが表示されたら成功である。<code>id_rsa</code>が秘密鍵、<code>id_rsa.pub</code>が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。</p>
+                  class="sourceCode txt"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Your identification has been saved in /z/.ssh/id_ed25519</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Your public key has been saved in /z/.ssh/id_ed25519.pub</span></code></pre></div>
+                  <p>といったメッセージが表示されたら成功である。<code>id_ed25519</code>が秘密鍵、<code>id_ed25519.pub</code>が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。</p>
+                  <p>なお、(1)の手続きで<code>/z/.ssh/id_ed25519</code>を入力する必要があるのは「演習室のPC」を使う場合のみであり、持ち込みPCなどで実施する場合は何も入力しないでエンターキーを押して進めて良い。</p>
                   <h2 id="step-3-ssh公開鍵の登録">Step 3:
                   SSH公開鍵の登録</h2>
                   <p>GitHubに公開鍵を登録する。先ほどGitHubにログインした状態のブラウザで以下の作業をせよ。</p>
@@ -114,12 +115,12 @@
                   type」は何も選ばなくて良い(Authentication
                   Keyのまま)。Titleはなんでも良いが、例えば「Git
                   Bash」もしくは「University
-                  PC」とする。Keyには、<code>.ssh/id_rsa</code>ファイルの中身をコピペする。Git
+                  PC」とする。Keyには、<code>.ssh/id_ed25519</code>ファイルの中身をコピペする。Git
                   Bashで以下を実行せよ。</li>
                   </ul>
                   <div class="sourceCode" id="cb3"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .ssh/id_rsa.pub</span></code></pre></div>
-                  <p>すると、<code>ssh-rsa</code>から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「Add
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .ssh/id_ed25519.pub</span></code></pre></div>
+                  <p>すると、<code>ssh-ed25519</code>から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「New
                   SSH key」ボタンを押す。</p>
                   <p><code>This is a list of SSH keys associated with your account. Remove any keys that you do not recognize.</code>というメッセージの下に、先ほどつけたTitleの鍵が表示されていれば登録成功だ。</p>
                   <h2 id="step-4-鍵の登録の確認">Step 4:
@@ -129,7 +130,7 @@
                   <div class="sourceCode" id="cb4"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ssh <span class="at">-T</span> git@github.com</span></code></pre></div>
                   <p>もし<code>Are you sure you want to continue connecting (yes/no/[fingerprint])?</code>というメッセージが表示されたら<code>yes</code>と入力する。</p>
-                  <p><code>Enter passphrase for key '/path/to/.ssh/id_rsa':</code>と表示されたら、先ほど設定したパスフレーズを入力する。その結果、</p>
+                  <p><code>Enter passphrase for key '/path/to/.ssh/id_ed25519':</code>と表示されたら、先ほど設定したパスフレーズを入力する。その結果、</p>
                   <div class="sourceCode" id="cb5"><pre
                   class="sourceCode txt"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Hi GitHubアカウント名! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</span></code></pre></div>
                   <p>と表示されたら、鍵の登録に成功している。</p>
@@ -147,15 +148,15 @@
                   <li>Descrption:
                   リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test
                   repository」にしておこう。</li>
-                  <li>Public/Private:
+                  <li>Choose visiblility:
                   ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private
                   (自分だけがアクセスできる)」を選んでおこう。</li>
-                  <li>Initialize this repository with:
-                  リポジトリを作成する際に一緒に作るもの。ここをチェックすると自動で作ってくれる。ここでは、「Add
-                  a README file」にチェックを入れ、「Choose a
-                  license」のプルダウンメニューから「MIT
-                  License」を選んでおこう。「Add
-                  .gitignore」は「None」のままで良い。</li>
+                  <li>Add README:
+                  READMEファイルを作成するか。ここではOnにしておこう。</li>
+                  <li>Add .gitignore:
+                  .gitignoreを作成するか。今回は作らなくて良い。</li>
+                  <li>Add license: ライセンスを選ぶ。今回はMIT
+                  Licenseを選ぶ。</li>
                   </ul></li>
                   <li>以上の設定を終了したら「Create
                   repository」ボタンを押す。</li>
@@ -275,8 +276,7 @@
                   descriptionの下)に「内容を追加」と書く。</li>
                   <li>Labelsとして「enhancement」を選ぶ。</li>
                   </ul>
-                  <p>以上の操作の後「Submit new
-                  issue」をクリックする。すると、「READMEの修正
+                  <p>以上の操作の後「Create」ボタンをクリックする。すると、「READMEの修正
                   #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。</p>
                   <h2 id="step-2-ブランチの作成">Step 2:
                   ブランチの作成</h2>
@@ -327,8 +327,6 @@
                   <li>GitHubの、自分のアカウント<code>github-test</code>リポジトリを表示する</li>
                   <li>上のタブから「Project」を選び、現れた「+ New
                   project」ボタンをクリック。</li>
-                  <li>「Welcome to project」画面が現れたら「Jump right
-                  in」ボタンをクリック(現れない場合もある)。</li>
                   <li>左のメニューから「Board」を選び、「Project
                   name」を「Kanban」に変更してから「Create」ボタンを押す。</li>
                   </ol>
@@ -343,8 +341,7 @@
                   <p>ここで「<code>#</code>」と数字の間には空白をいれず、「<code>#1</code>」の後には半角空白を入れるのをわすれないこと。また、<code>- [ ]</code>の間には半角空白を入れる。入力をしたら「Preview」タブを見て、チェックボックスができているか、別のissueにリンクされているか確認すること。</p>
                   <p>ラベルは先ほどと異なるもので試したいので「documentation」を選ぶ。</p>
                   <p>このissueをprojectと関連付けよう。右の「Labels」の下にある「Projects」を開き、先ほど作った「Kanban」を選ぼう。</p>
-                  <p>以上の準備が済んだら「Submit new
-                  issue」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。</p>
+                  <p>以上の準備が済んだら「Create」ボタンを押し、issueを作る。この画面はまた使うのでブラウザを閉じないこと。</p>
                   <h2 id="step-3-ブランチの作成">Step 3:
                   ブランチの作成</h2>
                   <p>Git
