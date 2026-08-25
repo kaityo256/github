@@ -56,8 +56,8 @@
                   <li>Project(Automated Kanban)の使い方を覚える</li>
                   <li>プルリクエストを作ってみる</li>
                   </ul>
-                  <h1 id="課題1-githubアカウントを作成とssh接続">課題1:
-                  GitHubアカウントを作成とSSH接続</h1>
+                  <h1 id="課題1-githubアカウントの作成とssh接続">課題1:
+                  GitHubアカウントの作成とSSH接続</h1>
                   <h2 id="step-1-アカウントの作成">Step 1:
                   アカウントの作成</h2>
                   <p>まず、GitHubにアカウントを作成する。既にGitHubにアカウントを持っている人はこのステップをスキップしてよい。ユーザ名、メールアドレス、パスワードを入力するが、ユーザー名は今後長く使う可能性があるのでよく考えること。場合によっては本名よりも有名になる可能性もある。メールアドレスは普段使うアドレスを設定しておく。このアドレスは公開されない(公開することもできる)。</p>
@@ -176,14 +176,16 @@
                   <p>すると、以下のような内容が表示されるはずだ。</p>
                   <div class="sourceCode" id="cb7"><pre
                   class="sourceCode md"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># github-test</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>test repository</span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>test repository</span></code></pre></div>
                   <p>これを、以下のように「Hello
-                  Github」と一行追加し、保存せよ。</p>
+                  GitHub」と一行追加し、保存せよ。</p>
                   <div class="sourceCode" id="cb8"><pre
                   class="sourceCode md"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># github-test</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>test repository</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>Hello GitHub</span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>test repository</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>Hello GitHub</span></code></pre></div>
                   <p>この状態で、<code>README.md</code>の修正を<code>git add</code>して<code>git commit</code>しよう。Git
                   Bashで以下を実行せよ。</p>
                   <div class="sourceCode" id="cb9"><pre
@@ -362,11 +364,12 @@
                   Kanban」という一行を追加せよ。</p>
                   <div class="sourceCode" id="cb24"><pre
                   class="sourceCode md"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># test</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>test repository</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Hello GitHub</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>modifies README</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>Hello Kanban</span></code></pre></div>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>test repository</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>Hello GitHub</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>modifies README</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>Hello Kanban</span></code></pre></div>
                   <p>ファイルを保存したら、今度は<code>fixes #2</code>というメッセージでコミットする。</p>
                   <div class="sourceCode" id="cb25"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add README.md</span>
@@ -395,7 +398,7 @@
                   <p>まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ(A班B班共通)。</p>
                   <ul>
                   <li><a
-                  href="https://github.com/appi-github/pullreq_2025"><code>https://github.com/appi-github/pullreq_2025</code></a></li>
+                  href="https://github.com/appi-github/pullreq_2026"><code>https://github.com/appi-github/pullreq_2026</code></a></li>
                   </ul>
                   <p>このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。</p>
                   <h2 id="step-2-リポジトリのクローン">Step 2:
@@ -404,8 +407,8 @@
                   <div class="sourceCode" id="cb28"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> github</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2025.git</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2025</span></code></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:アカウント名/pullreq_2026.git</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pullreq_2026</span></code></pre></div>
                   <h2 id="step-3-ブランチの作成-1">Step 3:
                   ブランチの作成</h2>
                   <p>次に、ブランチを作成するが、ブランチ名を「自分の学籍番号」のSHA-1ハッシュの上位7桁としよう。例えば学籍番号が<code>12345678</code>である時、以下のコマンドを実行せよ。</p>
@@ -443,7 +446,7 @@
                   request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。</p>
                   <h1
                   id="余談天空の城のセキュリティ">余談：天空の城のセキュリティ</h1>
-                  <p>スタジオジブリの長編アニメ映画「天空の城ラピュタ」を知っているであろう。空から少女がゆっくり降りてくるシーンが印象的なこの映画は、滅びの言葉「バルス」でも有名だ。金曜ロードショーなどで「バルス」を言うタイミングで、多くの人がネット上で「バルス」と発信するため、SNSサーバが落ちたこともある。さて、ラピュタというシステムにおける「バルス」の認証はどうなっているだろうか？「バルス」の前に、まずは「リーテ・ラトバリタ・・・」で始まる「ラピュタ起動の呪文」の認証について考えてみよう。劇中では、ペンダントを首にかけた状態で、シータが呪文を唱えることでラピュタが起動する。回想シーンでシータがおばあさんからこの呪文を教わっている時に特に何も起きていないので、「ペンダントが近くにある」ことが要件であろう。この「特定の物を持っている」ことによる認証を「所持認証」と呼ぶ。家の鍵などが所持認証であり、鍵の持ち主が家に入る権利を持っているものとみなす。また、呪文やパスワード、合言葉のような「特定の知識があること」を要件とする認証を「知識認証」と呼ぶ。Amazonなどのサービスにログインする場合にアカウントとパスワードを入力するであろう。これは、アカウントとパスワードの正しい組み合わせを知っている人が、そのアカウントにログインする権利を持つ人であるとみなしている。さらに静脈認証や指紋認証といった、身体的特徴を個人識別の手段として使うものを「生体認証」と呼ぶ。タブレットで指紋で認証したり、スマホのカメラで顔で認証したりするのがその例である。劇中では明示的に描かれていないが、ラピュタ王家の血を引くものが呪文を唱えることを起動要件としているかもしれない。少なくとも私がラピュタのエンジニアならそうする。もしそうなら、ラピュタの起動は「所持認証(飛行石のペンダント)」「知識認証(長い呪文)」「生体認証(王家の血を引く人物)」の多要素認証で守られていることになる。では、ラピュタの緊急停止コマンドである「バルス」はどうであろうか。劇中ではやはり「王家の人間が」「飛行石を持って」「呪文を唱える」という多要素認証で守られているように見えるが、そのわりには起動に比べて緊急停止の呪文が短いのが気になるであろう。あくまで個人的な考えだが、私は「バルス」は多要素認証で守られて「いない」と考える。ラピュタは強大な兵器であり、もし敵の手に渡ったら大変なことになる。その場合は可及的速やかに停止させなければならない。緊急事態において、王家の血をひく人間を用意するのは大変であろう。したがって、私がラピュタのエンジニアなら生体認証はかけない。さらに、ラピュタが敵の手に落ちているということは、飛行石も相手側にあると考えるのが自然だ。したがって所持認証をかけてしまうと、停止させることができない。以上から、「誰が呪文を唱えたとしても」「飛行石を持っていなくても」「ラピュタが起動している状態でバルスとさえ言えば(その言葉がラピュタに感知されれば)」ラピュタは停止すると思われる。少なくとも私がラピュタのエンジニアならそうする。一般に、「ヤバい」ものほど、起動は面倒に、停止は簡単にするのがセオリーである。ちなみに、もし「バルス」に「所持認証」と「生体認証」がかかっていたとしても、シータが呪文を唱えれば発動要件を満たすはずだ。この状態でなぜシータがパズーに滅びの言葉を教えたときになぜ発動しなかったのか、ラピュタ好きな友人に聞いてみたことがある。その友人は、「シータがパズーの手に指で文字を書いて教えたのだろう」と答えた。なるほど。</p>
+                  <p>スタジオジブリの長編アニメ映画「天空の城ラピュタ」を知っているであろう。空から少女がゆっくり降りてくるシーンが印象的なこの映画は、滅びの言葉「バルス」でも有名だ。金曜ロードショーなどで「バルス」を言うタイミングで、多くの人がネット上で「バルス」と発信するため、SNSサーバが落ちたこともある。さて、ラピュタというシステムにおける「バルス」の認証はどうなっているだろうか？「バルス」の前に、まずは「リーテ・ラトバリタ・・・」で始まる「ラピュタ起動の呪文」の認証について考えてみよう。劇中では、ペンダントを首にかけた状態で、シータが呪文を唱えることでラピュタが起動する。回想シーンでシータがおばあさんからこの呪文を教わっている時に特に何も起きていないので、「ペンダントが近くにある」ことが要件であろう。この「特定の物を持っている」ことによる認証を「所持認証」と呼ぶ。家の鍵などが所持認証であり、鍵の持ち主が家に入る権利を持っているものとみなす。また、呪文やパスワード、合言葉のような「特定の知識があること」を要件とする認証を「知識認証」と呼ぶ。Amazonなどのサービスにログインする場合にアカウントとパスワードを入力するであろう。これは、アカウントとパスワードの正しい組み合わせを知っている人が、そのアカウントにログインする権利を持つ人であるとみなしている。さらに静脈認証や指紋認証といった、身体的特徴を個人識別の手段として使うものを「生体認証」と呼ぶ。タブレットで指紋で認証したり、スマホのカメラで顔で認証したりするのがその例である。劇中では明示的に描かれていないが、ラピュタ王家の血を引くものが呪文を唱えることを起動要件としているかもしれない。少なくとも私がラピュタのエンジニアならそうする。もしそうなら、ラピュタの起動は「所持認証(飛行石のペンダント)」「知識認証(長い呪文)」「生体認証(王家の血を引く人物)」の多要素認証で守られていることになる。では、ラピュタの緊急停止コマンドである「バルス」はどうであろうか。劇中ではやはり「王家の人間が」「飛行石を持って」「呪文を唱える」という多要素認証で守られているように見えるが、そのわりには起動に比べて緊急停止の呪文が短いのが気になるであろう。あくまで個人的な考えだが、私は「バルス」は多要素認証で守られて「いない」と考える。ラピュタは強大な兵器であり、もし敵の手に渡ったら大変なことになる。その場合は可及的速やかに停止させなければならない。緊急事態において、王家の血をひく人間を用意するのは大変であろう。したがって、私がラピュタのエンジニアなら生体認証はかけない。さらに、ラピュタが敵の手に落ちているということは、飛行石も相手側にあると考えるのが自然だ。したがって所持認証をかけてしまうと、停止させることができない。以上から、「誰が呪文を唱えたとしても」「飛行石を持っていなくても」「ラピュタが起動している状態でバルスとさえ言えば(その言葉がラピュタに感知されれば)」ラピュタは停止すると思われる。少なくとも私がラピュタのエンジニアならそうする。一般に、「ヤバい」ものほど、起動は面倒に、停止は簡単にするのがセオリーである。ちなみに、もし「バルス」に「所持認証」と「生体認証」がかかっていたとしても、シータが呪文を唱えれば発動要件を満たすはずだ。この状態でなぜシータがパズーに滅びの言葉を教えたときに発動しなかったのか、ラピュタ好きな友人に聞いてみたことがある。その友人は、「シータがパズーの手に指で文字を書いて教えたのだろう」と答えた。なるほど。</p>
           </article>
   </body>
 

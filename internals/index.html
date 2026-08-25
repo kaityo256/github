@@ -51,8 +51,8 @@
                   <h1 id="はじめに">はじめに</h1>
                   <p>Gitで管理するプロジェクトには<code>.git</code>というディレクトリがあり、その中にGitの管理情報が入っている。その中には、全てのコミットや、いろんなバージョンのファイル、ブランチ、タグといった情報が格納されている。Gitを操作するにあたり、この中身がどうなっているかを理解する必要はないし、もし中身を覚えたとしても、操作方法は変わらないまま、内部実装だけ変更になる可能性もある。それでも、Gitの仕組み、特に様々な情報が<code>.git</code>にどのように格納されているかを知っておくのは二つの理由から有用だと考える。</p>
                   <p>一つ目の理由は、「物が動く仕組み」を知っておくことが教養だからだ。車を運転するのに、アクセルを踏めば進み、ブレーキを踏めば止まり、ハンドルを回せば曲がることを知っていれば十分だ。しかし、シリンダーにガソリンが噴射され、ピストンで圧縮したところで点火し、爆発する力でピストンが押される、という直線的な動きを作り、それを回転運動に変換してタイヤが回っている、ということくらいは(特に理工系の学生なら)ぼんやりとは知っておいて欲しい。さらに、その点火システム(イグニッションコイル)に電磁誘導が使われていると知れば、「なるほど、学校で習った電磁気の性質がこんなところに使われているのか」と思うことであろう。自分でゼロから作れるほど理解する必要はないが、物やツールをブラックボックスにせず、その中身をぼんやりとでも知っておくのは良いことだ。</p>
-                  <p>もう一つの理由は、「機能は、なんらかの方法で実装されている」という感覚を持って欲しいためだ。我々がツールに求めるのは「機能」であるが、同じ機能であっても複数の実現手段がある。例えば、電子レンジとオーブンは、「どちらも食品を加熱する」という機能を持っているが、その実現方法は異なる。同様に、GitもSubversionはどちらもバージョン管理システムであり、どちらにもブランチやタグという概念があるが、その実装方法は全く異なる。Gitはツールである。ツールであるからには何らかの機能を提供している。その機能、例えばコミットによるスナップショットの保存や、ブランチの切り替えなどが、実際にはどのように実現されているかを見てみるのは無駄にはならないであろう。</p>
-                  <p>以下では、Gitの実装、特に<code>.git</code>ディレクトリの中に何がどのように格納されているか紹介する。その詳細を覚える必要は全くない。しかし、「機能の実現には実装が伴う」ということ、また、Gitの実装が非常に素直であることを実感して欲しい。</p>
+                  <p>もう一つの理由は、「機能は、なんらかの方法で実装されている」という感覚を持って欲しいためだ。我々がツールに求めるのは「機能」であるが、同じ機能であっても複数の実現手段がある。例えば、電子レンジとオーブンは、「どちらも食品を加熱する」という機能を持っているが、その実現方法は異なる。同様に、GitとSubversionはどちらもバージョン管理システムであり、どちらにもブランチやタグという概念があるが、その実装方法は全く異なる。Gitはツールである。ツールであるからには何らかの機能を提供している。その機能、例えばコミットによるスナップショットの保存や、ブランチの切り替えなどが、実際にはどのように実現されているかを見てみるのは無駄にはならないであろう。</p>
+                  <p>以下では、Gitの実装、特に<code>.git</code>ディレクトリの中に何がどのように格納されているかを紹介する。その詳細を覚える必要は全くない。しかし、「機能の実現には実装が伴う」ということ、また、Gitの実装が非常に素直であることを実感して欲しい。</p>
                   <h1
                   id="gitディレクトリの中身"><code>.git</code>ディレクトリの中身</h1>
                   <p>まず、<code>.git</code>の中身を見てみよう。適当なリポジトリで<code>ls .git</code>してみる。</p>
@@ -512,7 +512,7 @@
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">branch</span>                a35d7e4 updates hello.txt</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main                c950332 <span class="pp">[</span><span class="ss">origin/main</span><span class="pp">]</span> initial commit</span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">remotes/origin/main</span> c950332 initial commit</span></code></pre></div>
-                  <p><code>remotes/origin/main</code>ブランチが作成され、<code>main</code>ブランチの上流が<code>origin/main</code>になっていることがわかる。さて、<code>main</code>ブランチの実体は<code>.git/refs/main</code>というファイルだった。同様に、<code>remotes/origin/main</code>の実体は、<code>.git/refs/remotes/origin/main</code>にある。ブランチの名前を(ディレクトリも含めて)そのまま<code>.git/ref</code>に展開したような形になっている。<code>.git/refs/remotes/origin/main</code>の中身は、単にコミットハッシュが記録されているだけだ。</p>
+                  <p><code>remotes/origin/main</code>ブランチが作成され、<code>main</code>ブランチの上流が<code>origin/main</code>になっていることがわかる。さて、<code>main</code>ブランチの実体は<code>.git/refs/heads/main</code>というファイルだった。同様に、<code>remotes/origin/main</code>の実体は、<code>.git/refs/remotes/origin/main</code>にある。ブランチの名前を(ディレクトリも含めて)そのまま<code>.git/refs</code>に展開したような形になっている。<code>.git/refs/remotes/origin/main</code>の中身は、単にコミットハッシュが記録されているだけだ。</p>
                   <div class="sourceCode" id="cb48"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .git/refs/remotes/origin/main</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c9503326279796b24be86bdf9beb01c1af2d2b95</span></span></code></pre></div>

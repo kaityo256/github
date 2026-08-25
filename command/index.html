@@ -57,7 +57,7 @@
                   Interface,
                   CLI)</strong>　と呼ばれる。最初からGUIツールとして作られているWordやPowerPoint等と異なり、Gitはコマンドラインツールとして作られている。GitにはGit
                   Guiや、SourceTreeなどのGUIツールも用意されているが、これはCLIにGUIの「皮」をかぶせたものだ。Gitを「ただ使う」だけであればGUIツールを使えばよいが、本講義の目的はGitを使うことではなく、Gitというバージョン管理ツールを理解することだ。また、GUIツールを使っていて何かトラブルが起きた場合、それがコマンドに起因するものなのか、GUIの「皮」に起因するものなのかを切り分けなければならず、そのためにはコマンドライン操作を理解していなければならない。そこで、まずはコマンドライン操作について学ぶ。</p>
-                  <p>なお、コマンドライン操作において最も注目して欲しいのはエラーへの対応だ。GUIではそもそも「許されない操作」ができないように設計されていることが多いが、コマンドラインでは頻繫に「許されない操作」をしてしまい、「それはできないよ」というメッセージが表示されることだろう。これを
+                  <p>なお、コマンドライン操作において最も注目して欲しいのはエラーへの対応だ。GUIではそもそも「許されない操作」ができないように設計されていることが多いが、コマンドラインでは頻繁に「許されない操作」をしてしまい、「それはできないよ」というメッセージが表示されることだろう。これを
                   <strong>エラーメッセージ(Error Message)</strong>
                   と呼ぶ。エラーの多くは平易な英語で書いてあるので、ちゃんと読めば何が起きたか、そして次に何をすれば良いかがわかるはずだ。</p>
                   <h1 id="unixコマンド">Unixコマンド</h1>
@@ -117,7 +117,7 @@
                   Bashであれば、</p>
                   <div class="sourceCode" id="cb1"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">explorer</span> .</span></code></pre></div>
-                  <p>を実行すると、カレントディレクトリをエクスプローラーで開くことができる(一つ空白をかえてピリオドを入力するのを忘れないこと)。</p>
+                  <p>を実行すると、カレントディレクトリをエクスプローラーで開くことができる(一つ空白をあけてピリオドを入力するのを忘れないこと)。</p>
                   <p>Macであれば</p>
                   <div class="sourceCode" id="cb2"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">open</span> .</span></code></pre></div>
@@ -180,9 +180,9 @@
                   </figure>
                   <p>存在しないディレクトリに移動しようとしたら、エラーが出る。</p>
                   <div class="sourceCode" id="cb10"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd non-exisiting-dir</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bash:</span> cd: non-exisiting-dir: No such file or directory</span></code></pre></div>
-                  <p>これは「<code>non-exisiting-dir</code>というディレクトリに<code>cd</code>しようとしたけど、そんなファイルもディレクトリも無いよ」というエラーだ。ファイルに対して<code>cd</code>しようとしてもエラーとなる。</p>
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd non-existing-dir</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bash:</span> cd: non-existing-dir: No such file or directory</span></code></pre></div>
+                  <p>これは「<code>non-existing-dir</code>というディレクトリに<code>cd</code>しようとしたけど、そんなファイルもディレクトリも無いよ」というエラーだ。ファイルに対して<code>cd</code>しようとしてもエラーとなる。</p>
                   <div class="sourceCode" id="cb11"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd file1.txt</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bash:</span> cd: file1.txt: Not a directory</span></code></pre></div>
@@ -222,8 +222,8 @@
                   </figure>
                   <p>まず、一番使う頻度が高いと思われるのが、移動元がファイル、移動先がディレクトリの場合だ。ファイルがそのディレクトリに移動する。カレントディレクトリを表す<code>.</code>や、一つ上のディレクトリを表す<code>..</code>をよく使うので覚えておきたい。</p>
                   <div class="sourceCode" id="cb14"><pre
-                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> file1.txt dir1 <span class="co"># test.txtが、サブディレクトリのdir1に移動する</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ../file1.txt . <span class="co"># 一つ上にディレクトリにあるtest.txtを、カレントディレクトリに移動する</span></span></code></pre></div>
+                  class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> file1.txt dir1 <span class="co"># file1.txtが、サブディレクトリのdir1に移動する</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ../file1.txt . <span class="co"># 一つ上のディレクトリにあるfile1.txtを、カレントディレクトリに移動する</span></span></code></pre></div>
                   <p>ここでは全て相対パスで指定していることに注意。絶対パスでも指定できるが、少なくとも本講義では必要ないはず。</p>
                   <h3
                   id="mv-ファイル-ファイル"><code>mv ファイル　ファイル</code></h3>

@@ -164,7 +164,7 @@
                   <p>まず、リモートリポジトリの<code>main</code>の歴史が、ローカルの<code>main</code>よりも進んでいる状態で<code>git fetch</code>しよう。<code>main</code>に上流ブランチ<code>origin/main</code>が設定されており、<code>origin/main</code>はリモートの<code>main</code>をリモート追跡しているため、これは</p>
                   <div class="sourceCode" id="cb5"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch origin main</span></code></pre></div>
-                  <p>つまり「リモートリポジトリ<code>origin</code>の<code>main</code>ブランチの指す情報をローカルとってこい」と同じ意味となる。するとリモートから「進んでいる歴史」分のコミットがローカルに落ちてきて、さらにローカルの<code>origin/main</code>ブランチが先に進む。これにより、リモートの<code>main</code>と、ローカルの<code>origin/main</code>が持つ歴史が同じになった。</p>
+                  <p>つまり「リモートリポジトリ<code>origin</code>の<code>main</code>ブランチの指す情報をローカルにとってこい」と同じ意味となる。するとリモートから「進んでいる歴史」分のコミットがローカルに落ちてきて、さらにローカルの<code>origin/main</code>ブランチが先に進む。これにより、リモートの<code>main</code>と、ローカルの<code>origin/main</code>が持つ歴史が同じになった。</p>
                   <figure>
                   <img src="fig/fetch_remote.png"
                   alt="fetch_remote.png" />
@@ -174,14 +174,14 @@
                   <p>次に、<code>git merge</code>を実行する。カレントブランチが<code>main</code>であり、上流ブランチとして<code>origin/main</code>が設定されているため、これは</p>
                   <div class="sourceCode" id="cb6"><pre
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge origin/main</span></code></pre></div>
-                  <p>と同じ意味となる。今回のケースではfast-forward可能であるため、単に<code>main</code>が<code>origin/main</code>の指すのと同じコミットを差すように移動する。これにより、ローカルの<code>main</code>がリモートの<code>main</code>と同じ歴史を持つようになった。</p>
+                  <p>と同じ意味となる。今回のケースではfast-forward可能であるため、単に<code>main</code>が<code>origin/main</code>の指すのと同じコミットを指すように移動する。これにより、ローカルの<code>main</code>がリモートの<code>main</code>と同じ歴史を持つようになった。</p>
                   <p>次にpushを見てみよう。コミットをすることで、ローカルにある<code>main</code>ブランチの歴史が進んだ。しかし、<code>origin/main</code>はそのままだ。この状態で<code>git push</code>をしよう。すると、</p>
                   <figure>
                   <img src="fig/push_remote.png" alt="push remote" />
                   <figcaption aria-hidden="true">push
                   remote</figcaption>
                   </figure>
-                  <p>すると、ローカルで新たに追加されたコミットがリモートに送られ、リモートの<code>main</code>ブランチが先に進む。さらに、ローカルの<code>origin/main</code>ブランチも先に進む。これにより、ローカルの<code>main</code>ブランチ、<code>origin/main</code>ブランチ、リモートの<code>main</code>ブランチが全て同じ歴史を共有できた。</p>
+                  <p>ローカルで新たに追加されたコミットがリモートに送られ、リモートの<code>main</code>ブランチが先に進む。さらに、ローカルの<code>origin/main</code>ブランチも先に進む。これにより、ローカルの<code>main</code>ブランチ、<code>origin/main</code>ブランチ、リモートの<code>main</code>ブランチが全て同じ歴史を共有できた。</p>
                   <p>まとめると以下のようになる。</p>
                   <ul>
                   <li><code>git fetch</code>により、リモートの<code>main</code>とローカルの<code>origin/main</code>が同じ状態になる</li>
@@ -217,13 +217,13 @@
                   class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div>
                   <p>これは</p>
                   <ul>
-                  <li>リモートの<code>main</code>をリモート追跡するブランチ<code>origin/main</code>ローカルブランチを作る</li>
+                  <li>リモートの<code>main</code>を追跡する<code>origin/main</code>というローカルブランチを作る</li>
                   <li>情報をリモートに送信する</li>
                   <li><code>main</code>の上流ブランチとして<code>origin/main</code>を設定する</li>
                   </ul>
                   <p>という操作を行う。もし<code>-u</code>オプションをつけなかった場合、</p>
                   <ul>
-                  <li>リモートの<code>main</code>をリモート追跡するブランチ<code>origin/main</code>ローカルブランチを作る</li>
+                  <li>リモートの<code>main</code>を追跡する<code>origin/main</code>というローカルブランチを作る</li>
                   <li>情報をリモートに送信する</li>
                   </ul>
                   <p>という処理のみ行い、<code>main</code>ブランチの上流ブランチの設定はしない。後で<code>origin/main</code>を<code>main</code>の上流にしたくなった場合はカレントブランチが<code>main</code>の状態で</p>
