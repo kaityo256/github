@@ -227,7 +227,7 @@ stash@{0}: WIP on main: 57222d5 update
 $ git switch -c feature
 Switched to a new branch 'feature'
 
-$ git stash apply pop
+$ git stash pop
 On branch feature
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
