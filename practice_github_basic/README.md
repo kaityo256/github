@@ -2,11 +2,11 @@
 
 ## 目標
 
-* GitHubのアカウントを作成する
-* リモートリポジトリの作成と、ローカルリポジトリとの同期について学ぶ
-* issueの使い方の基本を覚える
-* Project(Automated Kanban)の使い方を覚える
-* プルリクエストを作ってみる
+- GitHubのアカウントを作成する
+- リモートリポジトリの作成と、ローカルリポジトリとの同期について学ぶ
+- issueの使い方の基本を覚える
+- Project(Automated Kanban)の使い方を覚える
+- プルリクエストを作ってみる
 
 ## 課題1: GitHubアカウントを作成とSSH接続
 
@@ -16,10 +16,10 @@
 
 [https://github.com/](https://github.com/)にアクセスし、右上から「Sign up」を選ぶ。
 
-* Enter your email : メールアドレスを入力する
-* Create a password: パスワードを入力する
-* Enter a username: GitHubのアカウント名を入力
-* Email Preferences: アナウンスを受け取るか、通常は不要なのでチェックしなくて良い。
+- Enter your email : メールアドレスを入力する
+- Create a password: パスワードを入力する
+- Enter a username: GitHubのアカウント名を入力
+- Email Preferences: アナウンスを受け取るか、通常は不要なのでチェックしなくて良い。
 
 以上を入力して「Continue」ボタンを押す。
 
@@ -38,9 +38,9 @@ Enter passphrase (empty for no passphrase): # (2)
 Enter same passphrase again:                # (3)
 ```
 
-* (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_ed25519):`の後に続けて、`/z/.ssh/id_ed25519`と入力してエンターキーを押すこと。
-* (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
-* (3) 先ほど入力したものと同じパスフレーズを再度入力する。
+- (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_ed25519):`の後に続けて、`/z/.ssh/id_ed25519`と入力してエンターキーを押すこと。
+- (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
+- (3) 先ほど入力したものと同じパスフレーズを再度入力する。
 
 パスフレーズを二度入力した後、
 
@@ -57,10 +57,10 @@ Your public key has been saved in /z/.ssh/id_ed25519.pub
 
 GitHubに公開鍵を登録する。先ほどGitHubにログインした状態のブラウザで以下の作業をせよ。
 
-* GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。
-* 左に「Access」というメニューが現れるので「SSH and GPG keys」を選ぶ。
-* 「SSH keys」右にある「New SSH key」ボタンを押す
-* 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_ed25519`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
+- GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。
+- 左に「Access」というメニューが現れるので「SSH and GPG keys」を選ぶ。
+- 「SSH keys」右にある「New SSH key」ボタンを押す
+- 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_ed25519`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
 
 ```sh
 cat .ssh/id_ed25519.pub
@@ -92,17 +92,17 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 
 では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。
 
-* GitHubのホーム画面を表示する。左上のネコのようなアイコン(Octocat)をクリックするとホーム画面に戻る。
-* ホーム画面に戻ったら「Create repository」ボタンを押す。
-* リポジトリの新規作成画面では、以下の項目を設定しよう。
-    * Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは`github-test`としておく。
-    * Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
-    * Choose visiblility: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
-    * Add README: READMEファイルを作成するか。ここではOnにしておこう。
-    * Add .gitignore: .gitignoreを作成するか。今回は作らなくて良い。
-    * Add license: ライセンスを選ぶ。今回はMIT Licenseを選ぶ。
-* 以上の設定を終了したら「Create repository」ボタンを押す。
-* リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする。
+- GitHubのホーム画面を表示する。左上のネコのようなアイコン(Octocat)をクリックするとホーム画面に戻る。
+- ホーム画面に戻ったら「Create repository」ボタンを押す。
+- リポジトリの新規作成画面では、以下の項目を設定しよう。
+  - Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは`github-test`としておく。
+  - Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
+  - Choose visiblility: ここで「Public」を選ぶと、全世界の人から見ることができるリポジトリとなる。とりあえずは「Private (自分だけがアクセスできる)」を選んでおこう。
+  - Add README: READMEファイルを作成するか。ここではOnにしておこう。
+  - Add .gitignore: .gitignoreを作成するか。今回は作らなくて良い。
+  - Add license: ライセンスを選ぶ。今回はMIT Licenseを選ぶ。
+- 以上の設定を終了したら「Create repository」ボタンを押す。
+- リポジトリの画面に移るので、右上の緑色の「Code」ボタンをクリックすると、「Clone」というウィンドウが現れるので「SSH」を選ぶ。すると`git@github.com:`から始まるURLが現れるので、それを右の「コピーアイコン」ボタンを押してコピーする。
 
 次に、ローカルマシンで`github`ディレクトリの下に先ほど作ったリポジトリをクローンしよう。以下を実行せよ。
 
@@ -125,6 +125,7 @@ cd github-test
 
 ```md
 # github-test
+
 test repository
 ```
 
@@ -132,6 +133,7 @@ test repository
 
 ```md
 # github-test
+
 test repository
 
 Hello GitHub
@@ -227,10 +229,10 @@ Gitでは、原則としてメインブランチで作業をしない。これ�
 
 GitHubを使う場合、
 
-* これから行う作業をissueに登録する。
-* 登録されたissueのうち、これから手をつけるissueに対応した作業ブランチを作成する
-* 作業ブランチで作業し、修正をコミットする
-* メインブランチにマージする
+- これから行う作業をissueに登録する。
+- 登録されたissueのうち、これから手をつけるissueに対応した作業ブランチを作成する
+- 作業ブランチで作業し、修正をコミットする
+- メインブランチにマージする
 
 という流れで開発をすすめる。issueとは「課題」という意味であり、一般に課題を管理するシステムをIssue Tracking System (ITS)と呼ぶ。一種のTodo リストだと思えば良い。GitHubはITSの機能を持っている。
 
@@ -238,11 +240,11 @@ GitHubを使う場合、
 
 ### Step 1: Issueの作成
 
-* 先ほど作った`github-test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Top repositories」の「アカウント名/github-test」を選べばよい。
-* 「Code」「Issues」「Pull requests」「Actions」「Projects」などのメニューが並んだタブから「Issues」を選び、「New Issue」ボタンを押す。画面の最上部の「Issues」と間違えないこと。
-* Titleに「READMEの修正」と書く
-* コメント(Adda descriptionの下)に「内容を追加」と書く。
-* Labelsとして「enhancement」を選ぶ。
+- 先ほど作った`github-test`リポジトリに移動せよ。左上のOctocatのアイコンをクリックしてホーム画面に戻り、「Top repositories」の「アカウント名/github-test」を選べばよい。
+- 「Code」「Issues」「Pull requests」「Actions」「Projects」などのメニューが並んだタブから「Issues」を選び、「New Issue」ボタンを押す。画面の最上部の「Issues」と間違えないこと。
+- Titleに「READMEの修正」と書く
+- コメント(Adda descriptionの下)に「内容を追加」と書く。
+- Labelsとして「enhancement」を選ぶ。
 
 以上の操作の後「Create」ボタンをクリックする。すると、「READMEの修正 #1」というissueが作られたはずだ。ここで「#1」とあるのはissue番号であり、issueを作るたびに連番で付与される。この画面は後で使うので、そのままブラウザを閉じないこと。
 
@@ -358,6 +360,7 @@ git switch -c doc/2/README
 
 ```md
 # test
+
 test repository
 
 Hello GitHub
@@ -403,7 +406,7 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 
 まず、既存のリポジトリをforkしよう。以下のサイトにアクセスせよ(A班B班共通)。
 
-* [`https://github.com/appi-github/pullreq_2025`](https://github.com/appi-github/pullreq_2025)
+- [`https://github.com/appi-github/pullreq_2026`](https://github.com/appi-github/pullreq_2026)
 
 このサイトの右上に「Fork」というボタンがあるので、それを押す。すると自分のアカウントのリポジトリとしてコピーされる。
 
@@ -414,8 +417,8 @@ GitHubでは、公開されているリポジトリを自分の場所に「コ�
 ```sh
 cd
 cd github
-git clone git@github.com:アカウント名/pullreq_2025.git
-cd pullreq_2025
+git clone git@github.com:アカウント名/pullreq_2026.git
+cd pullreq_2026
 ```
 
 ### Step 3: ブランチの作成
