@@ -19,7 +19,7 @@
   ../test.git
   ```
 
-- [ ] `basics/README.md:180`、`internals/README.md:100`ほか — 「コミットハッシュは実際には40桁」「GitではSHA-1を用いる」という断定は、SHA-256形式のリポジトリも存在するため厳密ではない。標準的なSHA-1形式についての説明であることを明記する。SHA-1のオブジェクトIDは40桁、SHA-256では64桁となる。参考: [Git公式のハッシュ移行資料](https://git-scm.com/docs/hash-function-transition.html)
+- [x] `basics/README.md:180`、`internals/README.md:100`ほか — 「コミットハッシュは実際には40桁」「GitではSHA-1を用いる」という断定は、SHA-256形式のリポジトリも存在するため厳密ではない。標準的なSHA-1形式についての説明であることを明記する。SHA-1のオブジェクトIDは40桁、SHA-256では64桁となる。参考: [Git公式のハッシュ移行資料](https://git-scm.com/docs/hash-function-transition.html)
 
 - [x] `remote/README.md:225` — `git pull` を常に `git fetch` + `git merge` と説明しているが、`pull.rebase`や`--rebase`の設定時にはfetch後にrebaseを行う。「デフォルト設定では `git fetch` と `git merge` を行う」などに修正する。
 
