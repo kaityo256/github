@@ -222,7 +222,7 @@ git branch -u origin/main
 
 ### `git pull`
 
-`git pull`を実行すると、`git fetch`と`git merge`を一度に行うことができる。カレントブランチに上流ブランチが設定されている状態で
+`git pull`を実行すると、デフォルト設定では`git fetch`と`git merge`を一度に行うことができる。カレントブランチに上流ブランチが設定されている状態で
 
 ```sh
 git pull
