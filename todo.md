@@ -12,7 +12,7 @@
 
 - [ ] `practice_basic/README.md:281` — `git commit -a` を「ステージングを飛ばしてコミットする」と説明しているが、実際には追跡済みファイルの変更と削除を自動的にステージしてからコミットする。また、新規ファイルは対象外である。「追跡済みファイルを自動的にステージしてコミットする」などに修正する。
 
-- [ ] `internals/README.md:332` — `git config remote.origin.url` の出力例が `url = ../test.git` となっているが、通常は値だけが出力される。次のように修正する。
+- [x] `internals/README.md:645` — `git config remote.origin.url` の出力例が `url = ../test.git` となっているが、通常は値だけが出力される。次のように修正する。
 
   ```console
   $ git config remote.origin.url

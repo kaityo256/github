@@ -643,7 +643,7 @@ $ git config branch.main.remote
 origin
 
 $ git config remote.origin.url
-url = ../test.git
+../test.git
 ```
 
 また、`git log`は、リモートブランチも調べてくれる。

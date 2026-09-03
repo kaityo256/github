@@ -26,3 +26,4 @@
 | | `Your site is live at https://ユーザ名.github.io/tyrano-sample/` | `Your site is live at https://ユーザ名.github.io/tyrano_sample/` |
 | | ハッシュ値から元の入力を探すことの困難さを「強衝突耐性」としている。 | これは「原像計算困難性」である。暗号学的ハッシュ関数の特徴を、固定長の出力、原像計算困難性、衝突困難性、雪崩効果の4項目に整理する。また、SHA-1は衝突困難性が破られており、GitではSHA-256への移行が進められている旨を追記する。 |
 | | `git status -s`の`??`は「ワーキングツリーにもインデックスにも無い」ことを表す。 | `??`は、ファイルがワーキングツリーには存在するが、インデックスには登録されておらず、Gitによる追跡対象でもないことを表す。 |
+| | `$ git config remote.origin.url`<br>`url = ../test.git` | `$ git config remote.origin.url`<br>`../test.git` |
