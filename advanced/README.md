@@ -410,21 +410,15 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 さて、先ほどの図を見るとわかる通り、このリベースで作ろうとしているコミットは3つだ。そのうち二つ目の`f2'`を作るところで止まっている。したがって今やるべきことは、`f2'`のあるべき姿をインデックスに再現してコミットし、リベースを続行することだ。
 
-衝突が起きているファイル`test.txt`を確認し、両方の修正を取り込んだら、`git add`、`git commit`しよう。
+衝突が起きているファイル`test.txt`を確認し、両方の修正を取り込んだら、`git add`してから`git rebase --continue`を実行しよう。
 
 ```sh
 $ git add test.txt
-$ git commit -m "merge"
-[detached HEAD 10876ee] merge
- 1 file changed, 1 insertion(+), 1 deletion(-)
-```
-
-「頭が取れているよ (`detached HEAD`)」という警告が出るが気にしなくて良い。この状態で`git rebase --continue`を実行すれば、無事にリベースが完了し、`HEAD`が`branch`を指して`detached HEAD`が解消する。
-
-```sh
 $ git rebase --continue
 Successfully rebased and updated refs/heads/branch.
 ```
+
+これにより、無事にリベースが完了し、`HEAD`が`branch`を指して`detached HEAD`が解消する。
 
 「Gitのリベースとは、共通祖先からの修正をリベース先に次々と適用して、新しいコミットを作っていくこと」だと理解していれば、なぜ衝突が複数回起きる可能性があるのか、なぜ`git add`が衝突解決をGitに教えたことになるのかが理解しやすいであろう。`git add`は衝突解決をGitに教えるコマンドではなく、あくまでもインデックスに修正をステージするコマンドであり、リベース中のステージングは、「次に作るべきコミットの姿をGitに教える」という役割を果たしている。
 

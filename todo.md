@@ -6,7 +6,7 @@
 
 - [x] `internals/README.md:98` — 「指定されたハッシュ値を持つ入力を探す困難さ」を「強衝突耐性」と呼んでいるが、これは原像計算困難性である。強衝突耐性は、同じハッシュ値になる任意の異なる二入力を見つけることの困難さを指す。
 
-- [ ] `advanced/README.md:413`、`practice_advanced/README.md:377` — リベースで衝突した際の手順が `git add` → `git commit` → `git rebase --continue` となっている。通常は、衝突を解決して `git add` した後、直接 `git rebase --continue` を実行する。`git rebase --continue` が元のコミット情報を使ってコミットを作成するため、途中の通常の `git commit` は削除する。`branch/README.md`は修正済み。参考: [Git公式のrebase手順](https://git-scm.com/docs/git-rebase)
+- [x] `advanced/README.md:413`、`practice_advanced/README.md:377` — 説明パートでは、リベース中の衝突を解決して `git add` した後、直接 `git rebase --continue` を実行する手順とする。演習パートでは、Vimによるコミットメッセージ入力を避けるため、`git commit -m` を明示的に実行してから `git rebase --continue` を実行する。`branch/README.md`と`advanced/README.md`は前者に修正し、`practice_advanced/README.md`は後者のままとした。参考: [Git公式のrebase手順](https://git-scm.com/docs/git-rebase)
 
 - [x] `practice_basic/README.md:157` — `git status -s` の `??`について「ワーキングツリーにもインデックスにも無い」と説明しているが、ファイルはワーキングツリーに存在する。「ワーキングツリーには存在するが、インデックスには登録されておらず、Gitによる追跡対象でもない」などに修正する。`??` は通常のXY欄とは別扱いの特殊表示である。
 
