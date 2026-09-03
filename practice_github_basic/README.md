@@ -191,7 +191,7 @@ cd test2
 2nd repository
 ```
 
-この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。Git Bashので以下を実行せよ。
+この状態で、Gitリポジトリとして初期化し、最初のコミットをしよう。Git Bashで以下を実行せよ。
 
 ```sh
 git init
@@ -205,7 +205,7 @@ GitHubのホーム画面の左上の「Repositories」の右にある「New」�
 
 空のリポジトリを作りたいので、「Initialize this repository with:」のチェックは全て外した状態で「Create Repository」とすること。
 
-すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、まずは、「Quick setup — if you’ve done this kind of thing before」のしたにある「HTTPS」「SSH」のボタンのうち、「SSH」を押す。
+すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、まずは、「Quick setup — if you’ve done this kind of thing before」の下にある「HTTPS」「SSH」のボタンのうち、「SSH」を押す。
 
 その後、「既に存在するリポジトリをpushする(...or push an existing repository from the command line)」を実行するため、そこに書かれている以下のコマンドをコピーする。
 
@@ -463,7 +463,7 @@ git push origin 9806af3
 
 ### レポート課題: プルリクエストの作成
 
-GitHubのフォークしたページを見ると、上部に「Compare & pull requst」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create a pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。
+GitHubのフォークしたページを見ると、上部に「Compare & pull request」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create a pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。
 
 ## 余談：天空の城のセキュリティ
 

@@ -78,7 +78,7 @@ GitHubにログインした状態で、以下のサイトにアクセスせよ�
 準備ができていれば
 
 ```txt
-Your site is live at https://ユーザ名.github.io/tyrano-sample/
+Your site is live at https://ユーザ名.github.io/tyrano_sample/
 ```
 
 という表示がされる。表示されたら、その表示の右にある「Visit site」ボタンを押すこと。「走るか寝るかするメロス」という画面が表示されたら成功だ。
