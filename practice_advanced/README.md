@@ -2,11 +2,11 @@
 
 ## 目標
 
-* `git commit --amend`によりコミットが変更されることを確認する
-* `git merge`の衝突を解決する
-* `git rebase`により歴史を改変する
-* `git rebase`の衝突を解決する
-* `git bisect`を使ってみる
+- `git commit --amend`によりコミットが変更されることを確認する
+- `git merge`の衝突を解決する
+- `git rebase`により歴史を改変する
+- `git rebase`の衝突を解決する
+- `git bisect`を使ってみる
 
 ## 課題1: git commit --amendによるコミット修正
 
@@ -140,7 +140,7 @@ cat poetry.txt
 git merge knock
 ```
 
-衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。VS Codeの「フォルダーを開く」でこのディレクトリ(`/z/github/merge-sample`)を開き、その上で`poetry.txt`を開いて修正せよ。
+衝突がおきるはずなので、韓愈のアドバイス通り「推」ではなく「敲」の方を残して保存せよ。VS Codeの「フォルダーを開く」でこのディレクトリ(`/z/github/merge-sample`)を開き、その上で`poetry.txt`を開いて修正せよ。手で直接修正してもよいし、VSCodeのマージエディタから「入力側の変更を取り込む」を選んでもよい。
 
 その後、
 
@@ -168,7 +168,7 @@ Bobは、姉であるAliceの大事なアイスを食べてしまった。この
 サンプル用のリポジトリをクローンせよ。
 
 ```sh
-cd 
+cd
 cd github
 git clone https://github.com/appi-github/rebase-history-sample.git
 cd rebase-history-sample
@@ -256,6 +256,8 @@ $ git log --oneline
 650e6bd Bob headed off to school.
 9e6dca2 (origin/start, start) The two woke up.
 ```
+
+なお、コミットハッシュは最初の`9e6dca2`以外はすべて違うものになったはずだ。
 
 歴史は以下のように改変された。
 
@@ -577,7 +579,7 @@ macOS開発のドラマも面白い。1984年、Appleはグラフィックを重
 
 MicrosoftはしばらくWindows 95系列とWindows NT系列を両方開発していたが、両者はWindows XPにて統合され、Windows 95系列はWindows Meを最後に開発を終えた。MacのOSは、当初Macintosh搭載のSystemとしてスタートしたが、Mac OS 9を最後にOPENSTEP由来のMac OS Xに移行し、役目を終えた。中身は完全に変わったが、どちらも「Windows」「Mac」として開発、発売が続いている。OSはソフトウェアであり、ソフトウェアは人が開発するものである以上、人の数だけドラマがある。いまもどこかで次世代OSの開発が進められているのだろう。そこにはどんなドラマが待っているだろうか。
 
-* 参考文献
-    * [闘うプログラマー](https://www.amazon.co.jp/dp/4822247570)
-    * [米マイクロソフト本社で目の当たりにしたビル・ゲイツの決断力](https://www.huffingtonpost.jp/satoshi-nakajima/bill-gates-microsoft_b_10351956.html)
-    * [アップル薄氷の500日](https://www.amazon.co.jp/dp/4797306157)
+- 参考文献
+  - [闘うプログラマー](https://www.amazon.co.jp/dp/4822247570)
+  - [米マイクロソフト本社で目の当たりにしたビル・ゲイツの決断力](https://www.huffingtonpost.jp/satoshi-nakajima/bill-gates-microsoft_b_10351956.html)
+  - [アップル薄氷の500日](https://www.amazon.co.jp/dp/4797306157)
