@@ -45,5 +45,22 @@ copy-pptx:
 	cp practice_github_basic/fig/slide.pptx github_exe03.pptx
 	cp practice_github_advanced/fig/slide.pptx github_exe04.pptx
 
+.PHONY: restore-pptx
+
+# リポジトリトップのスライドを各ディレクトリに戻す。
+restore-pptx:
+	cp github_lec01.pptx vcs/fig/slide.pptx
+	cp github_lec02.pptx term/fig/slide.pptx
+	cp github_lec03.pptx command/fig/slide.pptx
+	cp github_lec04.pptx basics/fig/slide.pptx
+	cp github_lec05.pptx branch/fig/slide.pptx
+	cp github_lec06.pptx remote/fig/slide.pptx
+	cp github_lec07.pptx advanced/fig/slide.pptx
+	cp github_lec08.pptx internals/fig/slide.pptx
+	cp github_exe01.pptx practice_basic/fig/slide.pptx
+	cp github_exe02.pptx practice_advanced/fig/slide.pptx
+	cp github_exe03.pptx practice_github_basic/fig/slide.pptx
+	cp github_exe04.pptx practice_github_advanced/fig/slide.pptx
+
 clean:
 	rm -f $(TARGET) index.html

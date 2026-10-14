@@ -93,7 +93,7 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 では実際にGitHubと通信して、データのやり取りをしてみよう。まずはGitHubでリポジトリを作成して、ローカルにクローンする。
 
 - GitHubのホーム画面を表示する。左上のネコのようなアイコン(Octocat)をクリックするとホーム画面に戻る。
-- ホーム画面に戻ったら「Create repository」ボタンを押す。
+- ホーム画面に戻ったら右上の「+」ボタンから「Create repository」を選ぶ。
 - リポジトリの新規作成画面では、以下の項目を設定しよう。
   - Repository name: リポジトリの名前。Gitでアクセスするので、英数字だけにしよう。ここでは`github-test`としておく。
   - Descrption: リポジトリの説明(任意)。ここは日本語でも良いが、とりあえず「test repository」にしておこう。
@@ -201,9 +201,9 @@ git commit -m "initial commit"
 
 ### Step 2: GitHubにベアリポジトリを作る
 
-GitHubのホーム画面の左上の「Repositories」の右にある「New」をクリックする。Repository nameはtest2、Descriptionは無くても良いが、とりあえず2nd repositoryとしておこう。また、今回もPrivateリポジトリとする。
+GitHubのホーム画面の右上の「＋」から「New repository」をクリックする。Repository nameはtest2、Descriptionは無くても良いが、とりあえず2nd repositoryとしておこう。また、今回もPrivateリポジトリとする。
 
-空のリポジトリを作りたいので、「Initialize this repository with:」のチェックは全て外した状態で「Create Repository」とすること。
+空のリポジトリを作りたいので、Add READMEなどはすべて指定していない状態で「Create Repository」ボタンを押す。
 
 すると、先ほどとは異なり、全くファイルを含まない空のリポジトリが作成される。そこには「次にすべきこと」がいくつか書いてあるが、まずは、「Quick setup — if you’ve done this kind of thing before」の下にある「HTTPS」「SSH」のボタンのうち、「SSH」を押す。
 
@@ -463,7 +463,7 @@ git push origin 9806af3
 
 ### レポート課題: プルリクエストの作成
 
-GitHubのフォークしたページを見ると、上部に「Compare & pull request」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create a pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。
+GitHubのフォークしたページを見ると、上部に「Compare & pull request」というボタンが出来ているので押す。すると「Open a pull request」という画面に遷移するので、タイトルとコメントを入力する。タイトルは「add a file」、コメントはなんでも良いが、例えば「よろしくお願いします。」などとしておく。最後に「Create pull request」を押せば、fork元にプルリクエストが飛ぶ。このプルリクエストを飛ばしたことをもってレポートとする。
 
 ## 余談：天空の城のセキュリティ
 
