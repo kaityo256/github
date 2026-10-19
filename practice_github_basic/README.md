@@ -10,6 +10,17 @@
 
 ## 課題1: GitHubアカウントの作成とSSH接続
 
+### Step 0: 初期設定
+
+ターミナルを開き、以下を実行せよ。
+
+```sh
+export HOME=/z
+cd
+```
+
+これは、大学のPCのリモートドライブを使うための設定であり、講義の最初に毎回実施する必要がある。持ち込みPCを使う場合は不要。
+
 ### Step 1: アカウントの作成
 
 まず、GitHubにアカウントを作成する。既にGitHubにアカウントを持っている人はこのステップをスキップしてよい。ユーザ名、メールアドレス、パスワードを入力するが、ユーザー名は今後長く使う可能性があるのでよく考えること。場合によっては本名よりも有名になる可能性もある。メールアドレスは普段使うアドレスを設定しておく。このアドレスは公開されない(公開することもできる)。
@@ -30,28 +41,36 @@
 SSH公開鍵のペアを作成する。なお、過去に作成したことがある場合はその鍵が使えるので、このステップを飛ばして良い。Git Bashのホームディレクトリにて、以下を実行せよ。
 
 ```sh
-$ ssh-keygen
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/z//.ssh/id_ed25519):  # (1)
-Created directory '/z/.ssh'.
-Enter passphrase (empty for no passphrase): # (2)
-Enter same passphrase again:                # (3)
+mkdir -p .ssh
+ -f .ssh/id_ed25519
 ```
 
-- (1) 秘密鍵を保存する場所を入力する。既に表示されている`(/z//.ssh/id_ed25519):`の後に続けて、`/z/.ssh/id_ed25519`と入力してエンターキーを押すこと。
+```sh
+$ ssh-keygen
+Generating public/private ed25519 key pair.
+Enter passphrase for ".ssh/id_ed25519" (empty for no passphrase): (1)
+Enter same passphrase again:
+Saving key ".ssh/id_ed25519" failed: No such file or directory
+```
+
+- (1) 秘密鍵を保存する場所を指定する。何も入力せずにエンターキーを押すこと。
 - (2) ここでパスフレーズを聞かれる。何も入力せずに改行するとパスフレーズ無しとなるが、**必ずパスフレーズを入力すること**。ここではキーを入力しても画面には何も表示されないので注意。
 - (3) 先ほど入力したものと同じパスフレーズを再度入力する。
 
 パスフレーズを二度入力した後、
 
 ```txt
-Your identification has been saved in /z/.ssh/id_ed25519
-Your public key has been saved in /z/.ssh/id_ed25519.pub
+Your identification has been saved in .ssh/id_ed25519
+Your public key has been saved in .ssh/id_ed25519.pub
 ```
 
 といったメッセージが表示されたら成功である。`id_ed25519`が秘密鍵、`id_ed25519.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
 
-なお、(1)の手続きで`/z/.ssh/id_ed25519`を入力する必要があるのは「演習室のPC」を使う場合のみであり、持ち込みPCなどで実施する場合は何も入力しないでエンターキーを押して進めて良い。
+なお、持ち込みPCで実施する場合は、最初にディレクトリなどを作成する必要はなく、ただ以下を実行すればよい。
+
+```sh
+ssh-keygen
+```
 
 ### Step 3: SSH公開鍵の登録
 
