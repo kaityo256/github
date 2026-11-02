@@ -118,7 +118,7 @@ ssh -T git@github.com
 最後に、Gitに鍵の場所を教えるため、以下を実行する。
 
 ```sh
-
+export GIT_SSH_COMMAND="ssh -i /z/.ssh/id_ed25519 -o UpdateHostKeys=no"
 ```
 
 これにより、GitがSSHでアクセスする時に、鍵を`/z/.ssh`に探しに行く。
