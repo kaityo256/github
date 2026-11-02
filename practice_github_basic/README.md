@@ -43,6 +43,11 @@ SSH公開鍵のペアを作成する。なお、過去に作成したことが�
 ```sh
 mkdir -p .ssh
 ssh-keygen -f /z/.ssh/id_ed25519
+```
+
+すると、以下のような表示がされる。
+
+```sh
 Generating public/private ed25519 key pair.
 Enter passphrase for ".ssh/id_ed25519" (empty for no passphrase): (1)
 Enter same passphrase again:
@@ -113,7 +118,7 @@ ssh -T git@github.com
 最後に、Gitに鍵の場所を教えるため、以下を実行する。
 
 ```sh
-export GIT_SSH_COMMAND="ssh -i /z/.ssh/id_ed25519 -o UpdateHostKeys=no"
+
 ```
 
 これにより、GitがSSHでアクセスする時に、鍵を`/z/.ssh`に探しに行く。
