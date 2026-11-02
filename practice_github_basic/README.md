@@ -42,11 +42,7 @@ SSH公開鍵のペアを作成する。なお、過去に作成したことが�
 
 ```sh
 mkdir -p .ssh
- -f .ssh/id_ed25519
-```
-
-```sh
-$ ssh-keygen
+ssh-keygen -f /z/.ssh/id_ed25519
 Generating public/private ed25519 key pair.
 Enter passphrase for ".ssh/id_ed25519" (empty for no passphrase): (1)
 Enter same passphrase again:
@@ -60,8 +56,8 @@ Saving key ".ssh/id_ed25519" failed: No such file or directory
 パスフレーズを二度入力した後、
 
 ```txt
-Your identification has been saved in .ssh/id_ed25519
-Your public key has been saved in .ssh/id_ed25519.pub
+Your identification has been saved in /z/.ssh/id_ed25519
+Your public key has been saved in /z/.ssh/id_ed25519.pub
 ```
 
 といったメッセージが表示されたら成功である。`id_ed25519`が秘密鍵、`id_ed25519.pub`が公開鍵だ。秘密鍵は誰にも見せてはならない。公開鍵は、文字通り公開するための鍵で、これからGitHubに登録するものだ。
@@ -94,10 +90,10 @@ cat .ssh/id_ed25519.pub
 正しく鍵が登録されたか見てみよう。Git Bashで、以下を実行せよ。
 
 ```sh
-$ ssh -T git@github.com
+$ ssh -T git@github.com -i /z/.ssh/id_ed25519
 ```
 
-もし`Are you sure you want to continue connecting (yes/no/[fingerprint])?`というメッセージが表示されたら`yes`と入力する。
+もし`Are you sure you want to continue connecting (yes/no/[fingerprint])?`というメッセージが表示されたら`yes`と入力する。これは、最初にGitHubにアクセスする時に一度だけ入力するもので、以後は情報が`.ssh/known_hosts`に登録されるために聞かれなくなる。
 
 `Enter passphrase for key '/path/to/.ssh/id_ed25519':`と表示されたら、先ほど設定したパスフレーズを入力する。その結果、
 
@@ -106,6 +102,32 @@ Hi GitHubアカウント名! You've successfully authenticated, but GitHub does 
 ```
 
 と表示されたら、鍵の登録に成功している。
+
+なお、持ち込みPCの場合は`-i`オプションは不要であり、
+
+```sh
+ssh -T git@github.com
+```
+
+だけでよい。
+
+最後に、Gitに鍵の場所を教えるため、以下を実行する。
+
+```sh
+export GIT_SSH_COMMAND="ssh -i /z/.ssh/id_ed25519 -o UpdateHostKeys=no"
+```
+
+これにより、GitがSSHでアクセスする時に、鍵を`/z/.ssh`に探しに行く。
+
+以降、PC室にログインしたら
+
+```sh
+export HOME=/z
+cd
+export GIT_SSH_COMMAND="ssh -i /z/.ssh/id_ed25519 -o UpdateHostKeys=no"
+```
+
+を実行すれば、GitHubにアクセスできるようになる。
 
 ### Step 5: リポジトリの作成とクローン
 
