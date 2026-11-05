@@ -9,18 +9,77 @@
 
 稀に、講義で作成したGitHubアカウントが凍結される場合がある。GitHubにログインしようとして「Account suspended」と表示されたら挙手し、教員もしくはTAの指示を待つこと。
 
-## 課題1: MNISTの学習済みモデルをウェブで試す
+## PC室を使うための準備
 
-MNISTは有名な手書き数字のデータセットだ。これを学習させたモデルをブラウザで読み込み、実際に数字を描いてみてちゃんと認識できるか確認してみよう。
+PC室のGit Bashを使う場合、Windowsを起動してZドライブがマウントされてから作業を開始する必要がある。Zドライブがマウントされるまで数分かかるので、少し待つこと。Zドライブがマウントされたら以下の作業を行う。
 
-### Step 0: 初期設定
+### 環境変数の設定
 
 ターミナルを開き、以下を実行せよ。
 
 ```sh
 export HOME=/z
 cd
+export GIT_SSH_COMMAND="ssh -i /z/.ssh/id_ed25519 -o UpdateHostKeys=no"
 ```
+
+この操作は毎回実施する必要がある。
+
+### 公開鍵の作成
+
+前回の演習で公開鍵をCドライブに作った場合、もしくはまだ公開鍵を作成していない場合は、以下の手順で公開鍵を作成し、GitHubに登録せよ。
+
+```sh
+mkdir -p .ssh
+ssh-keygen -f /z/.ssh/id_ed25519
+```
+
+ssh-keygenの実行後、パスフレーズを聞かれるので二回入力する。この時、入力したパスフレーズは画面に表示されない。
+
+次に、GitHubに公開鍵を登録する。GitHubにログインした状態のブラウザで以下の作業をせよ。
+
+- GitHubの一番右上のアイコンをクリックして現れるメニューの下の方の「Settings」を選ぶ。
+- 左に「Access」というメニューが現れるので「SSH and GPG keys」を選ぶ。
+- 「SSH keys」右にある「New SSH key」ボタンを押す
+- 「Title」と「Key」を入力する。「Key type」は何も選ばなくて良い(Authentication Keyのまま)。Titleはなんでも良いが、例えば「Git Bash」もしくは「University PC」とする。Keyには、`.ssh/id_ed25519`ファイルの中身をコピペする。Git Bashで以下を実行せよ。
+
+```sh
+cat .ssh/id_ed25519.pub
+```
+
+すると、`ssh-ed25519`から始まるテキストが表示されるため、マウスで選択して右クリックから「Copy」、そして、先ほどのGitHubの画面の「Key」のところにペーストし、「New SSH key」ボタンを押す。
+
+正しく鍵が登録されたか見てみよう。Git Bashで、以下を実行せよ。
+
+```sh
+$ ssh -T git@github.com -i /z/.ssh/id_ed25519
+```
+
+もし`Are you sure you want to continue connecting (yes/no/[fingerprint])?`というメッセージが表示されたら`yes`と入力する。これは、最初にGitHubにアクセスする時に一度だけ入力するもので、以後は情報が`.ssh/known_hosts`に登録されるために聞かれなくなる。
+
+`Enter passphrase for key '/path/to/.ssh/id_ed25519':`と表示されたら、先ほど設定したパスフレーズを入力する。その結果、
+
+```txt
+Hi GitHubアカウント名! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+と表示されたら、鍵の登録に成功している。公開鍵の作成、登録は一度だけ実施すればよいが、環境変数の設定は、演習室のGit Bashを開くたびに実施する必要があることに注意。
+
+### VS Codeの起動
+
+演習室のVS Codeを使う場合は、環境変数設定後に、Git Bashで開きたいディレクトリをカレントディレクトリにした状態で
+
+```sh
+code .
+```
+
+として実行すること。こうしないと、インストールした拡張機能が保存されず、PC室に再ログインした時にもう一度インストールしなおさなければならない。
+
+## 課題1: MNISTの学習済みモデルをウェブで試す
+
+MNISTは有名な手書き数字のデータセットだ。これを学習させたモデルをブラウザで読み込み、実際に数字を描いてみてちゃんと認識できるか確認してみよう。
+
+### Step 0: 初期設定
 
 これは、大学のPCのリモートドライブを使うための設定であり、講義の最初に毎回実施する必要がある。持ち込みPCを使う場合は不要。
 
